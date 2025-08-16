@@ -19,3 +19,5 @@ const OrderSchema = new mongoose.Schema(
 );
 OrderSchema.index({ raffleId: 1, paymentReference: 1 }, { unique: true });
 const OrderModel = mongoose.models.Order || mongoose.model("Order", OrderSchema);
+
+export default OrderModel;

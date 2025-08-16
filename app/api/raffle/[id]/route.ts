@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ message: "Raffle not found", error: "404" });
         }
         return NextResponse.json({ message: "Raffle fetched successfully", data: raffle });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ message: "Error fetching raffle", error: "500" });
     }
 }
@@ -25,7 +25,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
             return NextResponse.json({ message: "Raffle not found", error: "404" });
         }
         return NextResponse.json({ message: "Raffle deleted successfully", data: raffle });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ message: "Error deleting raffle", error: "500" });
     }
 }
@@ -40,7 +40,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ message: "Raffle not found", error: "404" });
         }
         return NextResponse.json({ message: "Raffle updated successfully", data: updatedRaffle });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ message: "Error updating raffle", error: "500" });
     }
 }
