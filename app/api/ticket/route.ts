@@ -5,9 +5,9 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     try {
         await connectMongoDB();
-        const { raffleId, orderId, ticketNumber } = await request.json();
+        const { raffleId, orderId, ticketNumber, buyerId } = await request.json();
         // validamos que existan los campos
-        if(!orderId || !raffleId || !ticketNumber) {
+        if(!orderId || !raffleId || !ticketNumber || !buyerId) {
             return NextResponse.json({ message: 'Missing required fields', error: '400' });
         }
         // validamos que el ticketNumber sea único por raffle
@@ -24,7 +24,8 @@ export async function POST(request: Request) {
         const newTicket = new TicketModel({
             orderId,
             raffleId,
-            ticketNumber
+            ticketNumber,
+            buyerId
         });
         await newTicket.save();
 
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         await connectMongoDB();
         const tickets = await TicketModel.find();
@@ -44,7 +45,7 @@ export async function GET(request: Request) {
     }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE() {
     try {
         await connectMongoDB();
         await TicketModel.deleteMany({});

@@ -7,6 +7,7 @@ const TicketSchema = new Schema(
         // Id de la orden a la que pertenece (comprador)
 		orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", required: true },
 		ticketNumber: { type: Number, required: true }, // Único por sorteo
+		buyerId: { type: String, required: true }, // Información del comprador
 	},
 	{ timestamps: true }
 );

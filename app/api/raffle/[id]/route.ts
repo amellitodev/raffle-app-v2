@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         await connectMongoDB();
-        const {id } = await params
+        const {id } = await params;
         const raffle = await RaffleModel.findById(id);
         if (!raffle) {
             return NextResponse.json({ message: "Raffle not found", error: "404" });
