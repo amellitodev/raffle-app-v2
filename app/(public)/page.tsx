@@ -3,6 +3,9 @@ import HeroComponent from "./components/HeroComponent";
 import RafflesComponent from "./components/RafflesComponent";
 import CardRaffleSkeleton from "./components/skeleton/CardRaffleSkeleton";
 
+// Revalidar cada 60 segundos
+export const revalidate = 60;
+
 export default function Home() {
 	return (
 		<div className="font-sans min-h-screen p-8 pb-20 gap-16 sm:p-20 ">

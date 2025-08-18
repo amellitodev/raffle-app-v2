@@ -1,10 +1,17 @@
+import connectMongoDB from "@/app/lib/mongoConnection";
+import RaffleModel from "@/app/lib/models/raffle.model";
+
 export async function getRaffleData() {
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/raffle`, { cache: "no-store" });
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		return response.json();
+		// En componentes de servidor, llamamos directamente a la base de datos
+		// en lugar de hacer un fetch HTTP a nuestra propia API
+		await connectMongoDB();
+		const raffles = await RaffleModel.find();
+		
+		// Serializar para JSON
+		const serializedRaffles = JSON.parse(JSON.stringify(raffles));
+		
+		return { message: "Raffles fetched successfully", data: serializedRaffles };
 	} catch (error) {
 		console.error("Error fetching raffle data:", error);
 		throw error;
