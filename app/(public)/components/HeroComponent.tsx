@@ -7,6 +7,7 @@ export default function HeroComponent() {
 					<div className="w-full md:w-1/2 flex justify-center">
 						<img
 							src="./rifaHero.png"
+							alt="Rifas Don Carlos Hero"
 							className="w-full md:max-w-sm rounded-lg shadow-2xl "
 						/>
 						</div>

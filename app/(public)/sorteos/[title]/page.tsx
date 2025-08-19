@@ -7,10 +7,10 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 	// resolvemos los parámetros de forma asíncrona
 	const resolvedParams = await params;
 	// decodificamos el Url
-	let raffleTitle = decodeURIComponent(resolvedParams.title).trim().replace(/-/g, " ");
+	const raffleTitle = decodeURIComponent(resolvedParams.title).trim().replace(/-/g, " ");
 
 	// obtenemos los datos
-	let raffleDataByTitle = (await getRaffleDataByTitle(raffleTitle)).data;
+	const raffleDataByTitle = (await getRaffleDataByTitle(raffleTitle)).data;
 	const isRaffleActive = raffleDataByTitle?.status === "active" && "Active";
 
 	// definimos el estado del sorteo
@@ -42,7 +42,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 							<img
 								className="w-full h-full object-cover"
 								src={raffleDataByTitle?.imageUrl}
-								alt={raffleDataByTitle?.imageUrl}
+								alt={raffleDataByTitle?.title || 'Imagen del premio'}
 							/>
 						</div>
 						<p className="text-2xl ">Premio principal </p>
