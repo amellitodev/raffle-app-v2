@@ -12,11 +12,11 @@ export default function CardRaffle({ raffle }: Props) {
 
 	// Determine the raffle status badge
 	const raffleStatus = isRaffleActive ? (
-		<span className="badge badge-success rounded-full first-letter:uppercase">
+		<span className="badge badge-success rounded-md first-letter:uppercase">
 			{isRaffleActive || "Card Status"}
 		</span>
 	) : (
-		<span className="badge badge-error rounded-full first-letter:uppercase">Finalizado</span>
+		<span className="badge badge-error rounded-md first-letter:uppercase">Finalizado</span>
 	);
 
 	// Format the raffle date
@@ -28,7 +28,7 @@ export default function CardRaffle({ raffle }: Props) {
 
 
 
-	return (
+	return ( 
 		<div className="card bg-base-100 w-full md:w-80 h-96 shadow-sm">
 			<figure>
 				<img
@@ -48,7 +48,7 @@ export default function CardRaffle({ raffle }: Props) {
 				{raffleStatus}
 				<div className="card-actions">
 					<Link
-						href={`/api/raffle/${raffle._id}`}
+						href={`/sorteos/${raffle.title}`}
 						className="btn btn-primary w-full rounded-md"
 					>
 						Participa

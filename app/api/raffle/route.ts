@@ -2,15 +2,15 @@ import connectMongoDB from "@/app/lib/mongoConnection";
 import RaffleModel from "@/app/lib/models/raffle.model";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-	try {
-		await connectMongoDB();
-		const raffles = await RaffleModel.find();
-		return NextResponse.json({ message: "Raffles fetched successfully", data: raffles });
-	} catch {
-		return NextResponse.json({ message: "Error fetching raffles", error: "500" });
-	}
-}
+// export async function GET() {
+// 	try {
+// 		await connectMongoDB();
+// 		const raffles = await RaffleModel.find();
+// 		return NextResponse.json({ message: "Raffles fetched successfully", data: raffles });
+// 	} catch {
+// 		return NextResponse.json({ message: "Error fetching raffles", error: "500" });
+// 	}
+// }
 
 export async function POST (_request: Request) {
 	try {
