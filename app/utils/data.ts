@@ -26,6 +26,7 @@ export async function getRaffleDataByTitle(title: string): Promise<{ message: st
 		if (!raffle) {
 			return { message: "Raffle not found", data: null };
 		}
+		console.log("Raffle fetched successfully:  ✅");
 		const serializedRaffle = JSON.parse(JSON.stringify(raffle));
 		return { message: "Raffle fetched successfully", data: serializedRaffle };
 	} catch (error) {

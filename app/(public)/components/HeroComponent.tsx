@@ -12,7 +12,7 @@ export default function HeroComponent() {
 						/>
 						</div>
 					<div>
-						<div className="w-2/3">
+						<div className="w-full md:w-2/3">
 
 						<h1 className="text-5xl font-bold">Rifas Don Carlos!</h1>
 						<p className="py-6 ">
