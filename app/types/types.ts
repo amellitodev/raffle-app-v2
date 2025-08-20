@@ -3,8 +3,19 @@ export interface IRaffle {
 	title: string;
 	description: string;
 	imageUrl: string;
+	raffleStart: string;
 	raffleDate: string;
-	ticketPrice: number;
+	rafflePrize: string;
+	ticketPriceDolar: number;
+	ticketPriceBolivar: number;
+	paymentMethod: Array<{
+		type: string;
+		entityName: string;
+		accountNumber?: string;
+		phoneNumber?: string;
+		email?: string;
+		sellerId?: string;
+	}>;
 	maxTickets: number;
 	status: string;
 	createdAt: string;

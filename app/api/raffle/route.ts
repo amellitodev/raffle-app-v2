@@ -16,13 +16,17 @@ export async function POST (_request: Request) {
 	try {
 		await connectMongoDB();
 		const body = await _request.json();
-        const { title, description, imageUrl, raffleDate, ticketPrice, maxTickets } = body;
+        const { title, description, imageUrl,raffleStart, raffleDate, rafflePrize, ticketPriceDolar,ticketPriceBolivar, maxTickets, paymentMethod } = body;
 		const newRaffle = new RaffleModel({
 			title,
 			description,
 			imageUrl,
+			raffleStart,
 			raffleDate,
-			ticketPrice,
+			rafflePrize,
+			ticketPriceDolar,
+			ticketPriceBolivar,
+			paymentMethod,
 			maxTickets
 		});
 		await newRaffle.save();
