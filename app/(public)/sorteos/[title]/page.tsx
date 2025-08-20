@@ -30,7 +30,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 			<Layout>
 				<section className="max-w-5xl mx-auto pt-24">
 					<div className="p-8 text-center">
-						<h1 className="text-2xl font-bold">Rifa no encontrada</h1>
+						<h1 className=" text-2xl font-bold">Rifa no encontrada</h1>
 						<p>La rifa que buscas no existe o ha sido eliminada.</p>
 					</div>
 				</section>
@@ -40,16 +40,16 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 
 	return (
 		<section className="max-w-5xl mx-auto pt-24 px-4">
-			<article className=" border-1 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
+			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 				<div className="flex justify-between items-center">
-					<h1 className="text-4xl font-bold">{raffleDataByTitle?.title} 🔥</h1>
+					<h1 className="text-2xl md:text-4xl font-bold">{raffleDataByTitle?.title} 🔥</h1>
 					{raffleStatus}
 				</div>
-				<p className="text-2xl">{raffleDataByTitle?.description}</p>
+				<p className="text-lg md:text-2xl">{raffleDataByTitle?.description}</p>
 			</article>
 
 			<div className="flex flex-col md:flex-row pt-8 gap-8 ">
-				<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-8 shadow-xs shadow-gray-300">
+				<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 shadow-xs shadow-gray-300">
 					<div className="flex items-center gap-2">
 						<GiftIcon className="size-8" />
 						<h2 className="text-lg font-bold "> Premio Principal</h2>
@@ -85,7 +85,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 					</article>
 				</div>
 
-				<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-8 shadow-xs shadow-gray-300">
+				<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 shadow-xs shadow-gray-300">
 					<div className="flex items-center gap-2">
 						<TicketIcon className="size-8" />
 						<h3 className="text-lg font-bold">Compra tu Ticket</h3>

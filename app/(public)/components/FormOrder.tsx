@@ -19,13 +19,13 @@ export default function FormTicket({
 	ticketPriceDolar = 0,
 	ticketPriceBolivar = 0,
 	raffleId = "",
-	paymentMethod = []
+	paymentMethod = [],
 }: Props) {
 	const [count, setCount] = useState(1);
 	const [selectedCurrency, setSelectedCurrency] = useState("USD");
 	const [selectedPrice, setSelectedPrice] = useState(ticketPriceDolar);
 	const [paymentMethodSelected, setPaymentMethodSelected] = useState(paymentMethod[0]);
-	console.log("🚀 ~ FormTicket ~ paymentMethodSelected:", paymentMethodSelected)
+	const [selectedIdx, setSelectedIdx] = useState(0);
 
 	const incrementCount = () => setCount(count + 1);
 	const decrementCount = () => {
@@ -49,28 +49,24 @@ export default function FormTicket({
 	};
 
 	const currencyDolarStyle = `btn rounded-md ${
-		selectedCurrency === "USD"
-			? "bg-warning text-slate-950"
-			: "bg-disabled"
+		selectedCurrency === "USD" ? "bg-warning text-slate-950" : "bg-disabled"
 	}`;
 	const currencyBolivarStyle = `btn rounded-md ${
-		selectedCurrency === "VES"
-			? "bg-warning text-slate-950"
-			: "bg-disabled"
+		selectedCurrency === "VES" ? "bg-warning text-slate-950" : "bg-disabled"
 	}`;
 
-	 
+	const isSelectedPaymentMethodStyle = (index: number) => {
+		return selectedIdx === index
+			? "p-2 border border-slate-300 rounded-md bg-warning text-slate-950"
+			: "p-2 border border-slate-300 rounded-md bg-disabled";
+	};
 
 	return (
 		<>
 			<form action={createOrder} className="flex flex-col gap-2">
 				<span className="text-md text-center">Precio por ticket</span>
 				<div className="flex gap-8 justify-center items-center">
-					<button
-						className={currencyDolarStyle}
-						type="button"
-						onClick={selectPriceDolar}
-					>
+					<button className={currencyDolarStyle} type="button" onClick={selectPriceDolar}>
 						$ {ticketPriceDolar}
 					</button>
 					<button
@@ -154,7 +150,13 @@ export default function FormTicket({
 				</strong>
 
 				{paymentMethod.map((method, index) => (
-					<div className={`p-2 border border-slate-300 rounded-md `} key={index} onClick={() => setPaymentMethodSelected(method)}>
+					<div
+						className={`cursor-pointer ${isSelectedPaymentMethodStyle(index)}`}
+						key={index}
+						onClick={() => {
+							setPaymentMethodSelected(method), setSelectedIdx(index);
+						}}
+					>
 						<strong>{method.type}</strong>
 						<p>Entidad: {method.entityName}</p>
 						{method.accountNumber && <p>Número de cuenta: {method.accountNumber}</p>}
