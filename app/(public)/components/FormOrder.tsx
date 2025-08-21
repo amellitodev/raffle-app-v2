@@ -1,6 +1,7 @@
 "use client";
 import { createOrder } from "@/app/actions/actions";
 import { useState } from "react";
+import UploadImageComponent from "./UploadImageComponent";
 
 interface Props {
 	ticketPriceDolar?: number;
@@ -26,6 +27,7 @@ export default function FormTicket({
 	const [selectedPrice, setSelectedPrice] = useState(ticketPriceDolar);
 	const [paymentMethodSelected, setPaymentMethodSelected] = useState(paymentMethod[0]);
 	const [selectedIdx, setSelectedIdx] = useState(0);
+
 
 	const incrementCount = () => setCount(count + 1);
 	const decrementCount = () => {
@@ -59,6 +61,14 @@ export default function FormTicket({
 		return selectedIdx === index
 			? "p-2 border border-slate-300 rounded-md bg-warning text-slate-950"
 			: "p-2 border border-slate-300 rounded-md bg-disabled";
+	};
+
+	const [file, setFile] = useState<File | null>(null);
+	console.log("🚀 ~ FormTicket ~ file:", file)
+
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const selectedFile = event.target.files?.[0] || null;
+		setFile(selectedFile);
 	};
 
 	return (
@@ -181,6 +191,10 @@ export default function FormTicket({
 					name="paymentReference"
 					placeholder="Referencia del pago"
 				/>
+
+				{/* Componente para subir imagen */}
+				{file && <img src={URL.createObjectURL(file)} alt="Preview" />}
+				<UploadImageComponent handleFileChange={handleFileChange} />
 
 				<button
 					className="btn btn-success text-slate-950 font-bold rounded-md"

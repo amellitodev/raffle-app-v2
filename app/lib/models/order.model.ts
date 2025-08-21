@@ -13,6 +13,7 @@ const OrderSchema = new mongoose.Schema(
 		currency: { type: String, enum: ["USD", "EUR", "VES"], required: true },
 		bank: { type: String, required: true, trim: true }, // banco donde se pago
 		paymentReference: { type: String, required: true, trim: true }, // ID del procesador de pagos
+		paymentProof: { type: String, required: true, trim: true }, // URL del comprobante de pago
 		// Datos de los tickets
 		ticketCount: { type: Number, required: true }, // Número de tickets comprados
 		ticketsAssigned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
