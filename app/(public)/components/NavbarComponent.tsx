@@ -1,8 +1,8 @@
 export default function NavbarComponent() {
 	return (
 		<>
-			<div className="navbar fixed top-0 bg-blue-500/70 z-10 shadow-sm backdrop-blur-md">
-				<div className="flex-none">
+			<div className="navbar fixed top-0  z-10 shadow-sm backdrop-blur-md md:px-32">
+				<div className="flex-none ">
 					<button className="btn btn-ghost rounded-md">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

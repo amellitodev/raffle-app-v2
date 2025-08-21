@@ -2,9 +2,10 @@ import { CalendarIcon } from "./icons/icons";
 
 type Props = {
     date: string;
+	className?: string;
 }
 
-export default function  DateDisplay ({date}: Props) {
+export default function  DateDisplay ({date, className}: Props) {
         	// Format the raffle date
 	const formattedDate = new Date(date).toLocaleString("es-ES", {
 		dateStyle: "long",
@@ -15,8 +16,8 @@ export default function  DateDisplay ({date}: Props) {
       return (
         <>
           {/* // Format the raffle date */}
-			<span className="flex gap-2 align-middle items-center text-sm">
-				<CalendarIcon className="size-4 text-yellow-400 stroke-2" /> {formattedDate}
+			<span className={`flex gap-2 align-middle items-center text-sm ${className}`}>
+				<CalendarIcon className="size-4 text-slate-950 stroke-2" /> {formattedDate}
 			</span>
         </>
       );

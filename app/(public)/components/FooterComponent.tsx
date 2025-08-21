@@ -1,7 +1,7 @@
 export default function FooterComponent() {
 	return (
 		<>
-			<footer className="footer sm:footer-horizontal  text-neutral-content p-10 bg-blue-500/70 mt-16">
+			<footer className="footer sm:footer-horizontal md:px-32 p-10  :mt-16">
 				<aside>
 					<svg
 						width="50"

@@ -1,8 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import OrderModel from "../lib/models/order.model";
 import { v2 as cloudinary } from "cloudinary";
+import OrderModel from "../lib/models/order.model";
+import RaffleModel from "../lib/models/raffle.model";
 
 const config = cloudinary.config({
 	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -25,7 +25,12 @@ export async function createOrder(formData: FormData) {
 		const uploadResult = await new Promise((resolve, reject) => {
 			cloudinary.uploader
 				.upload_stream(
-					{ resource_type: "image", folder: uploadsFolder, quality: "auto:good", type: "authenticated" },
+					{
+						resource_type: "image",
+						folder: uploadsFolder,
+						quality: "auto:good",
+						type: "authenticated",
+					},
 					(error, result) => {
 						if (error || !result) {
 							reject(error);
@@ -76,12 +81,82 @@ export async function createOrder(formData: FormData) {
 	}
 }
 
-
 export async function getSignedUrl(publicId: string) {
-  return cloudinary.url(publicId, {
-    type: "authenticated",
-    sign_url: true,
-    expires_at: Math.floor(Date.now() / 1000) + 600, // 10 minutos
-    secure: true,
-  });
+	return cloudinary.url(publicId, {
+		type: "authenticated",
+		sign_url: true,
+		expires_at: Math.floor(Date.now() / 1000) + 600, // 10 minutos
+		secure: true,
+	});
+}
+
+
+
+
+export async function createRaffle(formData: FormData) {
+	try {
+		console.log("🚀 ~ createRaffle ~ formData:", formData)
+		const file = formData.get("imageUrl") as File | null;
+		if (!file) {
+			throw new Error("No se encontró el archivo de imagen");
+		}
+
+		const arrayBuffer = await file.arrayBuffer();
+		const buffer = Buffer.from(arrayBuffer);
+
+		const uploadResult = await new Promise((resolve, reject) => {
+			cloudinary.uploader
+				.upload_stream(
+					{
+						resource_type: "image",
+						folder: "raffles-images",
+						quality: "auto:good",
+						
+					},
+					(error, result) => {
+						if (error || !result) {
+							reject(error);
+						} else {
+							resolve(result);
+						}
+					}
+				)
+				.end(buffer);
+		});
+		const { secure_url } = uploadResult as { secure_url: string };
+
+		const title = formData.get("title") as string;
+		const description = formData.get("description") as string;
+		const raffleStart = formData.get("raffleStart") as string;
+		const raffleDate = formData.get("raffleDate") as string;
+		const rafflePrize = formData.get("rafflePrize") as string;
+		const ticketPriceDolar = formData.get("ticketPriceDolar") as string;
+		const ticketPriceBolivar = formData.get("ticketPriceBolivar") as string;
+		// const paymentMethod = formData.get("paymentMethod") as string;
+		const maxTickets = formData.get("maxTickets") as string;
+
+
+		const metodo = {
+			type: "banco",
+			entityName: "Banco de Venezuela",
+			accountNumber: "123456789",
+			sellerId: "123456789",
+		}
+		const newRaffle = new RaffleModel({
+			title,
+			description,
+			imageUrl: secure_url,
+			raffleStart,
+			raffleDate,
+			rafflePrize,
+			ticketPriceDolar,
+			ticketPriceBolivar,
+			paymentMethod: metodo,
+			maxTickets
+		});
+		await newRaffle.save();
+	} catch (error) {
+		console.error("Error creating raffle:", error);
+		throw new Error("Error creating raffle");
+	}
 }

@@ -64,11 +64,17 @@ export default function FormTicket({
 	};
 
 	const [file, setFile] = useState<File | null>(null);
+	const [previewFile, setPreviewFile] = useState<File | null>(null);
 	console.log("🚀 ~ FormTicket ~ file:", file)
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = event.target.files?.[0] || null;
 		setFile(selectedFile);
+		setPreviewFile(selectedFile);
+	};
+
+	const handleClearFile = () => {
+		setPreviewFile(null);
 	};
 
 	return (
@@ -193,10 +199,10 @@ export default function FormTicket({
 				/>
 
 				{/* Componente para subir imagen */}
-				{file && <img src={URL.createObjectURL(file)} alt="Preview" />}
+				{previewFile && <img src={URL.createObjectURL(previewFile)} alt="Preview" />}
 				<UploadImageComponent handleFileChange={handleFileChange} />
 
-				<button
+				<button onClick={handleClearFile}
 					className="btn btn-success text-slate-950 font-bold rounded-md"
 					type="submit"
 				>
