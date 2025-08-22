@@ -4,15 +4,20 @@ import ListRaffle from "../components/ListRaffle";
 export default function SorteoPage() {
 	return (
 		<>
-			<div className="flex flex-col gap-2 p-2 mx-2 mt-14 mb-8 bg-base-100 rounded-box shadow-md">
-				<p className="text-sm opacity-60">
-					Crea un nuevo sorteo para que los usuarios puedan participar.
-				</p>
-				<Link href="/dashboard/sorteo/nuevo-sorteo" className="btn btn-primary rounded-md p-4">
-					Crea Nuevo Sorteo
-				</Link>
-			</div>
-			<ListRaffle />
+			<section className="h-svw ">
+				<div className="flex flex-col gap-2 p-2 mx-2 mt-14 mb-8 bg-base-100 rounded-box shadow-md">
+					<p className="text-sm opacity-60">
+						Crea un nuevo sorteo para que los usuarios puedan participar.
+					</p>
+					<Link
+						href="/dashboard/sorteo/nuevo-sorteo"
+						className="btn btn-primary rounded-md p-4"
+					>
+						Crea Nuevo Sorteo
+					</Link>
+				</div>
+				<ListRaffle />
+			</section>
 		</>
 	);
 }

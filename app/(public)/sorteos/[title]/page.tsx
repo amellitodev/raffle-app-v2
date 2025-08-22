@@ -54,7 +54,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 						<GiftIcon className="size-8" />
 						<h2 className="text-lg font-bold "> Premio Principal</h2>
 					</div>
-					<div className=" w-full h-96 aspect-video rounded-lg overflow-hidden bg-muted">
+					<div className=" w-full md:h-96 aspect-video rounded-lg overflow-hidden bg-muted">
 						<img
 							className="w-full h-full object-cover aspect-video"
 							src={raffleDataByTitle?.imageUrl}

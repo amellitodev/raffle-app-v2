@@ -26,8 +26,7 @@ export interface IRaffle {
 export interface IOrder {
   _id: string;
   raffleId: string;
-  buyerFirstName: string;
-  buyerLastName: string;
+  buyerName: string;
   buyerId: string;
   buyerEmail?: string;
   buyerPhone: string;
@@ -35,7 +34,8 @@ export interface IOrder {
   currency: "USD" | "EUR" | "VES";
   bank: string;
   paymentReference: string;
-  ticketNumbers: number[];
+  paymentProof: string;
+  ticketCount: number;
   ticketsAssigned: string[];
   status: "pending" | "paid" | "failed";
   createdAt?: Date;

@@ -91,11 +91,13 @@ export async function getSignedUrl(publicId: string) {
 }
 
 
-
+export async function getOrders() {
+	return OrderModel.find();
+}
 
 export async function createRaffle(formData: FormData) {
 	try {
-		console.log("🚀 ~ createRaffle ~ formData:", formData)
+		console.log("🚀 ~ createRaffle ~ formData:", formData);
 		const file = formData.get("imageUrl") as File | null;
 		if (!file) {
 			throw new Error("No se encontró el archivo de imagen");
@@ -111,7 +113,6 @@ export async function createRaffle(formData: FormData) {
 						resource_type: "image",
 						folder: "raffles-images",
 						quality: "auto:good",
-						
 					},
 					(error, result) => {
 						if (error || !result) {
@@ -132,16 +133,9 @@ export async function createRaffle(formData: FormData) {
 		const rafflePrize = formData.get("rafflePrize") as string;
 		const ticketPriceDolar = formData.get("ticketPriceDolar") as string;
 		const ticketPriceBolivar = formData.get("ticketPriceBolivar") as string;
-		// const paymentMethod = formData.get("paymentMethod") as string;
+		const paymentMethod = JSON.parse(formData.get("paymentMethod") as string);
 		const maxTickets = formData.get("maxTickets") as string;
 
-
-		const metodo = {
-			type: "banco",
-			entityName: "Banco de Venezuela",
-			accountNumber: "123456789",
-			sellerId: "123456789",
-		}
 		const newRaffle = new RaffleModel({
 			title,
 			description,
@@ -151,8 +145,8 @@ export async function createRaffle(formData: FormData) {
 			rafflePrize,
 			ticketPriceDolar,
 			ticketPriceBolivar,
-			paymentMethod: metodo,
-			maxTickets
+			paymentMethod,
+			maxTickets,
 		});
 		await newRaffle.save();
 	} catch (error) {
@@ -160,3 +154,5 @@ export async function createRaffle(formData: FormData) {
 		throw new Error("Error creating raffle");
 	}
 }
+
+

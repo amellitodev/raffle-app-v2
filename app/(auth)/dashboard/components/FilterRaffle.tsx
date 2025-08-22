@@ -1,6 +1,7 @@
 import DateDisplay from "@/app/(public)/components/DateDisplay";
 import { IRaffle } from "@/app/types/types";
 import { EyeIcons, UpdateIcon } from "./icons/Icons";
+import Link from "next/link";
 
 export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 	if (!raffles || raffles.length === 0) {
@@ -24,13 +25,16 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 								{raffle.description}
 							</p>
 						</div>
-						<div className="flex flex-col gap-1">
-							<button className="btn btn-square btn-ghost rounded-md">
-								<UpdateIcon className="size-6" />
+						<div className="flex flex-col gap-1 items-center">
+							<button className="btn btn-xs btn-square btn-ghost rounded-md">
+								<UpdateIcon className="size-4" />
 							</button>
-							<button className="btn btn-square btn-ghost rounded-md">
-								<EyeIcons className="size-6" />
+							<button className="btn btn-xs btn-square btn-ghost rounded-md">
+								<EyeIcons className="size-4" />
 							</button>
+							<Link href={`/dashboard/ordenes/${raffle._id}`} className="link link-primary rounded-md text-xs">
+								Órdenes
+							</Link>
 						</div>
 					</li>
 				);
