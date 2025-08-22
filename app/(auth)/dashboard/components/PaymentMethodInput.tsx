@@ -27,9 +27,7 @@ const emptyMethod: PaymentMethod = {
 };
 export default function PaymentMethodInput() {
 	const [paymentMethod, setPaymentMethod] = useState([{ ...emptyMethod }]);
-	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("banco");
 
-	// Function to add a new payment method
 	const addMethod = () => {
 		if (paymentMethod.length >= 4) {
 			alert("No puedes agregar más de 4 métodos de pago");
@@ -53,169 +51,165 @@ export default function PaymentMethodInput() {
 		setPaymentMethod(updatedMethods);
 	};
 
-	useEffect(() => {
-		console.log("🚀 ~ PaymentMethodInput ~ paymentMethod:", paymentMethod);
-		console.log("🚀 ~ PaymentMethodInput ~ selectedPaymentMethod:", selectedPaymentMethod);
-	}, [paymentMethod, selectedPaymentMethod]);
-
 	return (
 		<>
-			<div className="">
+			<div>
 				<input
 					className="input w-full"
 					type="text"
 					name="paymentMethod"
-					placeholder="Método de pago"
 					value={JSON.stringify(paymentMethod)}
 					hidden
 					readOnly
 				/>
 				<div className="flex justify-between py-2">
-
-				<p>Método de pago: </p>
-				<button
-					type="button"
-					className="btn btn-success rounded-md w-1/4"
-					onClick={addMethod}
+					<p>Método de pago: </p>
+					<button
+						type="button"
+						className="btn btn-success rounded-md w-1/4"
+						onClick={addMethod}
 					>
-					Agregar método de pago
-				</button>
-					</div>
+						Agregar método de pago
+					</button>
+				</div>
 
-				{paymentMethod.map((method, index) => {
-					return (
-						<div className="flex flex-col gap-4 mb-2" key={index}>
-							<select
-								className="select cursor-pointer w-full"
-								name="paymentMethod"
-								id="paymentMethod"
-								onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-							>
-								{paymentTypes.map((type) => (
-									<option key={type.value} value={type.value}>
-										{type.label}
-									</option>
-								))}
-							</select>
+				{paymentMethod.map((method, index) => (
+					<div className="flex flex-col gap-4 mb-2" key={index}>
+						<select
+							className="select cursor-pointer w-full"
+							name="paymentMethod"
+							id="paymentMethod"
+							value={method.type}
+							onChange={(e) => handleChange(index, "type", e.target.value)}
+						>
+							{paymentTypes.map((type) => (
+								<option key={type.value} value={type.value}>
+									{type.label}
+								</option>
+							))}
+						</select>
 
-							{/* método de pago es banco */}
-							{selectedPaymentMethod === "banco" && (
-								<>
-									<input
-										className="input w-full"
-										type="text"
-										name={`bankName_${index}`}
-										placeholder="Nombre del banco"
-										id={`bankName_${index}`}
-										onChange={(e) =>
-											handleChange(index, "entityName", e.target.value)
-										}
-									/>
-									<input
-										className="input w-full"
-										type="text"
-										name={`accountNumber_${index}`}
-										id={`accountNumber_${index}`}
-										placeholder="Número de cuenta"
-										onChange={(e) =>
-											handleChange(index, "accountNumber", e.target.value)
-										}
-									/>
-									<input
-										className="input w-full"
-										type="text"
-										name={`sellerId_${index}`}
-										id={`sellerId_${index}`}
-										placeholder="Número de cédula"
-										onChange={(e) =>
-											handleChange(index, "sellerId", e.target.value)
-										}
-									/>
-									<input
-										className="input w-full"
-										type="text"
-										name={`phoneNumber_${index}`}
-										id={`phoneNumber_${index}`}
-										placeholder="Número de teléfono"
-										onChange={(e) =>
-											handleChange(index, "phoneNumber", e.target.value)
-										}
-									/>
-									<input
-										className="input w-full"
-										type="text"
-										name={`email_${index}`}
-										id={`email_${index}`}
-										placeholder="Correo electrónico"
-										onChange={(e) =>
-											handleChange(index, "email", e.target.value)
-										}
-									/>
-								</>
-							)}
-
-							{/* Método de pago es pago movil */}
-							{selectedPaymentMethod === "pago_movil" && (
-								<>
-									<input
-										className="input w-full"
-										type="text"
-										name={`bankName_${index}`}
-										placeholder="Nombre del banco"
-										id={`bankName_${index}`}
-										onChange={(e) =>
-											handleChange(index, "entityName", e.target.value)
-										}
-									/>
-
-									<input
-										className="input w-full"
-										type="text"
-										name={`sellerId_${index}`}
-										id={`sellerId_${index}`}
-										placeholder="Número de cédula"
-										onChange={(e) =>
-											handleChange(index, "sellerId", e.target.value)
-										}
-									/>
-									<input
-										className="input w-full"
-										type="text"
-										name={`phoneNumber_${index}`}
-										id={`phoneNumber_${index}`}
-										placeholder="Número de teléfono"
-										onChange={(e) =>
-											handleChange(index, "phoneNumber", e.target.value)
-										}
-									/>
-								</>
-							)}
-
-							{/* Métodos de pago para zelle o crypto */}
-							{(selectedPaymentMethod === "zelle" ||
-								selectedPaymentMethod === "crypto") && (
+						{/* método de pago es banco */}
+						{method.type === "banco" && (
+							<>
+								<input
+									className="input w-full"
+									type="text"
+									name={`bankName_${index}`}
+									placeholder="Nombre del banco"
+									id={`bankName_${index}`}
+									value={method.entityName}
+									onChange={(e) =>
+										handleChange(index, "entityName", e.target.value)
+									}
+								/>
+								<input
+									className="input w-full"
+									type="text"
+									name={`accountNumber_${index}`}
+									id={`accountNumber_${index}`}
+									placeholder="Número de cuenta"
+									value={method.accountNumber}
+									onChange={(e) =>
+										handleChange(index, "accountNumber", e.target.value)
+									}
+								/>
+								<input
+									className="input w-full"
+									type="text"
+									name={`sellerId_${index}`}
+									id={`sellerId_${index}`}
+									placeholder="Número de cédula"
+									value={method.sellerId}
+									onChange={(e) =>
+										handleChange(index, "sellerId", e.target.value)
+									}
+								/>
+								<input
+									className="input w-full"
+									type="text"
+									name={`phoneNumber_${index}`}
+									id={`phoneNumber_${index}`}
+									placeholder="Número de teléfono"
+									value={method.phoneNumber}
+									onChange={(e) =>
+										handleChange(index, "phoneNumber", e.target.value)
+									}
+								/>
 								<input
 									className="input w-full"
 									type="text"
 									name={`email_${index}`}
 									id={`email_${index}`}
 									placeholder="Correo electrónico"
+									value={method.email}
 									onChange={(e) => handleChange(index, "email", e.target.value)}
 								/>
-							)}
-							<div className="flex justify-end">
+							</>
+						)}
 
+						{/* Método de pago es pago movil */}
+						{method.type === "pago_movil" && (
+							<>
+								<input
+									className="input w-full"
+									type="text"
+									name={`bankName_${index}`}
+									placeholder="Nombre del banco"
+									id={`bankName_${index}`}
+									value={method.entityName}
+									onChange={(e) =>
+										handleChange(index, "entityName", e.target.value)
+									}
+								/>
+								<input
+									className="input w-full"
+									type="text"
+									name={`sellerId_${index}`}
+									id={`sellerId_${index}`}
+									placeholder="Número de cédula"
+									value={method.sellerId}
+									onChange={(e) =>
+										handleChange(index, "sellerId", e.target.value)
+									}
+								/>
+								<input
+									className="input w-full"
+									type="text"
+									name={`phoneNumber_${index}`}
+									id={`phoneNumber_${index}`}
+									placeholder="Número de teléfono"
+									value={method.phoneNumber}
+									onChange={(e) =>
+										handleChange(index, "phoneNumber", e.target.value)
+									}
+								/>
+							</>
+						)}
+
+						{/* Métodos de pago para zelle o crypto */}
+						{(method.type === "zelle" || method.type === "crypto") && (
+							<input
+								className="input w-full"
+								type="text"
+								name={`email_${index}`}
+								id={`email_${index}`}
+								placeholder="Correo electrónico"
+								value={method.email}
+								onChange={(e) => handleChange(index, "email", e.target.value)}
+							/>
+						)}
+						<div className="flex justify-end">
 							<button
 								type="button"
 								className="btn btn-error btn-soft w-1/4 rounded-md"
 								onClick={() => deleteMethod(index)}
-								>
+							>
 								Eliminar
 							</button>
-								</div>
 						</div>
-					);
-				})}
+					</div>
+				))}
 			</div>
 		</>
 	);
