@@ -3,6 +3,8 @@
 import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
+import connectMongoDB from '@/app/lib/mongoConnection';
+
 
 const config = cloudinary.config({
 	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -13,6 +15,7 @@ const uploadsFolder = process.env.CLOUDINARY_UPLOADS_FOLDER;
 
 export async function createOrder(formData: FormData) {
 	try {
+		await connectMongoDB();
 		// data file del paymentProof
 		const file = formData.get("paymentProof") as File | null;
 		if (!file) {
@@ -92,12 +95,19 @@ export async function getSignedUrl(publicId: string) {
 
 
 export async function getOrders() {
-	return OrderModel.find();
+	try {
+		await connectMongoDB();
+		return OrderModel.find();
+	} catch (error) {
+		console.error("Error connecting to MongoDB:", error);
+		throw new Error("Error connecting to MongoDB");
+	}
 }
 
 export async function createRaffle(formData: FormData) {
 	try {
-		console.log("🚀 ~ createRaffle ~ formData:", formData);
+		await connectMongoDB();
+
 		const file = formData.get("imageUrl") as File | null;
 		if (!file) {
 			throw new Error("No se encontró el archivo de imagen");
