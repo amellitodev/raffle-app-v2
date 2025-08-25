@@ -37,6 +37,16 @@ export interface IOrder {
   updatedAt?: Date;
   __v?: number;
 }
+export interface ITicket {
+  _id: string;
+  raffleId: string;
+  orderId: string;
+  ticketNumber: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  __v?: number;
+}
+
 export interface IOrderPopulated {
   _id: string;
   raffleId: IRaffle | string;
@@ -50,7 +60,7 @@ export interface IOrderPopulated {
   paymentReference: string;
   paymentProof: string;
   ticketCount: number;
-  ticketsAssigned: string[];
+  ticketsAssigned: ITicket[] | string[];
   status?: "pending" | "paid" | "failed";
   createdAt?: Date;
   updatedAt?: Date;

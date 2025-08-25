@@ -9,7 +9,7 @@ export default async function ListOrder({ raffleId }: { raffleId: string }) {
 		(order) => order.raffleId.toString() === raffleId.toString()
 	);
 	const orderPending = filteredOrders.filter((order) => order.status === "pending");
-	const orderPaid = filteredOrders.filter((order) => order.status === "paid");
+	const orderPaid = filteredOrders.filter((order) => order.status === "completed");
 
 	return (
 		<>

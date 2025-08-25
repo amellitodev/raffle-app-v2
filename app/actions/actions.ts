@@ -3,9 +3,9 @@
 import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
-import connectMongoDB from '@/app/lib/mongoConnection';
+import connectMongoDB from "@/app/lib/mongoConnection";
 import { IOrderPopulated } from "../types/types";
-
+import TicketModel from "../lib/models/ticket.model";
 
 const config = cloudinary.config({
 	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -13,7 +13,6 @@ const config = cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const uploadsFolder = process.env.CLOUDINARY_UPLOADS_FOLDER;
-
 
 //* Crear una nueva orden
 export async function createOrder(formData: FormData) {
@@ -96,7 +95,6 @@ export async function getSignedUrl(publicId: string) {
 	});
 }
 
-
 export async function getOrders() {
 	try {
 		await connectMongoDB();
@@ -110,7 +108,14 @@ export async function getOrders() {
 export async function getOrderById(orderId: string) {
 	try {
 		await connectMongoDB();
-		return OrderModel.findById(orderId).populate("raffleId").lean<IOrderPopulated>().exec();
+		return OrderModel.findById(orderId)
+			.populate("raffleId")
+			.populate({
+				path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
+				select: "ticketNumber", // solo traer ticketNumber de cada ticket
+			})
+			.lean<IOrderPopulated>()
+			.exec();
 	} catch (error) {
 		console.error("Error fetching order by ID:", error);
 		throw new Error("Error fetching order by ID");
@@ -178,4 +183,56 @@ export async function createRaffle(formData: FormData) {
 	}
 }
 
+export async function createTickets(formData: FormData) {
+	try {
+		// Convierte IDs a ObjectId (si en tu schema son ObjectId)
+		const orderId = formData.get("orderId") as string;
+		const raffleId = formData.get("raffleId") as string;
 
+		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
+		if (ticketCount <= 0) {
+			throw new Error("ticketCount debe ser mayor que 0");
+		}
+
+		// Traemos todos los números de ticket ya ocupados en esta rifa
+		const existingTickets = await TicketModel.find({ raffleId }).select("ticketNumber");
+		const existingNumbers = new Set(existingTickets.map((t) => t.ticketNumber));
+
+		const newTickets: {
+			orderId: string;
+			raffleId: string;
+			ticketNumber: number;
+		}[] = [];
+		const generatedNumbers = new Set<number>();
+
+		while (newTickets.length < ticketCount) {
+			const ticketNumber = Math.floor(Math.random() * 10000); // rango 0-9999
+
+			// Validamos que no esté repetido en DB ni en los que estamos generando
+			if (existingNumbers.has(ticketNumber) || generatedNumbers.has(ticketNumber)) {
+				continue;
+			}
+
+			newTickets.push({ orderId, raffleId, ticketNumber });
+			generatedNumbers.add(ticketNumber);
+		}
+
+		// Inserción masiva
+		const ticketsCreados = await TicketModel.insertMany(newTickets);
+		// actualizar el order con los nuevos tickets
+
+		const updatedOrder = await OrderModel.findByIdAndUpdate(
+			orderId,
+			{
+				$push: { ticketsAssigned: { $each: ticketsCreados.map((ticket) => ticket._id) } },
+				$set: { status: "completed" }, // <--- actualiza el status
+			},
+			{ new: true }
+		);
+
+		return newTickets;
+	} catch (error) {
+		console.error("Error creating tickets:", error);
+		throw new Error("Error creating tickets");
+	}
+}

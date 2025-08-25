@@ -1,19 +1,54 @@
-import { getOrderById } from "@/app/actions/actions";
+import { createTickets, getOrderById } from "@/app/actions/actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
+import { ITicket } from "@/app/types/types";
 
 export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
+	console.log("🚀 ~ page ~ order:", order);
 
 	return (
 		<>
 			<div className="mt-14 flex flex-col mb-2 justify-between items-center mx-2">
 				<h1 className=" text-2xl font-bold px-2">Order Details</h1>
-				<div className="w-full flex gap-2 justify-between">
-					<button className="btn btn-sm btn-error btn-soft rounded-md">Eliminar pago</button>
-					<button className="btn btn-sm btn-success rounded-md">Aprobar pago</button>
-				</div>
+				{order?.status === "pending" && (
+					<div className="w-full flex gap-2 justify-between">
+						<p className="text-yellow-500">El pago está pendiente de aprobación.</p>
+						<button className="btn btn-sm btn-error btn-soft rounded-md">
+							Eliminar pago
+						</button>
+						<form action={async (formData: FormData) => {
+							'use server';
+							await createTickets(formData);
+						}}>
+							<button className="btn btn-sm btn-success rounded-md">
+								Aprobar pago
+							</button>
+							<input
+								type="text"
+								name="ticketCount"
+								defaultValue={order?.ticketCount}
+								hidden
+								readOnly
+							/>
+							<input
+								type="text"
+								name="orderId"
+								defaultValue={orderId}
+								hidden
+								readOnly
+							/>
+							<input
+								type="text"
+								name="raffleId"
+								defaultValue={order?.raffleId && typeof order.raffleId === 'object' && '_id' in order.raffleId ? order.raffleId._id.toString() : ""}
+								hidden
+								readOnly
+							/>
+						</form>
+					</div>
+				)}
 			</div>
 			<div className="px-2 flex flex-col md:flex-row w-full gap-4">
 				<div className="flex flex-col gap-2 ">
@@ -38,21 +73,33 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 
 					<section className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">información de Tickets</span>
-						<p>
-							Tickets asignados:{" "}
-							{order?.ticketsAssigned || order?.ticketsAssigned.length === 0
+						<span>Tickets asignados: </span>
+						<p className="max-w-96 badge-ghost badge-xs">
+							{order?.ticketsAssigned.length === 0
 								? "'No tiene tickets asignados'"
-								: order?.ticketsAssigned}
+								: JSON.stringify(
+										order?.ticketsAssigned
+											.map((ticket) => (ticket as ITicket).ticketNumber || ticket)
+											.join(", ")
+								  )}
 						</p>
 
 						{/* Mostrar detalles de la rifa */}
 						{order?.raffleId && (
 							<div className="mt-4 flex flex-col gap-2 ">
 								<p className="text-pretty text-xs">
-									Orden Pertenece al sorteo: {typeof order.raffleId === 'object' && 'title' in order.raffleId ? order.raffleId.title : 'N/A'}
+									Orden Pertenece al sorteo:{" "}
+									{typeof order.raffleId === "object" && "title" in order.raffleId
+										? order.raffleId.title
+										: "N/A"}
 								</p>
 								<img
-									src={typeof order.raffleId === 'object' && 'imageUrl' in order.raffleId ? order.raffleId.imageUrl : ''}
+									src={
+										typeof order.raffleId === "object" &&
+										"imageUrl" in order.raffleId
+											? order.raffleId.imageUrl
+											: ""
+									}
 									alt="Raffle Image"
 									className="max-h-24 object-cover rounded-md"
 								/>
