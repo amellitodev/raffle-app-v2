@@ -1,6 +1,8 @@
 import Link from "next/link";
 import ListRaffle from "../components/ListRaffle";
+import { Suspense } from "react";
 
+export const revalidate = 60;
 export default function SorteoPage() {
 	return (
 		<>
@@ -16,7 +18,9 @@ export default function SorteoPage() {
 						Crea Nuevo Sorteo
 					</Link>
 				</div>
-				<ListRaffle />
+				<Suspense fallback={<p className="text-center">Cargando sorteos...</p>}>
+					<ListRaffle />
+				</Suspense>
 			</section>
 		</>
 	);
