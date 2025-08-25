@@ -1,5 +1,6 @@
 import { IOrder } from "@/app/types/types";
 import { EyeIcons, UpdateIcon } from "./icons/Icons";
+import Link from "next/link";
 
 export default function FilterOrder({ orders, status }: { orders: IOrder[]; status: string }) {
 	const isPending = status === "pending" ? "badge-warning" : "badge-success";
@@ -36,6 +37,9 @@ export default function FilterOrder({ orders, status }: { orders: IOrder[]; stat
 								<button className="btn btn-square btn-ghost">
 									<EyeIcons className="size-6" />
 								</button>
+								<Link href={`/dashboard/ordenes/detalles/${order._id}`}>
+									Ver Orden
+								</Link>
 							</div>
 						</li>
 					</div>

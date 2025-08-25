@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 
 const OrderSchema = new mongoose.Schema(
 	{
@@ -21,6 +21,10 @@ const OrderSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
-const OrderModel = mongoose.models.Order || mongoose.model("Order", OrderSchema);
+
+// Definición del tipo IOrder para utilizarlo en todo el proyecto
+export type IOrder = InferSchemaType<typeof OrderSchema>;
+
+const OrderModel = mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);
 
 export default OrderModel;

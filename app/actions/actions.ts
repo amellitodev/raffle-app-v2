@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
 import connectMongoDB from '@/app/lib/mongoConnection';
+import { IOrderPopulated } from "../types/types";
 
 
 const config = cloudinary.config({
@@ -13,6 +14,8 @@ const config = cloudinary.config({
 });
 const uploadsFolder = process.env.CLOUDINARY_UPLOADS_FOLDER;
 
+
+//* Crear una nueva orden
 export async function createOrder(formData: FormData) {
 	try {
 		await connectMongoDB();
@@ -101,6 +104,16 @@ export async function getOrders() {
 	} catch (error) {
 		console.error("Error connecting to MongoDB:", error);
 		throw new Error("Error connecting to MongoDB");
+	}
+}
+
+export async function getOrderById(orderId: string) {
+	try {
+		await connectMongoDB();
+		return OrderModel.findById(orderId).populate("raffleId").lean<IOrderPopulated>().exec();
+	} catch (error) {
+		console.error("Error fetching order by ID:", error);
+		throw new Error("Error fetching order by ID");
 	}
 }
 
