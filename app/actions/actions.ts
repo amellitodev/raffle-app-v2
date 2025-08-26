@@ -54,14 +54,6 @@ export async function createOrder(formData: FormData) {
 	}
 }
 
-export async function getSignedUrl(publicId: string) {
-	return cloudinary.url(publicId, {
-		type: "authenticated",
-		sign_url: true,
-		expires_at: Math.floor(Date.now() / 1000) + 600, // 10 minutos
-		secure: true,
-	});
-}
 
 export async function getOrders() {
 	try {

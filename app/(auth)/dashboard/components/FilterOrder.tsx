@@ -5,12 +5,20 @@ import Link from "next/link";
 export default function FilterOrder({ orders, status }: { orders: IOrder[]; status: string }) {
 	const isPending = status === "pending" ? "badge-warning" : "badge-success";
 
+	if (orders.length === 0) {
+		return (
+			<div className="text-center py-4">
+				<p>No hay órdenes {status === "pending" ? "pendientes" : "pagadas"}</p>
+			</div>
+		);
+	}
+
 	return (
 		<>
-			<div className="relative flex flex-col gap-2 overflow-y-auto pt-4">
+			<div className="relative flex flex-col gap-2 overflow-y-auto pt-4 w-full">
 				{orders.map((order) => (
-					<div key={order._id} className="list bg-base-100 rounded-box shadow-md ">
-						<li className="list-row flex justify-around">
+					<div key={order._id} className="list bg-base-100 rounded-box shadow-md">
+						<li className="list-row flex justify-around items-center">
 							<div>
 								<div className="text-xs uppercase font-semibold opacity-60">
 									{order.createdAt?.toLocaleString()}

@@ -13,16 +13,16 @@ export default async function ListOrder({ raffleId }: { raffleId: string }) {
 
 	return (
 		<>
-			<section className="flex flex-col md:flex-row md:gap-6">
-				<div className="flex flex-col">
-					<h2 className="mt-10 bg-gradient-to-b from-warning to-transparent rounded-t-md p-2">
+			<section className="flex flex-col md:flex-row md:gap-6 w-full h-screen gap-2">
+				<div className="flex flex-col md:w-1/2 bg-base-100 rounded-box shadow-md overflow-scroll overflow-x-hidden px-2 w-full">
+					<h2 className="mt-4 bg-gradient-to-b from-warning to-transparent rounded-t-md p-2">
 						Órdenes Pendientes
 					</h2>
-					<ul className="flex flex-col md:flex-row gap-4 h-96 ">
+					<ul className="flex flex-col md:flex-row gap-4 h-96">
 						<FilterOrder orders={orderPending} status="pending" />
 					</ul>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col md:w-1/2 bg-base-100 rounded-box shadow-md overflow-scroll overflow-x-hidden px-2 w-full">
 					<h2 className="mt-4 bg-gradient-to-b from-success to-transparent rounded-t-md p-2">
 						Órdenes Pagadas
 					</h2>

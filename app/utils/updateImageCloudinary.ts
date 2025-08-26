@@ -100,3 +100,12 @@ export async function uploadImageCloudinary(file: File | null) {
 		throw new Error("Error al subir la imagen a Cloudinary");
 	}
 }
+
+export async function getSignedUrl(publicId: string) {
+	return cloudinary.url(publicId, {
+		type: "authenticated",
+		sign_url: true,
+		expires_at: Math.floor(Date.now() / 1000) + 600, // 10 minutos
+		secure: true,
+	});
+}
