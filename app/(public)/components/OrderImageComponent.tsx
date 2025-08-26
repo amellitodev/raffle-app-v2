@@ -1,4 +1,4 @@
-import { getSignedUrl } from "@/app/actions/actions";
+import { getSignedUrl } from "@/app/utils/updateImageCloudinary";
 
 // Server component
 export default async function OrderImageComponent() {

@@ -6,11 +6,10 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
-	console.log("🚀 ~ page ~ order:", order);
 
 	return (
 		<>
-			<div className="mt-14 flex flex-col mb-2 justify-between items-center mx-2">
+			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2">
 				<h1 className=" text-2xl font-bold px-2">Order Details</h1>
 				{order?.status === "pending" && (
 					<div className="w-full flex gap-2 justify-between">
@@ -50,8 +49,8 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 					</div>
 				)}
 			</div>
-			<div className="px-2 flex flex-col md:flex-row w-full gap-4">
-				<div className="flex flex-col gap-2 ">
+			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto">
+				<div className="flex flex-col gap-2 w-full ">
 					<div className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">Método de pago:</span>
 						<p>Banco: {order?.bank}</p>
