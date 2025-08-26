@@ -10,7 +10,6 @@ export default function UploadImageComponent({ handleFileChange }: Props) {
 			<input
 				className=" file-input file-input-primary rounded-md w-full "
 				type="file"
-				name="paymentProof"
 				accept="image/*"
 				onChange={handleFileChange}
 			/>

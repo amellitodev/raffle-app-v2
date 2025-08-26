@@ -1,54 +1,22 @@
 "use server";
 
+import connectMongoDB from "@/app/lib/mongoConnection";
 import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
-import connectMongoDB from "@/app/lib/mongoConnection";
-import { IOrderPopulated } from "../types/types";
 import TicketModel from "../lib/models/ticket.model";
+import { IOrderPopulated } from "../types/types";
+// import { updateImageCloudinary } from "../utils/updateImageCloudinary";
 
-const config = cloudinary.config({
-	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-	api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-const uploadsFolder = process.env.CLOUDINARY_UPLOADS_FOLDER;
 
-//* Crear una nueva orden
 export async function createOrder(formData: FormData) {
 	try {
 		await connectMongoDB();
 		// data file del paymentProof
-		const file = formData.get("paymentProof") as File | null;
-		if (!file) {
-			throw new Error("No se encontró el archivo de comprobante de pago");
-		}
+		const paymentProof = formData.get("paymentProof") as string | null;
+		// const public_id = await updateImageCloudinary(file);
+		
 
-		const arrayBuffer = await file.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-
-		const uploadResult = await new Promise((resolve, reject) => {
-			cloudinary.uploader
-				.upload_stream(
-					{
-						resource_type: "image",
-						folder: uploadsFolder,
-						quality: "auto:good",
-						type: "authenticated",
-					},
-					(error, result) => {
-						if (error || !result) {
-							reject(error);
-						} else {
-							resolve(result);
-						}
-					}
-				)
-				.end(buffer);
-		});
-		const { public_id } = uploadResult as { public_id: string };
-
-		console.log("✅ Archivo subido a Cloudinary:", public_id);
 		// data order
 		const raffleId = formData.get("raffleId");
 		// data buyer
@@ -74,7 +42,7 @@ export async function createOrder(formData: FormData) {
 			currency,
 			bank,
 			paymentReference,
-			paymentProof: public_id,
+			paymentProof,
 			ticketCount,
 		});
 		await newOrder.save();
@@ -122,6 +90,7 @@ export async function getOrderById(orderId: string) {
 	}
 }
 
+// TODO: extraer funciones en utils para que pueda funcionar
 export async function createRaffle(formData: FormData) {
 	try {
 		await connectMongoDB();

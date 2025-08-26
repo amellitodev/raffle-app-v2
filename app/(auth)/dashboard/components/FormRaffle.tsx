@@ -5,8 +5,9 @@ import { useState } from "react";
 import PaymentMethodInput from "./PaymentMethodInput";
 
 export default function  FormRaffle () {
-  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<File | null>(null);
+
+  
 
   return (
     <>

@@ -2,6 +2,7 @@
 import { createOrder } from "@/app/actions/actions";
 import { useState } from "react";
 import UploadImageComponent from "./UploadImageComponent";
+import { uploadImageCloudinary } from "@/app/utils/updateImageCloudinary";
 
 interface Props {
 	ticketPriceDolar?: number;
@@ -27,7 +28,11 @@ export default function FormTicket({
 	const [selectedPrice, setSelectedPrice] = useState(ticketPriceDolar);
 	const [paymentMethodSelected, setPaymentMethodSelected] = useState(paymentMethod[0]);
 	const [selectedIdx, setSelectedIdx] = useState(0);
+	const [file, setFile] = useState<File | null>(null);
+	const [previewFile, setPreviewFile] = useState<File | null>(null);
 
+	const [publicId, setPublicId] = useState<string | "">("");
+	console.log("🚀 ~ FormTicket ~ publicId:", publicId);
 
 	const incrementCount = () => setCount(count + 1);
 	const decrementCount = () => {
@@ -63,10 +68,6 @@ export default function FormTicket({
 			: "p-2 border border-slate-300 rounded-md bg-disabled";
 	};
 
-	const [file, setFile] = useState<File | null>(null);
-	const [previewFile, setPreviewFile] = useState<File | null>(null);
-	console.log("🚀 ~ FormTicket ~ file:", file)
-
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = event.target.files?.[0] || null;
 		setFile(selectedFile);
@@ -77,9 +78,25 @@ export default function FormTicket({
 		setPreviewFile(null);
 	};
 
+	const handleCreateOrder = async (file: File | null, formData: FormData) => {
+		try {
+			const paymentProof = await uploadImageCloudinary(file);
+			console.log("🚀 ~ handleCreateOrder ~ paymentProof:", paymentProof);
+			formData.append("paymentProof", paymentProof);
+			await createOrder(formData);
+			
+		} catch (error) {
+			console.error("Error creating order:", error);
+			throw new Error("Error creating order");
+		}
+	};
+
 	return (
 		<>
-			<form action={createOrder} className="flex flex-col gap-2">
+			<form
+				action={async (formData) => handleCreateOrder(file, formData)}
+				className="flex flex-col gap-2"
+			>
 				<span className="text-md text-center">Precio por ticket</span>
 				<div className="flex gap-8 justify-center items-center">
 					<button className={currencyDolarStyle} type="button" onClick={selectPriceDolar}>
@@ -93,6 +110,7 @@ export default function FormTicket({
 						Bs. {ticketPriceBolivar}
 					</button>
 				</div>
+				{/* <input type="text" name="paymentProof" defaultValue={publicId || ""} hidden /> */}
 				<input type="hidden" name="raffleId" defaultValue={raffleId || ""} />
 				<input
 					type="hidden"
@@ -202,7 +220,10 @@ export default function FormTicket({
 				{previewFile && <img src={URL.createObjectURL(previewFile)} alt="Preview" />}
 				<UploadImageComponent handleFileChange={handleFileChange} />
 
-				<button onClick={handleClearFile}
+				<button
+					onClick={() => {
+						handleClearFile();
+					}}
 					className="btn btn-success text-slate-950 font-bold rounded-md"
 					type="submit"
 				>
