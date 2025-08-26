@@ -90,39 +90,11 @@ export async function getOrderById(orderId: string) {
 	}
 }
 
-// TODO: extraer funciones en utils para que pueda funcionar
 export async function createRaffle(formData: FormData) {
 	try {
 		await connectMongoDB();
-
-		const file = formData.get("imageUrl") as File | null;
-		if (!file) {
-			throw new Error("No se encontró el archivo de imagen");
-		}
-
-		const arrayBuffer = await file.arrayBuffer();
-		const buffer = Buffer.from(arrayBuffer);
-
-		const uploadResult = await new Promise((resolve, reject) => {
-			cloudinary.uploader
-				.upload_stream(
-					{
-						resource_type: "image",
-						folder: "raffles-images",
-						quality: "auto:good",
-					},
-					(error, result) => {
-						if (error || !result) {
-							reject(error);
-						} else {
-							resolve(result);
-						}
-					}
-				)
-				.end(buffer);
-		});
-		const { secure_url } = uploadResult as { secure_url: string };
-
+		// Extrae los datos del formulario
+		const imageUrl = formData.get("imageUrl") as string;
 		const title = formData.get("title") as string;
 		const description = formData.get("description") as string;
 		const raffleStart = formData.get("raffleStart") as string;
@@ -136,7 +108,7 @@ export async function createRaffle(formData: FormData) {
 		const newRaffle = new RaffleModel({
 			title,
 			description,
-			imageUrl: secure_url,
+			imageUrl,
 			raffleStart,
 			raffleDate,
 			rafflePrize,

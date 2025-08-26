@@ -2,7 +2,7 @@
 import { createOrder } from "@/app/actions/actions";
 import { useState } from "react";
 import UploadImageComponent from "./UploadImageComponent";
-import { uploadImageCloudinary } from "@/app/utils/updateImageCloudinary";
+import { uploadAuthImageCloudinary } from "@/app/utils/updateImageCloudinary";
 
 interface Props {
 	ticketPriceDolar?: number;
@@ -80,7 +80,7 @@ export default function FormTicket({
 
 	const handleCreateOrder = async (file: File | null, formData: FormData) => {
 		try {
-			const paymentProof = await uploadImageCloudinary(file);
+			const paymentProof = await uploadAuthImageCloudinary(file);
 			console.log("🚀 ~ handleCreateOrder ~ paymentProof:", paymentProof);
 			formData.append("paymentProof", paymentProof);
 			await createOrder(formData);
