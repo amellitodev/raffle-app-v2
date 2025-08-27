@@ -1,11 +1,13 @@
 import { createTickets, getOrderById } from "@/app/actions/actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
-import { ITicket } from "@/app/types/types";
+import { IOrderPopulated, ITicket } from "@/app/types/types";
+import { IOrder } from "@/app/lib/models/order.model";
 
 export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
+	console.log("🚀 ~ page ~ order:");
 
 	return (
 		<>
@@ -17,10 +19,12 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 						<button className="btn btn-sm btn-error btn-soft rounded-md">
 							Eliminar pago
 						</button>
-						<form action={async (formData: FormData) => {
-							'use server';
-							await createTickets(formData);
-						}}>
+						<form
+							action={async (formData: FormData) => {
+								"use server";
+								await createTickets(formData);
+							}}
+						>
 							<button className="btn btn-sm btn-success rounded-md">
 								Aprobar pago
 							</button>
@@ -41,7 +45,13 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 							<input
 								type="text"
 								name="raffleId"
-								defaultValue={order?.raffleId && typeof order.raffleId === 'object' && '_id' in order.raffleId ? order.raffleId._id.toString() : ""}
+								defaultValue={
+									order?.raffleId &&
+									typeof order.raffleId === "object" &&
+									"_id" in order.raffleId
+										? order.raffleId._id.toString()
+										: ""
+								}
 								hidden
 								readOnly
 							/>
@@ -73,15 +83,19 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 					<section className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">información de Tickets</span>
 						<span>Tickets asignados: </span>
-						<p className="max-w-96 badge-ghost badge-xs">
+
+						<div className="flex gap-2">
 							{order?.ticketsAssigned.length === 0
 								? "'No tiene tickets asignados'"
-								: JSON.stringify(
-										order?.ticketsAssigned
-											.map((ticket) => (ticket as ITicket).ticketNumber || ticket)
-											.join(", ")
-								  )}
-						</p>
+								: order?.ticketsAssigned.map((ticket, index) => {
+										return (
+											<span key={index} className="badge badge-pr badge-dash cursor-pointer">
+												{(ticket as ITicket).ticketNumber.toString() ||
+													""}
+											</span>
+										);
+								  })}
+						</div>
 
 						{/* Mostrar detalles de la rifa */}
 						{order?.raffleId && (

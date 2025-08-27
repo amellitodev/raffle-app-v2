@@ -5,7 +5,6 @@ import FilterRaffle from "./FilterRaffle";
 export default async function ListRaffle() {
 	const data = await getRaffleData();
 	const raffles = data?.data || [];
-	console.log("🚀 ~ ListRaffle ~ raffles:", raffles);
 
 	const isRaffleActive = raffles.filter((raffle: IRaffle) => raffle.status === "active");
 	const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed");

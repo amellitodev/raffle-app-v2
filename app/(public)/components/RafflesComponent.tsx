@@ -6,8 +6,8 @@ export default async function RafflesComponent() {
 	const data = await getRaffleData();
 	const raffles = data?.data || [];
 
-	const isRaffleActive = raffles.filter((raffle: IRaffle) => raffle.status === "active");
-	const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed");
+	const isRaffleActive = raffles.filter((raffle: IRaffle) => raffle.status === "active").reverse();
+	const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed").reverse();
 
 	return (
 		<>

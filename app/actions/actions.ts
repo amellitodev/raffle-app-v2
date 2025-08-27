@@ -5,7 +5,8 @@ import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
 import TicketModel from "../lib/models/ticket.model";
-import { IOrderPopulated } from "../types/types";
+import { IOrderPopulated, IRaffle, ITicket } from "../types/types";
+import { revalidatePath } from "next/cache";
 // import { updateImageCloudinary } from "../utils/updateImageCloudinary";
 
 
@@ -110,6 +111,8 @@ export async function createRaffle(formData: FormData) {
 			maxTickets,
 		});
 		await newRaffle.save();
+		// refrescar la pagina
+		 revalidatePath("/dashboard");
 	} catch (error) {
 		console.error("Error creating raffle:", error);
 		throw new Error("Error creating raffle");
@@ -162,10 +165,47 @@ export async function createTickets(formData: FormData) {
 			},
 			{ new: true }
 		);
-
+		 revalidatePath("/dashboard");
 		return newTickets;
 	} catch (error) {
 		console.error("Error creating tickets:", error);
 		throw new Error("Error creating tickets");
+	}
+}
+
+export async function getRaffleInfo() {
+	try {
+		await connectMongoDB();
+		const raffle = await RaffleModel.findOne().sort({ createdAt: -1 }).lean<IRaffle>().exec();
+		// recuperar las ordenes del ultimo raffle con count
+		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" }).countDocuments().lean<IOrderPopulated[]>().exec();
+		// recuperar los tickets del raffle
+		const tickets = await TicketModel.find({ raffleId: raffle?._id }).countDocuments().lean<number>().exec();
+		return { raffle, orders, tickets };
+	} catch (error) {
+		console.error("Error fetching raffle info:", error);
+		throw new Error("Error fetching raffle info");
+	}
+}
+
+export async function getTickets(raffleId: string) {
+	try {
+		await connectMongoDB();
+		const tickets = await TicketModel.find({ raffleId }).lean<ITicket>().exec();
+		return tickets;
+	} catch (error) {
+		console.error("Error fetching tickets:", error);
+		throw new Error("Error fetching tickets");
+	}
+}
+
+export async function getTicketByNumber(ticketNumber: number) {
+	try {
+		await connectMongoDB();
+		const ticket = await TicketModel.findOne({ ticketNumber }).lean<ITicket>().exec();
+		return ticket;
+	} catch (error) {
+		console.error("Error fetching ticket by number:", error);
+		throw new Error("Error fetching ticket by number");
 	}
 }
