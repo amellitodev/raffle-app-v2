@@ -2,12 +2,15 @@ import { createTickets, getOrderById } from "@/app/actions/actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
 import { IOrderPopulated, ITicket } from "@/app/types/types";
 import { IOrder } from "@/app/lib/models/order.model";
+import { isLessThousand } from "@/app/utils/utils";
 
 export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
 	console.log("🚀 ~ page ~ order:");
+
+	
 
 	return (
 		<>
@@ -61,7 +64,7 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 			</div>
 			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto">
 				<div className="flex flex-col gap-2 w-full ">
-					<div className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
+					<div className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">Método de pago:</span>
 						<p>Banco: {order?.bank}</p>
 						<p>Referencia de Pago: {order?.paymentReference}</p>
@@ -73,25 +76,27 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 						<SeeReceiptButton paymentProofUrl={order?.paymentProof || ""} />
 					</div>
 
-					<div className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
+					<div className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">Datos del cliente:</span>
 						<p>Cliente: {order?.buyerName}</p>
 						<p>Correo del Cliente: {order?.buyerEmail}</p>
 						<p>Teléfono del Cliente: {order?.buyerPhone}</p>
 					</div>
 
-					<section className="flex flex-col gap-2 p-2 bg-base-100 rounded-box shadow-md">
+					<section className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
 						<span className="text-xs font-bold">información de Tickets</span>
 						<span>Tickets asignados: </span>
 
-						<div className="flex gap-2">
+						<div className="flex flex-wrap gap-2">
 							{order?.ticketsAssigned.length === 0
 								? "'No tiene tickets asignados'"
 								: order?.ticketsAssigned.map((ticket, index) => {
 										return (
-											<span key={index} className="badge badge-pr badge-dash cursor-pointer">
-												{(ticket as ITicket).ticketNumber.toString() ||
-													""}
+											<span
+												key={index}
+												className="badge badge-pr badge-dash cursor-pointer"
+											>
+												{isLessThousand((ticket as ITicket)?.ticketNumber) || "0"}
 											</span>
 										);
 								  })}

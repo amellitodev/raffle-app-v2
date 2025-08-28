@@ -24,6 +24,20 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 							<p className="list-col-wrap text-xs line-clamp-2">
 								{raffle.description}
 							</p>
+							<div className="flex gap-4">
+								<Link
+									href={`/dashboard/ordenes/${raffle._id}`}
+									className="link link-primary rounded-md text-xs"
+								>
+									Órdenes
+								</Link>
+								<Link
+									href={`/dashboard/tickets/${raffle._id}`}
+									className="link link-primary rounded-md text-xs"
+								>
+									Tickets
+								</Link>
+							</div>
 						</div>
 						<div className="flex flex-col gap-1 items-center">
 							<button className="btn btn-xs btn-square btn-ghost rounded-md">
@@ -32,9 +46,6 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 							<button className="btn btn-xs btn-square btn-ghost rounded-md">
 								<EyeIcons className="size-4" />
 							</button>
-							<Link href={`/dashboard/ordenes/${raffle._id}`} className="link link-primary rounded-md text-xs">
-								Órdenes
-							</Link>
 						</div>
 					</li>
 				);

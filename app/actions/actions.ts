@@ -1,14 +1,11 @@
 "use server";
 
 import connectMongoDB from "@/app/lib/mongoConnection";
-import { v2 as cloudinary } from "cloudinary";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
 import TicketModel from "../lib/models/ticket.model";
 import { IOrderPopulated, IRaffle, ITicket } from "../types/types";
 import { revalidatePath } from "next/cache";
-// import { updateImageCloudinary } from "../utils/updateImageCloudinary";
-
 
 export async function createOrder(formData: FormData) {
 	try {
@@ -16,7 +13,6 @@ export async function createOrder(formData: FormData) {
 		// data file del paymentProof
 		const paymentProof = formData.get("paymentProof") as string | null;
 		// const public_id = await updateImageCloudinary(file);
-		
 
 		// data order
 		const raffleId = formData.get("raffleId");
@@ -47,6 +43,7 @@ export async function createOrder(formData: FormData) {
 			ticketCount,
 		});
 		await newOrder.save();
+		revalidatePath("/");
 		console.log("🚀 ~ createOrder ~ newOrder:", newOrder);
 	} catch (error) {
 		console.error("Error creating order:", error);
@@ -54,7 +51,6 @@ export async function createOrder(formData: FormData) {
 		// You might want to handle this error appropriately
 	}
 }
-
 
 export async function getOrders() {
 	try {
@@ -112,7 +108,7 @@ export async function createRaffle(formData: FormData) {
 		});
 		await newRaffle.save();
 		// refrescar la pagina
-		 revalidatePath("/dashboard");
+		revalidatePath("/dashboard");
 	} catch (error) {
 		console.error("Error creating raffle:", error);
 		throw new Error("Error creating raffle");
@@ -165,7 +161,7 @@ export async function createTickets(formData: FormData) {
 			},
 			{ new: true }
 		);
-		 revalidatePath("/dashboard");
+		revalidatePath("/dashboard");
 		return newTickets;
 	} catch (error) {
 		console.error("Error creating tickets:", error);
@@ -178,17 +174,77 @@ export async function getRaffleInfo() {
 		await connectMongoDB();
 		const raffle = await RaffleModel.findOne().sort({ createdAt: -1 }).lean<IRaffle>().exec();
 		// recuperar las ordenes del ultimo raffle con count
-		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" }).countDocuments().lean<IOrderPopulated[]>().exec();
+		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" })
+			.countDocuments()
+			.lean<IOrderPopulated[]>()
+			.exec();
 		// recuperar los tickets del raffle
-		const tickets = await TicketModel.find({ raffleId: raffle?._id }).countDocuments().lean<number>().exec();
+		const tickets = await TicketModel.find({ raffleId: raffle?._id })
+			.countDocuments()
+			.lean<number>()
+			.exec();
 		return { raffle, orders, tickets };
 	} catch (error) {
 		console.error("Error fetching raffle info:", error);
 		throw new Error("Error fetching raffle info");
 	}
 }
+export async function getTickets(raffleId: string, page: number = 1, limit: number = 10, sortOrder: "asc" | "desc" = "desc") {
+	
+	try {
+		await connectMongoDB();
 
-export async function getTickets(raffleId: string) {
+		// debemos paginar por la cantidad de tickets que existe
+		// ordenar los ticketsNumber de mayor a menor
+		// filter by raffleId
+		const tickets = await TicketModel.find({ raffleId })
+			.sort({ ticketNumber: sortOrder === "asc" ? 1 : -1 })
+			.skip((page - 1) * limit)
+			.limit(limit)
+			.populate({ path: "raffleId", select: "title" })
+			.populate({ path: "orderId", select: "status buyerName ticketCount ticketsAssigned" })
+			.lean()
+			.exec();
+		const totalTickets = await TicketModel.countDocuments({ raffleId }).exec();
+		const totalPages = Math.ceil(totalTickets / limit);
+
+		// se realiza la serialización de los tickets porque necesitamos convertir los ObjectId a string
+		// para poder leer sus datos contenidos de raffleId y orderId
+		const serializedTickets = tickets.map(ticket => ({
+            ...ticket,
+            _id: (ticket._id as string).toString(), // Convertir ObjectId a string
+            raffleId: ticket.raffleId ? {
+				_id: (ticket.raffleId._id as string).toString(),
+				title: ticket.raffleId.title,
+			} : null,
+            orderId: ticket.orderId ? {
+				_id: (ticket.orderId._id as string).toString(),
+				status: ticket.orderId.status,
+				buyerName: ticket.orderId.buyerName,
+				ticketCount: ticket.orderId.ticketCount,
+				ticketsAssigned: ticket.orderId.ticketsAssigned.map((id: number) => id.toString()),
+			} : null,
+        }));
+
+		// Formatear la respuesta
+		const response = {
+			tickets: serializedTickets,
+			docs: {
+				totalPages,
+				limit,
+				prevPage: page > 1 ? page - 1 : null,
+				currentPage: page,
+				nextPage: page < totalPages ? page + 1 : null,
+			},
+		};
+		return response;
+	} catch (error) {
+		console.error("Error fetching tickets:", error);
+		throw new Error("Error fetching tickets");
+	}
+}
+
+export async function getTicketsByRaffle(raffleId: string) {
 	try {
 		await connectMongoDB();
 		const tickets = await TicketModel.find({ raffleId }).lean<ITicket>().exec();
