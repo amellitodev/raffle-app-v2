@@ -1,0 +1,23 @@
+import { useFormStatus } from "react-dom";
+
+export default function TicketButton() {
+	const { pending } = useFormStatus();
+	console.log("🚀 ~ FormNewOrder ~ pending:", pending);
+	return (
+		<>
+			<button
+				className="btn btn-success text-slate-950 font-bold rounded-md"
+				type="submit"
+				disabled={pending}
+			>
+				{pending ? (
+					<>
+						Cargando... <span className="loading"></span>
+					</>
+				) : (
+					"Comprar ticket"
+				)}
+			</button>
+		</>
+	);
+}

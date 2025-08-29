@@ -51,7 +51,7 @@ export async function uploadAuthImageCloudinary(file: File | null) {
 		return public_id;
 	} catch (error) {
 		console.error("Error al subir la imagen a Cloudinary:", error);
-		throw new Error("Error al subir la imagen a Cloudinary");
+		throw new Error("Error la imagen es requerida");
 	}
 }
 

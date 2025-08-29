@@ -8,11 +8,11 @@ import { IOrderPopulated, IRaffle, ITicket, TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
 export async function createOrder(formData: FormData) {
+	console.log("🚀 ~ createOrder ~ formData:", formData)
 	try {
 		await connectMongoDB();
 		// data file del paymentProof
 		const paymentProof = formData.get("paymentProof") as string | null;
-		// const public_id = await updateImageCloudinary(file);
 
 		// data order
 		const raffleId = formData.get("raffleId");
@@ -33,10 +33,25 @@ export async function createOrder(formData: FormData) {
 		const maxTickets = parseInt(formData.get("maxTickets") as string, 10) || 0;
 		const existingTickets = await TicketModel.countDocuments({ raffleId });
 		const remainingTickets = maxTickets - existingTickets;
+		
 		if ((existingTickets + ticketCount) > maxTickets) {
 			return {
 				message: "Se ha alcanzado el límite máximo de tickets para esta rifa.",
 				errors: { general: `Se ha alcanzado el límite máximo de tickets para esta rifa. ${remainingTickets} tickets restantes.` },
+				success: false
+			};
+		}
+		if(!paymentProof) {
+			return {
+				message: "Se requiere un comprobante de pago.",
+				errors: { general: "Se requiere un comprobante de pago." },
+				success: false
+			};
+		}
+		if(!raffleId || !buyerName || !buyerId || !buyerPhone || !amount || !bank || !paymentReference) {
+			return {
+				message: "Faltan datos del comprador.",
+				errors: { general: "Faltan datos del comprador." },
 				success: false
 			};
 		}
@@ -56,17 +71,16 @@ export async function createOrder(formData: FormData) {
 		});
 		await newOrder.save();
 		revalidatePath("/");
-		console.log("🚀 ~ createOrder ~ newOrder:", newOrder);
 		return {
 			message: "Order created successfully",
 			errors: {},
-			success: true,
+			success: true
 		};
-	} catch (error: unknown) {
+	} catch (error) {
 		console.error("Error creating order:", error);
 		return {
 			message: 'Error creating order',
-			errors: {general: (error as Error).message},
+			errors: {general: (error instanceof Error ? error.message : 'Unknown error')},
 			success: false,
 		}
 	}
@@ -338,4 +352,9 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 		console.error("Error fetching ticket by number:", error);
 		throw new Error("Error fetching ticket by number");
 	}
+}
+
+
+export async function getDataInfoPrueba(formData: FormData) {
+    console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData)
 }

@@ -19,11 +19,13 @@ interface Props {
 	maxTickets?: number;
 }
 type ActionState = {
-	message: string;
-	errors: { general: string };
-	success: boolean;
+    message: string;
+    errors: { 
+        general: string;
+        [key: string]: string; // <-- Permitir otros campos de error
+    };
+    success: boolean;
 };
-
 const initialState: ActionState = {
 	message: "",
 	errors: { general: "" },
@@ -43,9 +45,12 @@ export default function FormTicket({
 	const [selectedIdx, setSelectedIdx] = useState(0);
 	const [file, setFile] = useState<File | null>(null);
 	const [previewFile, setPreviewFile] = useState<File | null>(null);
+	const [loading, setLoading] = useState(false);
+	console.log("🚀 ~ FormTicket ~ loading:", loading)
+	const [error, setError] = useState<string | null>(null);
+	console.log("🚀 ~ FormTicket ~ error:", error)
 
 	const [publicId, setPublicId] = useState<string | "">("");
-	// console.log("🚀 ~ FormTicket ~ publicId:", publicId);
 
 	const incrementCount = () => setCount(count + 1);
 	const decrementCount = () => {
@@ -93,43 +98,52 @@ export default function FormTicket({
 
 	const handleCreateOrder = async (file: File | null, formData: FormData) => {
 		try {
+			setLoading(true);
+			setError(null);
 			const paymentProof = await uploadAuthImageCloudinary(file);
-			// console.log("🚀 ~ handleCreateOrder ~ paymentProof:", paymentProof);
+			if(!formData) {
+				return {
+					message: "No se encontraron datos del formulario.",
+					errors: { general: "No se encontraron datos del formulario." },
+					success: false
+				};
+			}
 			formData.append("paymentProof", paymentProof);
 			const newOrder = await createOrder(formData);
-			if (newOrder.errors) {
+			if (!newOrder.success) {
 				return {
 					message: "Order failed",
-					errors: { general: newOrder.errors },
+					errors: { general: newOrder.errors as string },
 					success: false,
 				};
 			}
 			// Caso de éxito - ESTO FALTABA
+			setLoading(false);
 			return {
 				message: "Orden creada exitosamente",
 				errors: { general: "" },
 				success: true,
 			};
 		} catch (error) {
-			console.error("Error creating order:", error);
-			return {
-				message: "Error creating order",
-				errors: { general: "Ocurrió un error inesperado" },
-				success: false,
-			};
+			if(error instanceof Error) {
+				console.error("Error creating order:", error);
+				setError("Ocurrió un error inesperado: " + error.message);
+				setLoading(false);
+				// Aquí puedes manejar el error de manera más específica si lo deseas
+				return {
+					message: "Error creando la orden",
+					errors: { general: "Ocurrió un error inesperado: " + error.message },
+					success: false,
+				};
+			}
 		}
 	};
 
-	const actionWrapper = async (prevState: ActionState, formData: FormData) => {
-		const result = await handleCreateOrder(file, formData);
-		return result;
-	};
-	const [state, formAction, pending] = useActionState(actionWrapper, initialState);
-	console.log("🚀 ~ FormTicket ~ state:", state);
+	
 
 	return (
 		<>
-			<form action={formAction} className="flex flex-col gap-2">
+			<form action={async (formData) => handleCreateOrder(file, formData)} className="flex flex-col gap-2">
 				<span className="text-md text-center">Precio por ticket</span>
 				<div className="flex gap-8 justify-center items-center">
 					<button className={currencyDolarStyle} type="button" onClick={selectPriceDolar}>
@@ -260,12 +274,12 @@ export default function FormTicket({
 					}}
 					className="btn btn-success text-slate-950 font-bold rounded-md"
 					type="submit"
-					disabled={pending}
+					disabled={loading}
 				>
-					Comprar Ticket {pending && <span className="loading">Cargando...</span>}
+					Comprar Ticket {loading && <span className="loading">Cargando...</span>}
 				</button>
 			</form>
-			{/* Mostrar mensajes de estado */}
+			{/* Mostrar mensajes de estado
 			{state?.message && (
 				<div className={`alert ${state.success ? "alert-success" : "alert-error"} mt-4`}>
 					{state.message}
@@ -273,11 +287,11 @@ export default function FormTicket({
 			)}
 
 			{/* Mostrar errores específicos si existen */}
-			{state?.errors?.general && !state.success && (
+			{/* {state?.errors?.general && !state.success && (
 				<div className="text-red-600 mt-2">
 					{JSON.stringify(state?.errors?.general)}
 				</div>
-			)}
+			)} */}
 		</>
 	);
 }

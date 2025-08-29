@@ -3,8 +3,8 @@ import TicketIcon, { CalendarIcon, GiftIcon, UsersIcon } from "../../components/
 import FormOrder from "../../components/FormOrder";
 import Layout from "../../layout";
 import DateDisplay from "../../components/DateDisplay";
-import ProgressComponent from "../../components/ProgressComponent";
 import PublicProgressComponent from "../../components/PublicProgressComponent";
+import FormNewOrder from "../../components/FormNewOrder";
 type RaffleDetailPageProps = {
 	params: Promise<{ title: string }>;
 };
@@ -41,7 +41,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 	}
 
 	return (
-		<section className="max-w-5xl mx-auto pt-24 px-4">
+		<section className="max-w-5xl mx-auto pt-24 px-2">
 			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 				<div className="flex justify-between items-center">
 					<h1 className="text-2xl md:text-4xl font-bold">
@@ -68,7 +68,10 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 					<p className="text-2xl ">{raffleDataByTitle?.rafflePrize} </p>
 					<p className="text-3xl  font-bold">$ {raffleDataByTitle?.ticketPriceDolar}</p>
 
-					<PublicProgressComponent maxTickets={raffleDataByTitle?.maxTickets} raffleId={raffleDataByTitle?._id} />
+					<PublicProgressComponent
+						maxTickets={raffleDataByTitle?.maxTickets}
+						raffleId={raffleDataByTitle?._id}
+					/>
 
 					<article className=" border-1 mt-8 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 						<div className="flex items-center gap-2">
@@ -86,12 +89,20 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 						<h3 className="text-lg font-bold">Compra tu Ticket</h3>
 					</div>
 
-					<FormOrder
+					{/* <FormOrder
 						ticketPriceDolar={raffleDataByTitle?.ticketPriceDolar}
 						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}
 						raffleId={raffleDataByTitle?._id}
 						paymentMethod={raffleDataByTitle?.paymentMethod}
 						maxTickets={raffleDataByTitle?.maxTickets}
+					/> */}
+
+					<FormNewOrder
+						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}
+						ticketPriceDolar={raffleDataByTitle?.ticketPriceDolar}
+						paymentMethod={raffleDataByTitle?.paymentMethod}
+						maxTickets={raffleDataByTitle?.maxTickets}
+						raffleId={raffleDataByTitle?._id}
 					/>
 				</div>
 			</div>
