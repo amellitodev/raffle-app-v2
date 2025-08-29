@@ -8,7 +8,7 @@ import { IOrderPopulated, IRaffle, ITicket, TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
 export async function createOrder(formData: FormData) {
-	console.log("🚀 ~ createOrder ~ formData:", formData)
+	console.log("🚀 ~ createOrder ~ formData:", formData);
 	try {
 		await connectMongoDB();
 		// data file del paymentProof
@@ -16,7 +16,7 @@ export async function createOrder(formData: FormData) {
 
 		// data order
 		const raffleId = formData.get("raffleId");
-		
+
 		// data buyer
 		const buyerName = (formData.get("buyerName") as string) || "";
 		const buyerId = (formData.get("buyerId") as string) || "";
@@ -33,27 +33,25 @@ export async function createOrder(formData: FormData) {
 		const maxTickets = parseInt(formData.get("maxTickets") as string, 10) || 0;
 		const existingTickets = await TicketModel.countDocuments({ raffleId });
 		const remainingTickets = maxTickets - existingTickets;
-		
-		if ((existingTickets + ticketCount) > maxTickets) {
-			return {
-				message: "Se ha alcanzado el límite máximo de tickets para esta rifa.",
-				errors: { general: `Se ha alcanzado el límite máximo de tickets para esta rifa. ${remainingTickets} tickets restantes.` },
-				success: false
-			};
+
+		if (existingTickets + ticketCount > maxTickets) {
+			throw new Error(
+				`No hay suficientes tickets disponibles. Quedan ${remainingTickets} tickets.`
+			);
 		}
-		if(!paymentProof) {
-			return {
-				message: "Se requiere un comprobante de pago.",
-				errors: { general: "Se requiere un comprobante de pago." },
-				success: false
-			};
+		if (!paymentProof) {
+			throw new Error("Falta la imagen del comprobante de pago.");
 		}
-		if(!raffleId || !buyerName || !buyerId || !buyerPhone || !amount || !bank || !paymentReference) {
-			return {
-				message: "Faltan datos del comprador.",
-				errors: { general: "Faltan datos del comprador." },
-				success: false
-			};
+		if (
+			!raffleId ||
+			!buyerName ||
+			!buyerId ||
+			!buyerPhone ||
+			!amount ||
+			!bank ||
+			!paymentReference
+		) {
+			throw new Error("Faltan datos obligatorios del formulario.");
 		}
 
 		const newOrder = new OrderModel({
@@ -71,18 +69,9 @@ export async function createOrder(formData: FormData) {
 		});
 		await newOrder.save();
 		revalidatePath("/");
-		return {
-			message: "Order created successfully",
-			errors: {},
-			success: true
-		};
 	} catch (error) {
 		console.error("Error creating order:", error);
-		return {
-			message: 'Error creating order',
-			errors: {general: (error instanceof Error ? error.message : 'Unknown error')},
-			success: false,
-		}
+		throw new Error("Error creating order");
 	}
 }
 
@@ -226,11 +215,8 @@ export async function getRaffleInfo() {
 export async function getRaffleInfoByRaffleId(raffleId: string) {
 	try {
 		await connectMongoDB();
-		
-		const tickets = await TicketModel.find({ raffleId })
-			.countDocuments()
-			.lean<number>()
-			.exec();
+
+		const tickets = await TicketModel.find({ raffleId }).countDocuments().lean<number>().exec();
 		return { tickets };
 	} catch (error) {
 		console.error("Error fetching raffle info:", error);
@@ -344,7 +330,7 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 				// 	id.toString()
 				// ),
 				ticketsAssigned: [],
-			}
+			},
 		};
 		console.log("🚀 ~ getTicketByNumber ~ serializedTicket:", serializedTicket);
 		return serializedTicket;
@@ -354,7 +340,6 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 	}
 }
 
-
 export async function getDataInfoPrueba(formData: FormData) {
-    console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData)
+	console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
 }

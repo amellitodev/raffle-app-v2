@@ -52,8 +52,8 @@ export default function FormNewOrder({
 		setPreviewFile(selectedFile);
 	};
 
-	const handleSubmit = async (formData: FormData): Promise<void> => {
-		console.log("🚀 ~ handleSubmit ~ formData:", formData)
+	const handleSubmit = async (formData: FormData) => {
+		console.log("🚀 ~ handleSubmit ~ formData:", formData);
 		// Aquí puedes manejar el envío del formulario
 		try {
 			
@@ -71,10 +71,8 @@ export default function FormNewOrder({
 
 			// enviar el formulario
 			const response = await createOrder(formData);
-			console.log("🚀 ~ handleSubmit ~ response:", response)
-			if (!response.success) {
-				throw new Error("Error al enviar el formulario");
-			}
+			console.log("🚀 ~ handleSubmit ~ response:", response);
+
 			// ✅ En lugar de retornar, puedes manejar el éxito aquí
 			console.log("Formulario enviado con éxito");
 			

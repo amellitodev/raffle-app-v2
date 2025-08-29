@@ -1,6 +1,5 @@
 import { getRaffleDataByTitle } from "@/app/utils/data";
 import TicketIcon, { CalendarIcon, GiftIcon, UsersIcon } from "../../components/icons/icons";
-import FormOrder from "../../components/FormOrder";
 import Layout from "../../layout";
 import DateDisplay from "../../components/DateDisplay";
 import PublicProgressComponent from "../../components/PublicProgressComponent";
@@ -89,13 +88,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 						<h3 className="text-lg font-bold">Compra tu Ticket</h3>
 					</div>
 
-					{/* <FormOrder
-						ticketPriceDolar={raffleDataByTitle?.ticketPriceDolar}
-						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}
-						raffleId={raffleDataByTitle?._id}
-						paymentMethod={raffleDataByTitle?.paymentMethod}
-						maxTickets={raffleDataByTitle?.maxTickets}
-					/> */}
+			
 
 					<FormNewOrder
 						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}
