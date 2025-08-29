@@ -3,6 +3,8 @@ import TicketIcon, { CalendarIcon, GiftIcon, UsersIcon } from "../../components/
 import FormOrder from "../../components/FormOrder";
 import Layout from "../../layout";
 import DateDisplay from "../../components/DateDisplay";
+import ProgressComponent from "../../components/ProgressComponent";
+import PublicProgressComponent from "../../components/PublicProgressComponent";
 type RaffleDetailPageProps = {
 	params: Promise<{ title: string }>;
 };
@@ -42,7 +44,9 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 		<section className="max-w-5xl mx-auto pt-24 px-4">
 			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 				<div className="flex justify-between items-center">
-					<h1 className="text-2xl md:text-4xl font-bold">{raffleDataByTitle?.title} 🔥</h1>
+					<h1 className="text-2xl md:text-4xl font-bold">
+						{raffleDataByTitle?.title} 🔥
+					</h1>
 					{raffleStatus}
 				</div>
 				<p className="text-lg md:text-2xl">{raffleDataByTitle?.description}</p>
@@ -63,25 +67,16 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 					</div>
 					<p className="text-2xl ">{raffleDataByTitle?.rafflePrize} </p>
 					<p className="text-3xl  font-bold">$ {raffleDataByTitle?.ticketPriceDolar}</p>
-					<article className=" border-1 mt-8 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
-						<div className="flex items-center gap-2">
-							<UsersIcon className="size-8" />
-							<p className="text-lg font-bold">Progreso de la rifa</p>
-						</div>
-						<progress
-							className="progress progress-warning w-full"
-							value={60}
-							max="100"
-						></progress>
-					</article>
+
+					<PublicProgressComponent maxTickets={raffleDataByTitle?.maxTickets} raffleId={raffleDataByTitle?._id} />
 
 					<article className=" border-1 mt-8 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 						<div className="flex items-center gap-2">
 							<CalendarIcon className="size-8" />
 							<p className="text-lg font-bold">Fechas Importantes</p>
 						</div>
-						<DateDisplay date={raffleDataByTitle?.raffleStart}/>
-						<DateDisplay date={raffleDataByTitle?.raffleDate}/>
+						<DateDisplay date={raffleDataByTitle?.raffleStart} />
+						<DateDisplay date={raffleDataByTitle?.raffleDate} />
 					</article>
 				</div>
 
@@ -96,6 +91,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}
 						raffleId={raffleDataByTitle?._id}
 						paymentMethod={raffleDataByTitle?.paymentMethod}
+						maxTickets={raffleDataByTitle?.maxTickets}
 					/>
 				</div>
 			</div>

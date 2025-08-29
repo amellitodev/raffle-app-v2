@@ -26,11 +26,11 @@ export default async function ProgressComponent() {
 				</div>
 
 				<div className="flex flex-col items-center align-middle text-center border border-gray-200 rounded-lg p-2 mt-2 min-h-26">
-					<span>Por vender</span>
+					<span>Disponibles</span>
 					<span>{remainingTickets.toLocaleString()}</span>
 				</div>
 				<div className="flex flex-col items-center align-middle text-center border border-gray-200 rounded-lg p-2 mt-2 min-h-26">
-					<span>Disponibles</span>
+					<span>Max Tickets</span>
 					<span>{maxTickets.toLocaleString()}</span>
 				</div>
 			</div>

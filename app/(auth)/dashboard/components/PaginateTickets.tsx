@@ -3,6 +3,7 @@
 import { getTickets } from "@/app/actions/actions";
 import { useEffect, useState } from "react";
 import { isLessThousand } from "../../../utils/utils";
+import FindTicket from "./FindTicket";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Ticket = any;
@@ -27,7 +28,7 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
 	const handlePageChange = async (page: number) => {
-		const data = await getTickets(raffleId ?? "", page, 10, sortOrder);
+		const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
 		setTickets(data);
 	};
 	const handleSortOrderChange = (order: "asc" | "desc") => {
@@ -36,7 +37,7 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 
 	useEffect(() => {
 		const fetchTickets = async () => {
-			const data = await getTickets(raffleId ?? "", 1, 10, sortOrder);
+			const data = await getTickets(raffleId ?? "", 1, 20, sortOrder);
 			setTickets(data);
 		};
 		fetchTickets();
@@ -47,23 +48,17 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	return (
 		<>
 			<section className="px-2 ">
-				<div className="flex justify-between items-center mb-4 p-4 rounded-lg shadow-md bg-base-100 mt-2">
-					<div className="flex gap-2">
-						<input
-							className="input input-sm input-bordered"
-							type="text"
-							placeholder="Buscar tickets..."
-						/>
-						<button className="btn btn-sm btn-primary rounded-md">Buscar</button>
-					</div>
+			<FindTicket raffleId={raffleId} />
+
+				<div className="flex justify-end items-center mb-4 p-4 rounded-lg shadow-md bg-base-100 mt-2">
 					<button
-						className="btn btn-sm btn-primary rounded-md"
+						className="btn btn-primary rounded-md"
 						onClick={() => handleSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
 					>
 						Ordenar {sortOrder === "asc" ? "descendente" : "ascendente"}
 					</button>
 				</div>
-				<ul className="h-[calc(100vh-340px)] p-4 rounded-lg shadow-md bg-base-100  overflow-y-auto">
+				<ul className="h-[calc(100vh-370px)] p-4 rounded-lg shadow-md bg-base-100  overflow-y-auto">
 					{tickets?.tickets.map((ticket) => (
 						<li className="flex flex-col border p-4 mb-2 rounded" key={ticket._id}>
 							<p>

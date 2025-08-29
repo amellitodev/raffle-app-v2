@@ -1,6 +1,7 @@
 
 // import PaginateTickets from "../components/PaginateTickets";
 
+
 export default function page() {
 	return (
 		<>

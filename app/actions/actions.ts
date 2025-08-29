@@ -4,7 +4,7 @@ import connectMongoDB from "@/app/lib/mongoConnection";
 import OrderModel from "../lib/models/order.model";
 import RaffleModel from "../lib/models/raffle.model";
 import TicketModel from "../lib/models/ticket.model";
-import { IOrderPopulated, IRaffle, ITicket } from "../types/types";
+import { IOrderPopulated, IRaffle, ITicket, TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
 export async function createOrder(formData: FormData) {
@@ -16,6 +16,7 @@ export async function createOrder(formData: FormData) {
 
 		// data order
 		const raffleId = formData.get("raffleId");
+		
 		// data buyer
 		const buyerName = (formData.get("buyerName") as string) || "";
 		const buyerId = (formData.get("buyerId") as string) || "";
@@ -28,6 +29,17 @@ export async function createOrder(formData: FormData) {
 		const bank = (formData.get("bank") as string) || "";
 		const currency = (formData.get("currency") as string) || "USD";
 		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
+		// maxTickets para verificar que no exista un cantidad maxima de tickets existentes en la db
+		const maxTickets = parseInt(formData.get("maxTickets") as string, 10) || 0;
+		const existingTickets = await TicketModel.countDocuments({ raffleId });
+		const remainingTickets = maxTickets - existingTickets;
+		if ((existingTickets + ticketCount) > maxTickets) {
+			return {
+				message: "Se ha alcanzado el límite máximo de tickets para esta rifa.",
+				errors: { general: `Se ha alcanzado el límite máximo de tickets para esta rifa. ${remainingTickets} tickets restantes.` },
+				success: false
+			};
+		}
 
 		const newOrder = new OrderModel({
 			raffleId,
@@ -45,10 +57,18 @@ export async function createOrder(formData: FormData) {
 		await newOrder.save();
 		revalidatePath("/");
 		console.log("🚀 ~ createOrder ~ newOrder:", newOrder);
-	} catch (error) {
+		return {
+			message: "Order created successfully",
+			errors: {},
+			success: true,
+		};
+	} catch (error: unknown) {
 		console.error("Error creating order:", error);
-		throw new Error("Error creating order");
-		// You might want to handle this error appropriately
+		return {
+			message: 'Error creating order',
+			errors: {general: (error as Error).message},
+			success: false,
+		}
 	}
 }
 
@@ -189,8 +209,27 @@ export async function getRaffleInfo() {
 		throw new Error("Error fetching raffle info");
 	}
 }
-export async function getTickets(raffleId: string, page: number = 1, limit: number = 10, sortOrder: "asc" | "desc" = "desc") {
-	
+export async function getRaffleInfoByRaffleId(raffleId: string) {
+	try {
+		await connectMongoDB();
+		
+		const tickets = await TicketModel.find({ raffleId })
+			.countDocuments()
+			.lean<number>()
+			.exec();
+		return { tickets };
+	} catch (error) {
+		console.error("Error fetching raffle info:", error);
+		throw new Error("Error fetching raffle info");
+	}
+}
+
+export async function getTickets(
+	raffleId: string,
+	page: number = 1,
+	limit: number = 20,
+	sortOrder: "asc" | "desc" = "desc"
+) {
 	try {
 		await connectMongoDB();
 
@@ -210,21 +249,27 @@ export async function getTickets(raffleId: string, page: number = 1, limit: numb
 
 		// se realiza la serialización de los tickets porque necesitamos convertir los ObjectId a string
 		// para poder leer sus datos contenidos de raffleId y orderId
-		const serializedTickets = tickets.map(ticket => ({
-            ...ticket,
-            _id: (ticket._id as string).toString(), // Convertir ObjectId a string
-            raffleId: ticket.raffleId ? {
-				_id: (ticket.raffleId._id as string).toString(),
-				title: ticket.raffleId.title,
-			} : null,
-            orderId: ticket.orderId ? {
-				_id: (ticket.orderId._id as string).toString(),
-				status: ticket.orderId.status,
-				buyerName: ticket.orderId.buyerName,
-				ticketCount: ticket.orderId.ticketCount,
-				ticketsAssigned: ticket.orderId.ticketsAssigned.map((id: number) => id.toString()),
-			} : null,
-        }));
+		const serializedTickets = tickets.map((ticket) => ({
+			...ticket,
+			_id: (ticket._id as string).toString(), // Convertir ObjectId a string
+			raffleId: ticket.raffleId
+				? {
+						_id: (ticket.raffleId._id as string).toString(),
+						title: ticket.raffleId.title,
+				  }
+				: null,
+			orderId: ticket.orderId
+				? {
+						_id: (ticket.orderId._id as string).toString(),
+						status: ticket.orderId.status,
+						buyerName: ticket.orderId.buyerName,
+						ticketCount: ticket.orderId.ticketCount,
+						ticketsAssigned: ticket.orderId.ticketsAssigned.map((id: number) =>
+							id.toString()
+						),
+				  }
+				: null,
+		}));
 
 		// Formatear la respuesta
 		const response = {
@@ -244,22 +289,51 @@ export async function getTickets(raffleId: string, page: number = 1, limit: numb
 	}
 }
 
-export async function getTicketsByRaffle(raffleId: string) {
+export async function getTicketByNumber(raffleId: string, ticketNumber: number) {
 	try {
 		await connectMongoDB();
-		const tickets = await TicketModel.find({ raffleId }).lean<ITicket>().exec();
-		return tickets;
-	} catch (error) {
-		console.error("Error fetching tickets:", error);
-		throw new Error("Error fetching tickets");
-	}
-}
+		const ticket = await TicketModel.findOne({ raffleId, ticketNumber })
+			.select({
+				_id: 1,
+				ticketNumber: 1,
+				raffleId: 1,
+				orderId: 1,
+			})
+			.populate({
+				path: "raffleId",
+				select: "title _id", // Solo traer título e ID
+			})
+			.populate({
+				path: "orderId",
+				select: "status buyerName buyerId buyerPhone ticketCount ticketsAssigned _id", // Campos necesarios
+			})
+			.lean<TicketData>()
+			.exec();
+		console.log("🚀 ~ getTicketByNumber ~ ticket:", ticket);
 
-export async function getTicketByNumber(ticketNumber: number) {
-	try {
-		await connectMongoDB();
-		const ticket = await TicketModel.findOne({ ticketNumber }).lean<ITicket>().exec();
-		return ticket;
+		if (!ticket) throw new Error("Ticket no encontrado");
+		const serializedTicket = {
+			_id: ticket._id.toString(),
+			ticketNumber: ticket.ticketNumber,
+			raffleId: {
+				_id: ticket.raffleId._id.toString(),
+				title: ticket.raffleId.title,
+			},
+			orderId: {
+				_id: ticket.orderId._id.toString(),
+				status: ticket.orderId.status,
+				buyerName: ticket.orderId.buyerName,
+				buyerId: ticket.orderId.buyerId.toString(),
+				buyerPhone: ticket.orderId.buyerPhone.toString(),
+				ticketCount: ticket.orderId.ticketCount,
+				// ticketsAssigned: ticket.orderId.ticketsAssigned.map((id) =>
+				// 	id.toString()
+				// ),
+				ticketsAssigned: [],
+			}
+		};
+		console.log("🚀 ~ getTicketByNumber ~ serializedTicket:", serializedTicket);
+		return serializedTicket;
 	} catch (error) {
 		console.error("Error fetching ticket by number:", error);
 		throw new Error("Error fetching ticket by number");

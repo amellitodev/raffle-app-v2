@@ -1,6 +1,6 @@
 "use client";
 import { createOrder } from "@/app/actions/actions";
-import { useState } from "react";
+import { useActionState, useState, Suspense } from "react";
 import UploadImageComponent from "./UploadImageComponent";
 import { uploadAuthImageCloudinary } from "@/app/utils/updateImageCloudinary";
 
@@ -16,12 +16,25 @@ interface Props {
 		email?: string;
 		sellerId?: string;
 	}>;
+	maxTickets?: number;
 }
+type ActionState = {
+	message: string;
+	errors: { general: string };
+	success: boolean;
+};
+
+const initialState: ActionState = {
+	message: "",
+	errors: { general: "" },
+	success: false,
+};
 export default function FormTicket({
 	ticketPriceDolar = 0,
 	ticketPriceBolivar = 0,
 	raffleId = "",
 	paymentMethod = [],
+	maxTickets,
 }: Props) {
 	const [count, setCount] = useState(1);
 	const [selectedCurrency, setSelectedCurrency] = useState("USD");
@@ -32,7 +45,7 @@ export default function FormTicket({
 	const [previewFile, setPreviewFile] = useState<File | null>(null);
 
 	const [publicId, setPublicId] = useState<string | "">("");
-	console.log("🚀 ~ FormTicket ~ publicId:", publicId);
+	// console.log("🚀 ~ FormTicket ~ publicId:", publicId);
 
 	const incrementCount = () => setCount(count + 1);
 	const decrementCount = () => {
@@ -81,22 +94,42 @@ export default function FormTicket({
 	const handleCreateOrder = async (file: File | null, formData: FormData) => {
 		try {
 			const paymentProof = await uploadAuthImageCloudinary(file);
-			console.log("🚀 ~ handleCreateOrder ~ paymentProof:", paymentProof);
+			// console.log("🚀 ~ handleCreateOrder ~ paymentProof:", paymentProof);
 			formData.append("paymentProof", paymentProof);
-			await createOrder(formData);
-			
+			const newOrder = await createOrder(formData);
+			if (newOrder.errors) {
+				return {
+					message: "Order failed",
+					errors: { general: newOrder.errors },
+					success: false,
+				};
+			}
+			// Caso de éxito - ESTO FALTABA
+			return {
+				message: "Orden creada exitosamente",
+				errors: { general: "" },
+				success: true,
+			};
 		} catch (error) {
 			console.error("Error creating order:", error);
-			throw new Error("Error creating order");
+			return {
+				message: "Error creating order",
+				errors: { general: "Ocurrió un error inesperado" },
+				success: false,
+			};
 		}
 	};
 
+	const actionWrapper = async (prevState: ActionState, formData: FormData) => {
+		const result = await handleCreateOrder(file, formData);
+		return result;
+	};
+	const [state, formAction, pending] = useActionState(actionWrapper, initialState);
+	console.log("🚀 ~ FormTicket ~ state:", state);
+
 	return (
 		<>
-			<form
-				action={async (formData) => handleCreateOrder(file, formData)}
-				className="flex flex-col gap-2"
-			>
+			<form action={formAction} className="flex flex-col gap-2">
 				<span className="text-md text-center">Precio por ticket</span>
 				<div className="flex gap-8 justify-center items-center">
 					<button className={currencyDolarStyle} type="button" onClick={selectPriceDolar}>
@@ -119,6 +152,7 @@ export default function FormTicket({
 				/>
 
 				{/* Cantidad de tickets */}
+				<input type="text" name="maxTickets" value={maxTickets} readOnly hidden />
 				<div className="flex flex-col mx-auto mt-2 justify-around items-center w-2/3 h-16 border rounded-md  border-gray-800/30  ">
 					<div className="flex items-center justify-around w-full">
 						<button
@@ -226,10 +260,24 @@ export default function FormTicket({
 					}}
 					className="btn btn-success text-slate-950 font-bold rounded-md"
 					type="submit"
+					disabled={pending}
 				>
-					Comprar Ticket
+					Comprar Ticket {pending && <span className="loading">Cargando...</span>}
 				</button>
 			</form>
+			{/* Mostrar mensajes de estado */}
+			{state?.message && (
+				<div className={`alert ${state.success ? "alert-success" : "alert-error"} mt-4`}>
+					{state.message}
+				</div>
+			)}
+
+			{/* Mostrar errores específicos si existen */}
+			{state?.errors?.general && !state.success && (
+				<div className="text-red-600 mt-2">
+					{JSON.stringify(state?.errors?.general)}
+				</div>
+			)}
 		</>
 	);
 }

@@ -39,8 +39,8 @@ export interface IOrder {
 }
 export interface ITicket {
   _id: string;
-  raffleId: string;
-  orderId: string;
+  raffleId: string | IRaffle;
+  orderId: string | IOrder;
   ticketNumber: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -76,3 +76,9 @@ export type TPaymentMethod = {
   sellerId?: string;
 }
 
+export interface TicketData {
+	_id: string;
+	ticketNumber: number;
+	raffleId: Pick<IRaffle, '_id' | 'title'>;
+	orderId: Pick<IOrder, '_id' | 'status' | 'buyerName' | 'buyerId' | 'buyerPhone' | 'ticketCount' | 'ticketsAssigned'>;
+}
