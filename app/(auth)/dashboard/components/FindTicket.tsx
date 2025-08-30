@@ -1,4 +1,4 @@
-import { getTicketByNumber } from "@/app/actions/actions";
+import { getTicketByNumber } from "@/app/actions/ticket.actions";
 import { TicketData } from "@/app/types/types";
 import { useState } from "react";
 import { isLessThousand } from "../../../utils/utils";

@@ -2,8 +2,11 @@
 import connectMongoDB from '@/app/lib/mongoConnection';
 import RaffleModel from '../lib/models/raffle.model';
 import { revalidatePath } from 'next/cache';
+import OrderModel from '../lib/models/order.model';
+import TicketModel from '../lib/models/ticket.model';
+import { IOrderPopulated, IRaffle } from '../types/types';
 
-
+// TODO: pasar los actions que estan en data.ts
 
 export async function createRaffle(formData: FormData) {
 	try {
@@ -40,5 +43,106 @@ export async function createRaffle(formData: FormData) {
 	} catch (error) {
 		console.error("Error creating raffle:", error);
 		throw new Error("Error creating raffle");
+	}
+}
+
+export async function getRaffleInfo() {
+	try {
+		await connectMongoDB();
+		const raffle = await RaffleModel.findOne().sort({ createdAt: -1 }).lean<IRaffle>().exec();
+		// recuperar las ordenes del ultimo raffle con count
+		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" })
+			.countDocuments()
+			.lean<IOrderPopulated[]>()
+			.exec();
+		// recuperar los tickets del raffle
+		const tickets = await TicketModel.find({ raffleId: raffle?._id })
+			.countDocuments()
+			.lean<number>()
+			.exec();
+		return { raffle, orders, tickets };
+	} catch (error) {
+		console.error("Error fetching raffle info:", error);
+		throw new Error("Error fetching raffle info");
+	}
+}
+
+
+export async function getRaffleData() {
+	try {
+		// En componentes de servidor, llamamos directamente a la base de datos
+		// en lugar de hacer un fetch HTTP a nuestra propia API
+		await connectMongoDB();
+		const raffles = await RaffleModel.find();
+
+		// Serializar para JSON
+		const serializedRaffles = JSON.parse(JSON.stringify(raffles));
+
+		return { message: "Raffles fetched successfully", data: serializedRaffles };
+	} catch (error) {
+		console.error("Error fetching raffle data:", error);
+		throw error;
+	}
+}
+
+export async function getRaffleDataByTitle(title: string): Promise<{ message: string; data: IRaffle | null }> {
+	try {
+		await connectMongoDB();
+		const raffle = await RaffleModel.findOne({ title });
+		if (!raffle) {
+			return { message: "Raffle not found", data: null };
+		}
+		console.log("Raffle fetched successfully:  ✅");
+		const serializedRaffle = JSON.parse(JSON.stringify(raffle));
+		return { message: "Raffle fetched successfully", data: serializedRaffle };
+	} catch (error) {
+		console.error("Error fetching raffle data by ID:", error);
+		throw error;
+	}
+}
+
+
+export async function getRaffleById(raffleId: string) {
+	try {
+		await connectMongoDB();
+		const raffle = await RaffleModel.findById(raffleId).lean<IRaffle>().exec();
+		if (!raffle) {
+			return { message: "Raffle not found", data: null };
+		}
+		return { message: "Raffle fetched successfully", data: JSON.parse(JSON.stringify(raffle)) };
+	} catch (error) {
+		console.error("Error fetching raffle by ID:", error);
+		throw error;
+	}
+}
+
+export async function updateRaffle(formData: FormData) {
+	try {
+		console.log("🚀 ~ updateRaffle ~ formData:", formData)
+		// await connectMongoDB();
+		// const updatedRaffle = await RaffleModel.findByIdAndUpdate(raffleId, formData, { new: true }).lean<IRaffle>().exec();
+		// if (!updatedRaffle) {
+		// 	return { message: "Raffle not found", data: null };
+		// }
+		// return { message: "Raffle updated successfully", data: JSON.parse(JSON.stringify(updatedRaffle)) };
+	} catch (error) {
+		console.error("Error updating raffle:", error);
+		throw error;
+	}
+}
+
+export async function deleteRaffle(formData: FormData) {
+	try {
+		const raffleId = formData.get("raffleId");
+		console.log("🚀 ~ deleteRaffle ~ formData:", raffleId);
+		// await connectMongoDB();
+		// const deletedRaffle = await RaffleModel.findByIdAndDelete(raffleId).lean<IRaffle>().exec();
+		// if (!deletedRaffle) {
+		// 	return { message: "Raffle not found", data: null };
+		// }
+		// return { message: "Raffle deleted successfully", data: JSON.parse(JSON.stringify(deletedRaffle)) };
+	} catch (error) {
+		console.error("Error deleting raffle:", error);
+		throw error;
 	}
 }

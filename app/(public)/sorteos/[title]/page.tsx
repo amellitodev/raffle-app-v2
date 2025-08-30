@@ -1,9 +1,9 @@
-import { getRaffleDataByTitle } from "@/app/utils/data";
-import TicketIcon, { CalendarIcon, GiftIcon, UsersIcon } from "../../components/icons/icons";
+import TicketIcon, { CalendarIcon, GiftIcon, MoneyIcon, UsersIcon } from "../../components/icons/icons";
 import Layout from "../../layout";
 import DateDisplay from "../../components/DateDisplay";
 import PublicProgressComponent from "../../components/PublicProgressComponent";
 import FormNewOrder from "../../components/FormNewOrder";
+import { getRaffleDataByTitle } from "@/app/actions/raffle.action";
 type RaffleDetailPageProps = {
 	params: Promise<{ title: string }>;
 };
@@ -11,9 +11,8 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 	// resolvemos los parámetros de forma asíncrona
 	const resolvedParams = await params;
 	// decodificamos el Url reemplazando los guiones por espacios
-	
-	const raffleTitle = decodeURIComponent(resolvedParams.title).trim()
-	
+
+	const raffleTitle = decodeURIComponent(resolvedParams.title).trim();
 
 	// obtenemos los datos
 	const raffleDataByTitle = (await getRaffleDataByTitle(raffleTitle)).data;
@@ -42,8 +41,8 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 	}
 
 	return (
-		<section className="max-w-5xl mx-auto pt-24 px-2">
-			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
+		<section className="max-w-5xl mx-auto pt-24 px-2 flex flex-col  gap-4 md:gap-8">
+			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 flex flex-col gap-4 shadow-xs shadow-gray-300">
 				<div className="flex justify-between items-center">
 					<h1 className="text-2xl md:text-4xl font-bold">
 						{raffleDataByTitle?.title.replace(/-/g, " ")}
@@ -53,8 +52,8 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 				<p className="text-lg md:text-2xl">{raffleDataByTitle?.description}</p>
 			</article>
 
-			<div className="flex flex-col md:flex-row pt-8 gap-8 ">
-				<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 shadow-xs shadow-gray-300">
+			<div className="flex flex-col md:flex-row gap-8 ">
+				<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
 					<div className="flex items-center gap-2">
 						<GiftIcon className="size-8" />
 						<h2 className="text-lg font-bold "> Premio Principal</h2>
@@ -67,14 +66,28 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 						/>
 					</div>
 					<p className="text-2xl ">{raffleDataByTitle?.rafflePrize} </p>
-					<p className="text-3xl  font-bold">$ {raffleDataByTitle?.ticketPriceDolar}</p>
+					<article className=" border-1 mt-8 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
+						<div className="flex items-center gap-2">
+							<MoneyIcon className="size-6" />
+							<p className="text-lg font-bold">Precios por ticket</p>
+						</div>
+						<div className="flex flex-col justify-between">
+
+						<p className="text-md ">
+							Precio en Bolivares: {raffleDataByTitle?.ticketPriceBolivar} Bs.
+						</p>
+						<p className="text-md">
+							Precio en Dolares: {raffleDataByTitle?.ticketPriceDolar} $
+						</p>
+						</div>
+					</article>
 
 					<PublicProgressComponent
 						maxTickets={raffleDataByTitle?.maxTickets}
 						raffleId={raffleDataByTitle?._id}
 					/>
 
-					<article className=" border-1 mt-8 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
+					<article className=" border-1 border-gray-300/40 rounded-2xl p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 						<div className="flex items-center gap-2">
 							<CalendarIcon className="size-8" />
 							<p className="text-lg font-bold">Fechas Importantes</p>
@@ -84,13 +97,11 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 					</article>
 				</div>
 
-				<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 shadow-xs shadow-gray-300">
+				<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
 					<div className="flex items-center gap-2">
 						<TicketIcon className="size-8" />
 						<h3 className="text-lg font-bold">Compra tu Ticket</h3>
 					</div>
-
-			
 
 					<FormNewOrder
 						ticketPriceBolivar={raffleDataByTitle?.ticketPriceBolivar}

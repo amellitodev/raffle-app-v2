@@ -14,7 +14,7 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 				return (
 					<li key={raffle._id} className={`list-row ${isCompleted}`}>
 						<div>
-							<img className="size-10 rounded-box" src={raffle.imageUrl} />
+							<img className="size-20 object-cover rounded-box" src={raffle.imageUrl} />
 						</div>
 						<div className="flex flex-col gap-1">
 							<div className="text-xs truncate">{raffle.title}</div>
@@ -24,7 +24,8 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 							<p className="list-col-wrap text-xs line-clamp-2">
 								{raffle.description}
 							</p>
-							<div className="flex gap-4">
+							<div className="flex gap-4 items-center">
+								<EyeIcons className="size-4" />
 								<Link
 									href={`/dashboard/ordenes/${raffle._id}`}
 									className="link link-primary rounded-md text-xs"
@@ -39,13 +40,16 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 								</Link>
 							</div>
 						</div>
-						<div className="flex flex-col gap-1 items-center">
-							<button className="btn btn-xs btn-square btn-ghost rounded-md">
-								<UpdateIcon className="size-4" />
-							</button>
-							<button className="btn btn-xs btn-square btn-ghost rounded-md">
-								<EyeIcons className="size-4" />
-							</button>
+						<div className="flex h-full items-center justify-center">
+							<Link
+								href={`/dashboard/sorteo/${raffle._id}`}
+								className="btn btn-soft btn-primary rounded-md text-xs"
+							>
+								<UpdateIcon className="size-2" />
+								
+							</Link>
+						
+						
 						</div>
 					</li>
 				);

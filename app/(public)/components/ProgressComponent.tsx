@@ -1,4 +1,4 @@
-import { getRaffleInfo } from "@/app/actions/actions";
+import { getRaffleInfo } from "@/app/actions/raffle.action";
 import { UsersIcon } from "./icons/icons";
 
 export default async function ProgressComponent() {

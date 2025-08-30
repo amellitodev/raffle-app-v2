@@ -1,6 +1,6 @@
 import { IRaffle } from "@/app/types/types";
-import { getRaffleData } from "@/app/utils/data";
 import FilterRaffle from "./FilterRaffle";
+import { getRaffleData } from "@/app/actions/raffle.action";
 
 export default async function ListRaffle() {
 	const data = await getRaffleData();

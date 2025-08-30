@@ -1,28 +1,17 @@
 "use client";
 
-import { getTickets } from "@/app/actions/actions";
+import { getTickets } from "@/app/actions/ticket.actions";
 import { useEffect, useState } from "react";
 import { isLessThousand } from "../../../utils/utils";
 import FindTicket from "./FindTicket";
+import { ITicketResponseData } from "@/app/types/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Ticket = any;
-
-interface TicketsResponse {
-	tickets: Ticket[];
-	docs: {
-		totalPages: number;
-		limit: number;
-		prevPage: number | null;
-		currentPage: number;
-		nextPage: number | null;
-	};
-}
 
 export default function PaginateTickets({ raffleId }: { raffleId: string }) {
-	const [tickets, setTickets] = useState<TicketsResponse>({
+	const [tickets, setTickets] = useState<ITicketResponseData>({
 		tickets: [],
-		docs: { totalPages: 0, limit: 10, prevPage: null, currentPage: 1, nextPage: null },
+		docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 },
 	});
 
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -47,10 +36,23 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 
 	return (
 		<>
-			<section className="px-2 ">
-			<FindTicket raffleId={raffleId} />
+			<div className="p-4  mt-14  rounded-lg shadow-md bg-base-100 mx-2">
+				<h1 className="text-2xl font-bold">Tickets del sorteo: {tickets?.raffleTitle}</h1>
+				<p className="text-sm text-gray-500">
+					Aquí puedes ver todos tus tickets comprados.
+				</p>
+			</div>
 
-				<div className="flex justify-end items-center mb-4 p-4 rounded-lg shadow-md bg-base-100 mt-2">
+			<section className="px-2 ">
+				<FindTicket raffleId={raffleId} />
+
+				<div className="flex justify-between items-center mb-4 p-4 rounded-lg shadow-md bg-base-100 mt-2">
+					<div>
+						<p className="text-2xl">
+							Tickets Existentes:{" "}
+							<span className="font-bold">{tickets.tickets.length}</span>
+						</p>
+					</div>
 					<button
 						className="btn btn-primary rounded-md"
 						onClick={() => handleSortOrderChange(sortOrder === "asc" ? "desc" : "asc")}
@@ -62,7 +64,8 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 					{tickets?.tickets.map((ticket) => (
 						<li className="flex flex-col border p-4 mb-2 rounded" key={ticket._id}>
 							<p>
-								Ticket # {isLessThousand(ticket.ticketNumber)} - {ticket.orderId ? ticket.orderId.status : 'Disponible'}
+								Ticket # {isLessThousand(ticket.ticketNumber || 0)} -{" "}
+								{ticket.orderId ? ticket.orderId.status : "Disponible"}
 							</p>
 							{ticket.raffleId && <p>Sorteo: {ticket.raffleId.title}</p>}
 							{ticket.orderId && (

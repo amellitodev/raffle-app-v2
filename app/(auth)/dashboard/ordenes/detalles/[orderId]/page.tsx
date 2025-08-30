@@ -1,4 +1,4 @@
-import { createTickets } from "@/app/actions/actions";
+import { createTickets } from "@/app/actions/ticket.actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
 import { ITicket } from "@/app/types/types";
 import { isLessThousand } from "@/app/utils/utils";

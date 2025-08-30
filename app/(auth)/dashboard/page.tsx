@@ -1,5 +1,5 @@
 import ProgressComponent from "@/app/(public)/components/ProgressComponent";
-import { getRaffleInfo } from "@/app/actions/actions";
+import { getRaffleInfo } from "@/app/actions/raffle.action";
 
 export default async function DashboardPage() {
 	const { raffle, orders, tickets } = await getRaffleInfo();

@@ -2,47 +2,9 @@
 
 import connectMongoDB from "@/app/lib/mongoConnection";
 import OrderModel from "../lib/models/order.model";
-import RaffleModel from "../lib/models/raffle.model";
 import TicketModel from "../lib/models/ticket.model";
-import { IOrderPopulated, IRaffle, ITicket, TicketData } from "../types/types";
+import { TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
-
-
-// export async function createRaffle(formData: FormData) {
-// 	try {
-// 		await connectMongoDB();
-// 		// Extrae los datos del formulario
-// 		const imageUrl = formData.get("imageUrl") as string;
-// 		const title = formData.get("title") as string;
-// 		const description = formData.get("description") as string;
-// 		const raffleStart = formData.get("raffleStart") as string;
-// 		const raffleDate = formData.get("raffleDate") as string;
-// 		const rafflePrize = formData.get("rafflePrize") as string;
-// 		const ticketPriceDolar = formData.get("ticketPriceDolar") as string;
-// 		const ticketPriceBolivar = formData.get("ticketPriceBolivar") as string;
-// 		const paymentMethod = JSON.parse(formData.get("paymentMethod") as string);
-// 		const maxTickets = formData.get("maxTickets") as string;
-
-// 		const newRaffle = new RaffleModel({
-// 			title,
-// 			description,
-// 			imageUrl,
-// 			raffleStart,
-// 			raffleDate,
-// 			rafflePrize,
-// 			ticketPriceDolar,
-// 			ticketPriceBolivar,
-// 			paymentMethod,
-// 			maxTickets,
-// 		});
-// 		await newRaffle.save();
-// 		// refrescar la pagina
-// 		revalidatePath("/dashboard");
-// 	} catch (error) {
-// 		console.error("Error creating raffle:", error);
-// 		throw new Error("Error creating raffle");
-// 	}
-// }
 
 export async function createTickets(formData: FormData) {
 	try {
@@ -98,38 +60,6 @@ export async function createTickets(formData: FormData) {
 	}
 }
 
-export async function getRaffleInfo() {
-	try {
-		await connectMongoDB();
-		const raffle = await RaffleModel.findOne().sort({ createdAt: -1 }).lean<IRaffle>().exec();
-		// recuperar las ordenes del ultimo raffle con count
-		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" })
-			.countDocuments()
-			.lean<IOrderPopulated[]>()
-			.exec();
-		// recuperar los tickets del raffle
-		const tickets = await TicketModel.find({ raffleId: raffle?._id })
-			.countDocuments()
-			.lean<number>()
-			.exec();
-		return { raffle, orders, tickets };
-	} catch (error) {
-		console.error("Error fetching raffle info:", error);
-		throw new Error("Error fetching raffle info");
-	}
-}
-export async function getRaffleInfoByRaffleId(raffleId: string) {
-	try {
-		await connectMongoDB();
-
-		const tickets = await TicketModel.find({ raffleId }).countDocuments().lean<number>().exec();
-		return { tickets };
-	} catch (error) {
-		console.error("Error fetching raffle info:", error);
-		throw new Error("Error fetching raffle info");
-	}
-}
-
 export async function getTickets(
 	raffleId: string,
 	page: number = 1,
@@ -157,6 +87,7 @@ export async function getTickets(
 		// para poder leer sus datos contenidos de raffleId y orderId
 		const serializedTickets = tickets.map((ticket) => ({
 			...ticket,
+			raffleTitle: ticket.raffleId?.title || null,
 			_id: (ticket._id as string).toString(), // Convertir ObjectId a string
 			raffleId: ticket.raffleId
 				? {
@@ -183,9 +114,9 @@ export async function getTickets(
 			docs: {
 				totalPages,
 				limit,
-				prevPage: page > 1 ? page - 1 : null,
+				prevPage: page > 1 ? page - 1 : 0,
 				currentPage: page,
-				nextPage: page < totalPages ? page + 1 : null,
+				nextPage: page < totalPages ? page + 1 : 0,
 			},
 		};
 		return response;
@@ -248,4 +179,16 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 
 export async function getDataInfoPrueba(formData: FormData) {
 	console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
+}
+
+export async function getTicketInfoByRaffleId(raffleId: string) {
+	try {
+		await connectMongoDB();
+
+		const tickets = await TicketModel.find({ raffleId }).countDocuments().lean<number>().exec();
+		return { tickets };
+	} catch (error) {
+		console.error("Error fetching raffle info:", error);
+		throw new Error("Error fetching raffle info");
+	}
 }

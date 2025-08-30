@@ -1,4 +1,4 @@
-import { getRaffleInfoByRaffleId } from "@/app/actions/actions";
+import { getTicketInfoByRaffleId } from "@/app/actions/ticket.actions";
 import { UsersIcon } from "./icons/icons";
 interface Props {
     maxTickets: number;
@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default async function  PublicProgressComponent ({ maxTickets, raffleId }: Props) {
-    const { tickets } = await getRaffleInfoByRaffleId(raffleId);
+    const { tickets } = await getTicketInfoByRaffleId(raffleId);
     const soldTickets = tickets
     const remainingTickets = maxTickets - soldTickets;
   return (
