@@ -1,9 +1,9 @@
 "use client"
 
-import { createRaffle } from "@/app/actions/actions";
 import { useState } from "react";
 import PaymentMethodInput from "./PaymentMethodInput";
 import { uploadImageCloudinary } from "@/app/utils/updateImageCloudinary";
+import { createRaffle } from "@/app/actions/raffle.action";
 
 export default function  FormRaffle () {
   const [preview, setPreview] = useState<File | null>(null);

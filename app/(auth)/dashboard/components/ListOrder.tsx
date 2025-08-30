@@ -1,4 +1,4 @@
-import { getOrders } from "@/app/actions/actions";
+import { getOrders } from "@/app/actions/order.action";
 import FilterOrder from "./FilterOrder";
 
 export default async function ListOrder({ raffleId }: { raffleId: string }) {

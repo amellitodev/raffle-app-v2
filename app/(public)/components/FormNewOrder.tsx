@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import TicketCount from "./TicketCount";
 import TicketPrice from "./TicketPrice";
 import TicketTotal from "./TicketTotal";
-import { createOrder, getDataInfoPrueba } from "@/app/actions/actions";
 import TicketUserData from "./TicketUserData";
 import TicketPaymentMethod from "./TicketPaymentMethod";
 import { TPaymentMethod } from "@/app/types/types";
 import UploadImageComponent from "./UploadImageComponent";
 import TicketButton from "./TicketButton";
 import { uploadAuthImageCloudinary } from "@/app/utils/updateImageCloudinary";
+import { createOrder } from "@/app/actions/order.action";
 
 interface Props {
 	ticketPriceDolar: number;

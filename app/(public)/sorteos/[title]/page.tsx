@@ -10,8 +10,10 @@ type RaffleDetailPageProps = {
 export default async function RaffleDetailPage({ params }: RaffleDetailPageProps) {
 	// resolvemos los parámetros de forma asíncrona
 	const resolvedParams = await params;
-	// decodificamos el Url
-	const raffleTitle = decodeURIComponent(resolvedParams.title).trim().replace(/-/g, " ");
+	// decodificamos el Url reemplazando los guiones por espacios
+	
+	const raffleTitle = decodeURIComponent(resolvedParams.title).trim()
+	
 
 	// obtenemos los datos
 	const raffleDataByTitle = (await getRaffleDataByTitle(raffleTitle)).data;
@@ -44,7 +46,7 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 			<article className=" border-1 border-gray-300/40 rounded-2xl p-4 md:p-8 flex flex-col gap-4 shadow-xs shadow-gray-300">
 				<div className="flex justify-between items-center">
 					<h1 className="text-2xl md:text-4xl font-bold">
-						{raffleDataByTitle?.title} 🔥
+						{raffleDataByTitle?.title.replace(/-/g, " ")}
 					</h1>
 					{raffleStatus}
 				</div>

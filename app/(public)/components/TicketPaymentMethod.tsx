@@ -22,11 +22,16 @@ export default function TicketPaymentMethod({ paymentMethod }: Props) {
 				<span className="text-center">🛒 Método de Pago</span>
                     <label className="text-xs" htmlFor="buyerName">Referencia del pago</label>
                 <input
-					className="input rounded-md w-full text-slate-950 bg-slate-200"
+					className="input rounded-md w-full text-slate-950 bg-slate-200 validator"
 					type="text"
 					name="paymentReference"
 					placeholder="Ej: 1234"
+					required
+					pattern="[0-9]*"
+					minLength={4}
+					maxLength={12}
 				/>
+				<p className="validator-hint -mt-1">Ingrese una referencia de pago válida</p>
 				<div>
 					{paymentMethod.map((method, index) => (
 						<div

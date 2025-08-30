@@ -1,16 +1,14 @@
-import { createTickets, getOrderById } from "@/app/actions/actions";
+import { createTickets } from "@/app/actions/actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
-import { IOrderPopulated, ITicket } from "@/app/types/types";
-import { IOrder } from "@/app/lib/models/order.model";
+import { ITicket } from "@/app/types/types";
 import { isLessThousand } from "@/app/utils/utils";
+import { deleteOrder, getOrderById } from "@/app/actions/order.action";
+import DeleteButton from "../../../components/DeleteButton";
 
 export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
-	console.log("🚀 ~ page ~ order:");
-
-	
 
 	return (
 		<>
@@ -19,9 +17,7 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 				{order?.status === "pending" && (
 					<div className="w-full flex gap-2 justify-between">
 						<p className="text-yellow-500">El pago está pendiente de aprobación.</p>
-						<button className="btn btn-sm btn-error btn-soft rounded-md">
-							Eliminar pago
-						</button>
+						<DeleteButton orderId={orderId} raffleId={order?.raffleId.toString()} />
 						<form
 							action={async (formData: FormData) => {
 								"use server";
@@ -96,7 +92,9 @@ export default async function page({ params }: { params: Promise<{ orderId: stri
 												key={index}
 												className="badge badge-pr badge-dash cursor-pointer"
 											>
-												{isLessThousand((ticket as ITicket)?.ticketNumber) || "0"}
+												{isLessThousand(
+													(ticket as ITicket)?.ticketNumber
+												) || "0"}
 											</span>
 										);
 								  })}

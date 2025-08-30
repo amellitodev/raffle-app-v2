@@ -25,13 +25,13 @@ export default function CardRaffle({ raffle }: Props) {
 			<figure>
 				<img
 					src={raffle.imageUrl || "https://via.placeholder.com/150"}
-					alt={raffle.title || "Raffle Image"}
+					alt={raffle.title.trim().replace(/-/g, " ") || "Raffle Image"}
 					className="card-img w-full h-full object-cover rounded-t-lg"
 				/>
 			</figure>
 			<div className="card-body">
 			<DateDisplay date={raffle.raffleDate} />
-				<h2 className="card-title truncate">{raffle.title || "Card Title"}</h2>
+				<h2 className="card-title truncate">{raffle.title.replace(/-/g, " ") || "Card Title"}</h2>
 				<p className="text-sm line-clamp-2">{raffle.description || "Card Description"}</p>
 				{/* // Format the raffle status */}
 				{raffleStatus}

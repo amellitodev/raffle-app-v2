@@ -7,136 +7,42 @@ import TicketModel from "../lib/models/ticket.model";
 import { IOrderPopulated, IRaffle, ITicket, TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
-export async function createOrder(formData: FormData) {
-	console.log("🚀 ~ createOrder ~ formData:", formData);
-	try {
-		await connectMongoDB();
-		// data file del paymentProof
-		const paymentProof = formData.get("paymentProof") as string | null;
 
-		// data order
-		const raffleId = formData.get("raffleId");
+// export async function createRaffle(formData: FormData) {
+// 	try {
+// 		await connectMongoDB();
+// 		// Extrae los datos del formulario
+// 		const imageUrl = formData.get("imageUrl") as string;
+// 		const title = formData.get("title") as string;
+// 		const description = formData.get("description") as string;
+// 		const raffleStart = formData.get("raffleStart") as string;
+// 		const raffleDate = formData.get("raffleDate") as string;
+// 		const rafflePrize = formData.get("rafflePrize") as string;
+// 		const ticketPriceDolar = formData.get("ticketPriceDolar") as string;
+// 		const ticketPriceBolivar = formData.get("ticketPriceBolivar") as string;
+// 		const paymentMethod = JSON.parse(formData.get("paymentMethod") as string);
+// 		const maxTickets = formData.get("maxTickets") as string;
 
-		// data buyer
-		const buyerName = (formData.get("buyerName") as string) || "";
-		const buyerId = (formData.get("buyerId") as string) || "";
-		const buyerEmail = (formData.get("buyerEmail") as string) || "";
-		const buyerPhone = (formData.get("buyerPhone") as string) || "";
-
-		// data payment
-		const amount = parseFloat(formData.get("amount") as string) || 0;
-		const paymentReference = (formData.get("paymentReference") as string) || "";
-		const bank = (formData.get("bank") as string) || "";
-		const currency = (formData.get("currency") as string) || "USD";
-		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
-		// maxTickets para verificar que no exista un cantidad maxima de tickets existentes en la db
-		const maxTickets = parseInt(formData.get("maxTickets") as string, 10) || 0;
-		const existingTickets = await TicketModel.countDocuments({ raffleId });
-		const remainingTickets = maxTickets - existingTickets;
-
-		if (existingTickets + ticketCount > maxTickets) {
-			throw new Error(
-				`No hay suficientes tickets disponibles. Quedan ${remainingTickets} tickets.`
-			);
-		}
-		if (!paymentProof) {
-			throw new Error("Falta la imagen del comprobante de pago.");
-		}
-		if (
-			!raffleId ||
-			!buyerName ||
-			!buyerId ||
-			!buyerPhone ||
-			!amount ||
-			!bank ||
-			!paymentReference
-		) {
-			throw new Error("Faltan datos obligatorios del formulario.");
-		}
-
-		const newOrder = new OrderModel({
-			raffleId,
-			buyerName,
-			buyerId,
-			buyerEmail,
-			buyerPhone,
-			amount,
-			currency,
-			bank,
-			paymentReference,
-			paymentProof,
-			ticketCount,
-		});
-		await newOrder.save();
-		revalidatePath("/");
-	} catch (error) {
-		console.error("Error creating order:", error);
-		throw new Error("Error creating order");
-	}
-}
-
-export async function getOrders() {
-	try {
-		await connectMongoDB();
-		return OrderModel.find();
-	} catch (error) {
-		console.error("Error connecting to MongoDB:", error);
-		throw new Error("Error connecting to MongoDB");
-	}
-}
-
-export async function getOrderById(orderId: string) {
-	try {
-		await connectMongoDB();
-		return OrderModel.findById(orderId)
-			.populate("raffleId")
-			.populate({
-				path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
-				select: "ticketNumber", // solo traer ticketNumber de cada ticket
-			})
-			.lean<IOrderPopulated>()
-			.exec();
-	} catch (error) {
-		console.error("Error fetching order by ID:", error);
-		throw new Error("Error fetching order by ID");
-	}
-}
-
-export async function createRaffle(formData: FormData) {
-	try {
-		await connectMongoDB();
-		// Extrae los datos del formulario
-		const imageUrl = formData.get("imageUrl") as string;
-		const title = formData.get("title") as string;
-		const description = formData.get("description") as string;
-		const raffleStart = formData.get("raffleStart") as string;
-		const raffleDate = formData.get("raffleDate") as string;
-		const rafflePrize = formData.get("rafflePrize") as string;
-		const ticketPriceDolar = formData.get("ticketPriceDolar") as string;
-		const ticketPriceBolivar = formData.get("ticketPriceBolivar") as string;
-		const paymentMethod = JSON.parse(formData.get("paymentMethod") as string);
-		const maxTickets = formData.get("maxTickets") as string;
-
-		const newRaffle = new RaffleModel({
-			title,
-			description,
-			imageUrl,
-			raffleStart,
-			raffleDate,
-			rafflePrize,
-			ticketPriceDolar,
-			ticketPriceBolivar,
-			paymentMethod,
-			maxTickets,
-		});
-		await newRaffle.save();
-		// refrescar la pagina
-		revalidatePath("/dashboard");
-	} catch (error) {
-		console.error("Error creating raffle:", error);
-		throw new Error("Error creating raffle");
-	}
-}
+// 		const newRaffle = new RaffleModel({
+// 			title,
+// 			description,
+// 			imageUrl,
+// 			raffleStart,
+// 			raffleDate,
+// 			rafflePrize,
+// 			ticketPriceDolar,
+// 			ticketPriceBolivar,
+// 			paymentMethod,
+// 			maxTickets,
+// 		});
+// 		await newRaffle.save();
+// 		// refrescar la pagina
+// 		revalidatePath("/dashboard");
+// 	} catch (error) {
+// 		console.error("Error creating raffle:", error);
+// 		throw new Error("Error creating raffle");
+// 	}
+// }
 
 export async function createTickets(formData: FormData) {
 	try {
