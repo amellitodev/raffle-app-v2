@@ -17,7 +17,7 @@ export default async function page({ params }: Props) {
 
 
 			<form action={deleteRaffle} className="flex justify-end-safe mt-14 gap-2 max-w-5xl mx-auto">
-				<input type="text" name="raffleId" hidden value={raffleId} />
+				<input type="text" name="raffleId" hidden defaultValue={raffleId} />
 				<button className="btn btn-soft btn-secondary rounded-md">Eliminar Sorteo</button>
 			</form>
 		</>

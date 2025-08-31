@@ -1,10 +1,11 @@
-"use server"
-import connectMongoDB from '@/app/lib/mongoConnection';
-import RaffleModel from '../lib/models/raffle.model';
-import { revalidatePath } from 'next/cache';
-import OrderModel from '../lib/models/order.model';
-import TicketModel from '../lib/models/ticket.model';
-import { IOrderPopulated, IRaffle } from '../types/types';
+"use server";
+import connectMongoDB from "@/app/lib/mongoConnection";
+import RaffleModel from "../lib/models/raffle.model";
+import { revalidatePath } from "next/cache";
+import OrderModel from "../lib/models/order.model";
+import TicketModel from "../lib/models/ticket.model";
+import { IOrderPopulated, IRaffle } from "../types/types";
+import { redirect } from "next/navigation";
 
 // TODO: pasar los actions que estan en data.ts
 
@@ -14,8 +15,8 @@ export async function createRaffle(formData: FormData) {
 		// Extrae los datos del formulario
 		const imageUrl = formData.get("imageUrl") as string;
 		const titleForm = formData.get("title") as string;
-        // quitar los espacios y reemplazarlos por -
-        const title = titleForm.trim().replace(/\s+/g, "-").toLowerCase();
+		// quitar los espacios y reemplazarlos por -
+		const title = titleForm.trim().replace(/\s+/g, "-").toLowerCase();
 		const description = formData.get("description") as string;
 		const raffleStart = formData.get("raffleStart") as string;
 		const raffleDate = formData.get("raffleDate") as string;
@@ -67,7 +68,6 @@ export async function getRaffleInfo() {
 	}
 }
 
-
 export async function getRaffleData() {
 	try {
 		// En componentes de servidor, llamamos directamente a la base de datos
@@ -85,7 +85,9 @@ export async function getRaffleData() {
 	}
 }
 
-export async function getRaffleDataByTitle(title: string): Promise<{ message: string; data: IRaffle | null }> {
+export async function getRaffleDataByTitle(
+	title: string
+): Promise<{ message: string; data: IRaffle | null }> {
 	try {
 		await connectMongoDB();
 		const raffle = await RaffleModel.findOne({ title });
@@ -100,7 +102,6 @@ export async function getRaffleDataByTitle(title: string): Promise<{ message: st
 		throw error;
 	}
 }
-
 
 export async function getRaffleById(raffleId: string) {
 	try {
@@ -118,7 +119,7 @@ export async function getRaffleById(raffleId: string) {
 
 export async function updateRaffle(formData: FormData) {
 	try {
-		console.log("🚀 ~ updateRaffle ~ formData:", formData)
+		console.log("🚀 ~ updateRaffle ~ formData:", formData);
 		// await connectMongoDB();
 		// const updatedRaffle = await RaffleModel.findByIdAndUpdate(raffleId, formData, { new: true }).lean<IRaffle>().exec();
 		// if (!updatedRaffle) {
@@ -135,14 +136,15 @@ export async function deleteRaffle(formData: FormData) {
 	try {
 		const raffleId = formData.get("raffleId");
 		console.log("🚀 ~ deleteRaffle ~ formData:", raffleId);
-		// await connectMongoDB();
-		// const deletedRaffle = await RaffleModel.findByIdAndDelete(raffleId).lean<IRaffle>().exec();
-		// if (!deletedRaffle) {
-		// 	return { message: "Raffle not found", data: null };
-		// }
-		// return { message: "Raffle deleted successfully", data: JSON.parse(JSON.stringify(deletedRaffle)) };
+		await connectMongoDB();
+		const deletedRaffle = await RaffleModel.findByIdAndDelete(raffleId).lean<IRaffle>().exec();
+		if (!deletedRaffle) {
+			throw new Error("Raffle not found");
+		}
+		revalidatePath("/dashboard/sorteo");
 	} catch (error) {
 		console.error("Error deleting raffle:", error);
 		throw error;
 	}
+	redirect("/dashboard/sorteo");
 }

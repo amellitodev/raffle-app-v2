@@ -1,5 +1,6 @@
 import ProgressComponent from "@/app/(public)/components/ProgressComponent";
 import { getRaffleInfo } from "@/app/actions/raffle.action";
+import LogoutButton from "./components/LogoutButton";
 
 export default async function DashboardPage() {
 	const { raffle, orders, tickets } = await getRaffleInfo();
@@ -35,6 +36,7 @@ export default async function DashboardPage() {
 					</div>
 				</div>
 				<ProgressComponent />
+				<LogoutButton />
 			</div>
 		</div>
 	);

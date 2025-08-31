@@ -138,7 +138,7 @@ export default function FormUpdateRaffle({ raffleId }: Props) {
 						name="imageUrl"
 						onChange={(e) => setImageUrl(e.target.value)}
 					/>
-					<img src={imageUrl} alt={title} />
+					<img src={imageUrl || "/placeholder.jpg"} alt={title} />
 				</div>
 
 				{/* métodos de pago */}
