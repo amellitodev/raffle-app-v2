@@ -4,7 +4,9 @@ import { signOut } from "next-auth/react";
 export default function LogoutButton() {
   return (
     <>
-      <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={() => signOut()}>
+      <button className="btn btn-error rounded-md btn-xs" onClick={async () => {
+        await signOut({ callbackUrl: '/' });
+      }}>
         Cerrar Sesión
       </button>
     </>
