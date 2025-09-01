@@ -1,4 +1,4 @@
-import { getOrderById } from "@/app/actions/order.action";
+// import { getOrderById } from "@/app/actions/order.action";
 // import { createTickets } from "@/app/actions/ticket.actions";
 // import SeeReceiptButton from "../../../components/SeeReceiptButton";
 // import { isLessThousand } from "@/app/utils/utils";
@@ -6,23 +6,17 @@ import { getOrderById } from "@/app/actions/order.action";
 // import DeleteButton from "../../../components/DeleteButton";
 import OrderDetails from "../../../components/OrderDetails";
 
-
-export default async function page({ params }: { params: { orderId: string } }) {
+export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 
-	const { orderId } = params;
-
-	
-	
-	
-	const order = await getOrderById(orderId);
-	console.log("🚀 ~ page ~ order:", order)
+	const { orderId } = await params;
 
 	return (
 		<>
-		<OrderDetails raffleId={orderId} />
+			<h1 className="mt-14">La orden es {orderId}</h1>
+			<OrderDetails raffleId={orderId} />
 		</>
-	)
+	);
 	// return (
 	// 	<>
 	// 		<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2">
