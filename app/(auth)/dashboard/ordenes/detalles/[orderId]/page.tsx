@@ -1,4 +1,4 @@
-// import { getOrderById } from "@/app/actions/order.action";
+import { getOrderById } from "@/app/actions/order.action";
 // import { createTickets } from "@/app/actions/ticket.actions";
 // import SeeReceiptButton from "../../../components/SeeReceiptButton";
 // import { isLessThousand } from "@/app/utils/utils";
@@ -7,15 +7,16 @@
 import OrderDetails from "../../../components/OrderDetails";
 
 
-export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
+export default async function page({ params }: { params: { orderId: string } }) {
 	// params.orderId tendrá el id de la orden
 
-	const { orderId } = await params;
+	const { orderId } = params;
 
 	
 	
 	
-	// const order = await getOrderById(orderId);
+	const order = await getOrderById(orderId);
+	console.log("🚀 ~ page ~ order:", order)
 
 	return (
 		<>
