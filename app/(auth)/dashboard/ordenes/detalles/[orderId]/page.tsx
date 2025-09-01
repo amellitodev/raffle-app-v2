@@ -2,14 +2,16 @@ import { createTickets } from "@/app/actions/ticket.actions";
 import SeeReceiptButton from "../../../components/SeeReceiptButton";
 import { ITicket } from "@/app/types/types";
 import { isLessThousand } from "@/app/utils/utils";
-import { deleteOrder, getOrderById } from "@/app/actions/order.action";
+import { getOrderById } from "@/app/actions/order.action";
 import DeleteButton from "../../../components/DeleteButton";
+
 
 export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 	const { orderId } = await params;
 	const order = await getOrderById(orderId);
 
+	
 	return (
 		<>
 			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2">
