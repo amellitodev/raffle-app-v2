@@ -7,10 +7,10 @@
 import OrderDetails from "../../../components/OrderDetails";
 
 
-export default async function page({ params }: { params: { orderId: string } }) {
+export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
 	// params.orderId tendrá el id de la orden
 
-	const { orderId } =await params;
+	const { orderId } = await params;
 
 	
 	
