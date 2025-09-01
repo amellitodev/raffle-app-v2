@@ -88,14 +88,22 @@ export async function getOrderById(orderId: string) {
 	console.log("🚀 ~ getOrderById ~ orderId:", orderId)
 	try {
 		await connectMongoDB();
-		return OrderModel.findById(orderId)
-			.populate("raffleId")
-			.populate({
-				path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
-				select: "ticketNumber", // solo traer ticketNumber de cada ticket
-			})
-			.lean<IOrderPopulated>()
-			.exec();
+
+		// OrderModel.findById(orderId)
+		// 	.populate("raffleId")
+		// 	.populate({
+		// 		path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
+		// 		select: "ticketNumber", // solo traer ticketNumber de cada ticket
+		// 	})
+			// .lean<IOrderPopulated>()
+			// .exec();
+		const order = await OrderModel.findById(orderId).populate("raffleId").populate({
+			path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
+			select: "ticketNumber", // solo traer ticketNumber de cada ticket
+		});
+		console.log("🚀 ~ getOrderById ~ order:", order)
+		return order;	
+		
 	} catch (error) {
 		console.error("Error fetching order by ID:", error);
 		throw new Error("Error fetching order by ID");
