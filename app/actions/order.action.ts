@@ -2,8 +2,8 @@
 import connectMongoDB from "@/app/lib/mongoConnection";
 import TicketModel from "../lib/models/ticket.model";
 import OrderModel from "../lib/models/order.model";
-import { revalidatePath } from "next/cache";
 import { IOrderPopulated } from "../types/types";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createOrder(formData: FormData) {
@@ -85,6 +85,7 @@ export async function getOrders() {
 }
 
 export async function getOrderById(orderId: string) {
+	console.log("🚀 ~ getOrderById ~ orderId:", orderId)
 	try {
 		await connectMongoDB();
 		return OrderModel.findById(orderId)

@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export async function createTickets(formData: FormData) {
 	try {
+		await connectMongoDB();
 		// Convierte IDs a ObjectId (si en tu schema son ObjectId)
 		const orderId = formData.get("orderId") as string;
 		const raffleId = formData.get("raffleId") as string;
