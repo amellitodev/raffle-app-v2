@@ -79,7 +79,7 @@ export async function GET(request: Request) {
 
 		// Contar total de órdenes
 		const totalOrders = await OrderModel.countDocuments();
-		const totalPages = Math.ceil(totalOrders / limit);
+		const totalPages = Math.ceil(orders.length / limit);
 
 		if (orders.length === 0) {
 			return NextResponse.json({ message: "No orders found" }, { status: 404 });
