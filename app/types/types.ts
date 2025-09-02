@@ -126,3 +126,43 @@ export interface RaffleID {
 	_id: string;
 	title: string;
 }
+
+
+export interface IOrdersResponse {
+	message: string;
+	orders:  Order[];
+	docs:    Docs;
+}
+
+export interface Docs {
+	totalPages:  number;
+	limit:       number;
+	prevPage:    number;
+	currentPage: number;
+	nextPage:    number;
+}
+
+export interface Order {
+	_id:              string;
+	raffleId:         string;
+	buyerName:        string;
+	buyerId:          string;
+	buyerEmail:       string;
+	buyerPhone:       string;
+	amount:           number;
+	currency:         string;
+	bank:             string;
+	paymentReference: string;
+	paymentProof:     string;
+	ticketCount:      number;
+	ticketsAssigned:  ITicket[];
+	status:           string;
+	createdAt:        Date;
+	updatedAt:        Date;
+	__v:              number;
+	raffleInfo:       RaffleInfo;
+}
+
+export interface RaffleInfo {
+	id: string;
+}

@@ -2,7 +2,6 @@
 import connectMongoDB from "@/app/lib/mongoConnection";
 import OrderModel from "../lib/models/order.model";
 import TicketModel from "../lib/models/ticket.model";
-import { IOrderPopulated } from "../types/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -77,7 +76,8 @@ export async function createOrder(formData: FormData) {
 export async function getOrders() {
 	try {
 		await connectMongoDB();
-		return OrderModel.find();
+		const orders = (await OrderModel.find());
+		return orders;
 	} catch (error) {
 		console.error("Error connecting to MongoDB:", error);
 		throw new Error("Error connecting to MongoDB");

@@ -1,6 +1,8 @@
 import connectMongoDB from "@/app/lib/mongoConnection";
 import OrderModel from "@/app/lib/models/order.model";
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { ITicket } from "@/app/types/types";
+// import page from "../../(auth)/dashboard/tickets/page";
 
 export async function POST(request: Request) {
 	try {
@@ -9,7 +11,7 @@ export async function POST(request: Request) {
 			raffleId,
 			buyerFirstName,
 			buyerLastName,
-            buyerId,
+			buyerId,
 			buyerEmail,
 			buyerPhone,
 			currency,
@@ -23,7 +25,7 @@ export async function POST(request: Request) {
 			!raffleId ||
 			!buyerFirstName ||
 			!buyerLastName ||
-            !buyerId ||
+			!buyerId ||
 			!buyerPhone ||
 			!currency ||
 			!amount ||
@@ -49,31 +51,85 @@ export async function POST(request: Request) {
 		await newOrder.save();
 		return NextResponse.json({ message: "Order created successfully", data: newOrder });
 	} catch (error) {
-		console.log("🚀 ~ POST ~ error:", error)
+		console.log("🚀 ~ POST ~ error:", error);
 		return NextResponse.json({ message: "Error creating order", error: "500" });
 	}
 }
 
-export async function GET() {
+// all orders con paginacion
+export async function GET(request: Request) {
 	try {
+		const { searchParams } = new URL(request.url);
+		const sortOrder = searchParams.get("sortOrder") || "desc";
+		const page = parseInt(searchParams.get("page") || "1", 10);
+		const limit = parseInt(searchParams.get("limit") || "10", 10);
+		const raffleId = searchParams.get("raffleId");
+		const status = searchParams.get("status");
+		console.log("🚀 ~ GET ~ raffleId:", raffleId)
+
 		await connectMongoDB();
-		const orders = await OrderModel.find();
-		if(!orders || orders.length === 0) {
-			return NextResponse.json({ message: "No orders found", error: "404" });
+
+		// Buscar órdenes por status "pending" y "completed"
+		const orders = await OrderModel.find({ raffleId, status })
+			.sort({ createdAt: sortOrder === "asc" ? 1 : -1 })
+			.skip((page - 1) * limit)
+			.limit(limit)
+			.lean()
+			.exec();
+
+		// Contar total de órdenes
+		const totalOrders = await OrderModel.countDocuments();
+		const totalPages = Math.ceil(totalOrders / limit);
+
+		if (orders.length === 0) {
+			return NextResponse.json({ message: "No orders found" }, { status: 404 });
 		}
-		return NextResponse.json({ message: "Orders retrieved successfully", data: orders });
+
+		// Serializar órdenes
+		const serializedOrders = orders.map((order) => ({
+			...order,
+			_id: order._id?.toString(),
+			raffleInfo: order.raffleId
+				? {
+						id: order.raffleId._id?.toString(),
+						title: order.raffleId.title,
+						raffleDate: order.raffleId.raffleDate,
+				  }
+				: null,
+			ticketsAssigned: order.ticketsAssigned?.map((ticket: ITicket) => ticket.ticketNumber) || [],
+		}));
+
+		// Respuesta final
+
+		const response = {
+			message: "Orders retrieved successfully",
+			orders: serializedOrders,
+			docs: {
+				totalPages,
+				limit,
+				prevPage: page > 1 ? page - 1 : null,
+				currentPage: page,
+				nextPage: page < totalPages ? page + 1 : null,
+			},
+		};
+
+		return NextResponse.json(response);
 	} catch (error) {
-		return NextResponse.json({ message: "Error retrieving orders", error: "500" });
+		console.error("❌ Error retrieving orders:", error);
+		return NextResponse.json({ message: "Error retrieving orders" }, { status: 500 });
 	}
 }
-
 export async function DELETE() {
 	// elimina todas las ordenes
 	try {
 		await connectMongoDB();
 		const deletedOrders = await OrderModel.deleteMany();
-		return NextResponse.json({ message: "All orders deleted successfully", data: deletedOrders });
+		return NextResponse.json({
+			message: "All orders deleted successfully",
+			data: deletedOrders,
+		});
 	} catch (error) {
+		console.log("🚀 ~ DELETE ~ error:", error)
 		return NextResponse.json({ message: "Error deleting orders", error: "500" });
 	}
 }
