@@ -6,11 +6,21 @@
 // import DeleteButton from "../../../components/DeleteButton";
 import OrderDetails from "../../../components/OrderDetails";
 
-export default async function page({ params }: { params: Promise<{ orderId: string }> }) {
+interface Props {
+	params: Promise<{
+		orderId: string;
+	}>;
+}
+
+export default async function page({ params }: Props) {
 	// params.orderId tendrá el id de la orden
 
 	const { orderId } = await params;
-
+	// if (!orderId) {
+	// 	throw new Error("Invalid order ID");
+	// }
+	// const order = getOrderById(orderId);
+	// console.log("🚀 ~ page ~ order:", order);
 	return (
 		<>
 			<h1 className="mt-14">La orden es {orderId}</h1>

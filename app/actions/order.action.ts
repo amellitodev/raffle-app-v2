@@ -85,25 +85,22 @@ export async function getOrders() {
 }
 
 export async function getOrderById(orderId: string) {
-	console.log("🚀 ~ getOrderById ~ orderId:", orderId)
+	console.log("🚀 ~ getOrderById ~ orderId:", orderId);
 	try {
 		await connectMongoDB();
-
-		// OrderModel.findById(orderId)
-		// 	.populate("raffleId")
-		// 	.populate({
-		// 		path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
-		// 		select: "ticketNumber", // solo traer ticketNumber de cada ticket
-		// 	})
-			// .lean<IOrderPopulated>()
-			// .exec();
-		const order = await OrderModel.findById(orderId).populate("raffleId").populate({
-			path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
-			select: "ticketNumber", // solo traer ticketNumber de cada ticket
-		});
-		console.log("🚀 ~ getOrderById ~ order:", order)
-		return order;	
-		
+		if (!orderId) {
+			throw new Error("Invalid order ID");
+		}
+		const order = await OrderModel.findById(orderId)
+			.populate("raffleId")
+			.populate({
+				path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
+				select: "ticketNumber", // solo traer ticketNumber de cada ticket
+			})
+			.lean()
+			.exec();
+		console.log("🚀 ~ getOrderById ~ order:", order);
+		return order;
 	} catch (error) {
 		console.error("Error fetching order by ID:", error);
 		throw new Error("Error fetching order by ID");
@@ -111,8 +108,8 @@ export async function getOrderById(orderId: string) {
 }
 
 export async function deleteOrder(formData: FormData) {
-    const orderId = formData.get("orderId") as string;
-    const raffleId = formData.get("raffleId") as string;
+	const orderId = formData.get("orderId") as string;
+	const raffleId = formData.get("raffleId") as string;
 	try {
 		await connectMongoDB();
 
@@ -126,12 +123,11 @@ export async function deleteOrder(formData: FormData) {
 
 		const result = await OrderModel.findByIdAndDelete(orderId);
 		// revalidar la página del dashboard
-        
-		revalidatePath("/dashboard");
 
+		revalidatePath("/dashboard");
 	} catch (error) {
 		console.error("Error deleting order:", error);
 		throw new Error("Error deleting order");
 	}
-    redirect(`/dashboard/ordenes/${raffleId}`);
+	redirect(`/dashboard/ordenes/${raffleId}`);
 }

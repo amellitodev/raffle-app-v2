@@ -6,6 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise< {
     try {
         await connectMongoDB();
         const { id } = await params;
+        console.log("🚀 ~ GET ~ id:", id)
         const order = await OrderModel.findById(id);
         if (!order) {
             return NextResponse.json({ message: "Order not found", error: "404" });
