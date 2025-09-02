@@ -1,5 +1,6 @@
 import connectMongoDB from '@/app/lib/mongoConnection';
-import  '@/app/lib/models/raffle.model';
+import '@/app/lib/models/raffle.model';
+import '@/app/lib/models/order.model';
 import TicketModel from '@/app/lib/models/ticket.model';
 import { NextResponse } from 'next/server';
 
