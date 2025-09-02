@@ -1,9 +1,4 @@
-// import { getOrderById } from "@/app/actions/order.action";
-// import { createTickets } from "@/app/actions/ticket.actions";
-// import SeeReceiptButton from "../../../components/SeeReceiptButton";
-// import { isLessThousand } from "@/app/utils/utils";
-// import { ITicket } from "@/app/types/types";
-// import DeleteButton from "../../../components/DeleteButton";
+
 import OrderDetails from "../../../components/OrderDetails";
 
 interface Props {
@@ -13,17 +8,12 @@ interface Props {
 }
 
 export default async function page({ params }: Props) {
-	// params.orderId tendrá el id de la orden
+	
 
 	const { orderId } = await params;
-	// if (!orderId) {
-	// 	throw new Error("Invalid order ID");
-	// }
-	// const order = getOrderById(orderId);
-	// console.log("🚀 ~ page ~ order:", order);
+	
 	return (
 		<>
-			<h1 className="mt-14">La orden es {orderId}</h1>
 			<OrderDetails raffleId={orderId} />
 		</>
 	);
