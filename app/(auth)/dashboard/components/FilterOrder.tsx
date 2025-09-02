@@ -48,6 +48,9 @@ export default function FilterOrder({ orders, status }: { orders: IOrder[]; stat
 								<Link href={`/dashboard/ordenes/detalles/${order._id}`}>
 									Ver Orden
 								</Link>
+								<Link href={`/api/order/${order._id}`}>
+									Ver Orden api
+								</Link>
 							</div>
 						</li>
 					</div>
