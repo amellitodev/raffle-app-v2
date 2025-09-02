@@ -5,7 +5,6 @@ import { isLessThousand } from "../../../utils/utils";
 
 export default function FindTicket({ raffleId }: { raffleId: string }) {
 	const [ticket, setTicket] = useState<TicketData>({} as TicketData);
-	console.log("🚀 ~ FindTicket ~ ticket:", ticket);
 	const [searchTicketNumber, setSearchTicketNumber] = useState<string>("");
 
 	const handleSearch = () => {

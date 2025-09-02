@@ -35,15 +35,15 @@ export async function POST(request: Request) {
     }
 }
 
-export async function GET() {
-    try {
-        await connectMongoDB();
-        const tickets = await TicketModel.find();
-        return NextResponse.json({ message: 'Tickets retrieved successfully', data: tickets });
-    } catch (error) {
-        return NextResponse.json({ message: 'Error retrieving tickets', error: '500' });
-    }
-}
+// export async function GET() {
+//     try {
+//         await connectMongoDB();
+//         const tickets = await TicketModel.find();
+//         return NextResponse.json({ message: 'Tickets retrieved successfully', data: tickets });
+//     } catch (error) {
+//         return NextResponse.json({ message: 'Error retrieving tickets', error: '500' });
+//     }
+// }
 
 export async function DELETE() {
     try {
@@ -52,5 +52,22 @@ export async function DELETE() {
         return NextResponse.json({ message: 'All tickets deleted successfully' });
     } catch (error) {
         return NextResponse.json({ message: 'Error deleting tickets', error: '500' });
+    }
+}
+
+// get tickets by raffle id
+export async function GET(request: Request) {
+    try {
+         const { searchParams } = new URL(request.url);
+        await connectMongoDB();
+        const raffleId = searchParams.get('raffleId');
+        if (!raffleId) {
+            return NextResponse.json({ message: 'Missing raffleId', error: '400' });
+        }
+        const tickets = await TicketModel.find({ raffleId });
+        console.log("🚀 ~ GET ~ tickets:", tickets)
+        return NextResponse.json({ message: 'Tickets retrieved successfully', data: tickets });
+    } catch (error) {
+        return NextResponse.json({ message: 'Error retrieving tickets', error: '500' });
     }
 }

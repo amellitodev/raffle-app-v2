@@ -7,29 +7,41 @@ import FindTicket from "./FindTicket";
 import { ITicketResponseData } from "@/app/types/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	const [tickets, setTickets] = useState<ITicketResponseData>({
 		tickets: [],
 		docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 },
 	});
+	console.log("🚀 ~ PaginateTickets ~ tickets:", tickets)
 
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-	const handlePageChange = async (page: number) => {
-		const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
-		setTickets(data);
-	};
+	 const handlePageChange = async (page: number) => {
+	// 	const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
+	// 	console.log("🚀 ~ handlePageChange ~ data:", data)
+	// 	setTickets(data);
+	 };
 	const handleSortOrderChange = (order: "asc" | "desc") => {
 		setSortOrder(order);
 	};
 
+	// useEffect(() => {
+	// 	const fetchTickets = async () => {
+	// 		const data = await getTickets(raffleId ?? "", 1, 20, sortOrder);
+	// 		setTickets(data);
+	// 	};
+	// 	fetchTickets();
+	// }, [raffleId, sortOrder]);
+
+	
 	useEffect(() => {
-		const fetchTickets = async () => {
-			const data = await getTickets(raffleId ?? "", 1, 20, sortOrder);
+		const fetchData = async () => {
+			const response = await fetch(`/api/ticket?raffleId=${raffleId}`);
+			const data = await response.json();
+			console.log("🚀 ~ fetchData ~ data:", data)
 			setTickets(data);
 		};
-		fetchTickets();
+		fetchData();
 	}, [raffleId, sortOrder]);
 
 	// TODO: hacer loading de carga
