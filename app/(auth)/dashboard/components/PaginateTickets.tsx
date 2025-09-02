@@ -12,15 +12,15 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 		tickets: [],
 		docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 },
 	});
-	console.log("🚀 ~ PaginateTickets ~ tickets:", tickets)
+	console.log("🚀 ~ PaginateTickets ~ tickets:", tickets);
 
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-	 const handlePageChange = async (page: number) => {
-	// 	const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
-	// 	console.log("🚀 ~ handlePageChange ~ data:", data)
-	// 	setTickets(data);
-	 };
+	const handlePageChange = async (page: number) => {
+		// 	const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
+		// 	console.log("🚀 ~ handlePageChange ~ data:", data)
+		// 	setTickets(data);
+	};
 	const handleSortOrderChange = (order: "asc" | "desc") => {
 		setSortOrder(order);
 	};
@@ -33,13 +33,12 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	// 	fetchTickets();
 	// }, [raffleId, sortOrder]);
 
-	
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await fetch(`/api/ticket?raffleId=${raffleId}`);
+			const response = await fetch(`/api/ticket?raffleId=${raffleId}&sortOrder=${sortOrder}&page=${tickets?.docs.currentPage}&limit=${tickets?.docs.limit}`);
 			const data = await response.json();
-			console.log("🚀 ~ fetchData ~ data:", data)
-			setTickets(data);
+			console.log("🚀 ~ fetchData ~ data:", data);
+			setTickets(data.data);
 		};
 		fetchData();
 	}, [raffleId, sortOrder]);
