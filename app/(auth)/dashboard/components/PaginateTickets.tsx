@@ -1,7 +1,7 @@
 "use client";
 
 import { getTickets } from "@/app/actions/ticket.actions";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from 'react';
 import { isLessThousand } from "../../../utils/utils";
 import FindTicket from "./FindTicket";
 import { ITicketResponseData } from "@/app/types/types";
@@ -17,9 +17,9 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
 	const handlePageChange = async (page: number) => {
-		// 	const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
-		// 	console.log("🚀 ~ handlePageChange ~ data:", data)
-		// 	setTickets(data);
+		// const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
+		// console.log("🚀 ~ handlePageChange ~ data:", data)
+		// setTickets(data);
 	};
 	const handleSortOrderChange = (order: "asc" | "desc") => {
 		setSortOrder(order);
@@ -33,26 +33,41 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	// 	fetchTickets();
 	// }, [raffleId, sortOrder]);
 
+
 	useEffect(() => {
-		const fetchData = async () => {
-			const response = await fetch(`/api/ticket?raffleId=${raffleId}&sortOrder=${sortOrder}&page=${tickets?.docs.currentPage}&limit=${tickets?.docs.limit}`);
+		try {
+			const fetchData = async () => {
+			const response = await fetch(
+				`/api/ticket?raffleId=${raffleId}&sortOrder=${sortOrder}&page=${tickets.docs.currentPage}&limit=${tickets.docs.limit}`
+			);
 			const data = await response.json();
 			console.log("🚀 ~ fetchData ~ data:", data);
 			setTickets(data.data);
+			if (!response.ok) {
+				throw new Error(data.message || 'Error fetching tickets');
+			}
 		};
 		fetchData();
+		} catch (error) {
+			console.log("🚀 ~ PaginateTickets ~ error:", error)
+			// Manejo de errores
+			setTickets({ tickets: [], docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 } });
+		}
+		
 	}, [raffleId, sortOrder]);
 
 	// TODO: hacer loading de carga
 
 	return (
 		<>
+		<Suspense fallback={<div>Cargando tickets...</div>}>
 			<div className="p-4  mt-14  rounded-lg shadow-md bg-base-100 mx-2">
 				<h1 className="text-2xl font-bold">Tickets del sorteo: {tickets?.raffleTitle}</h1>
 				<p className="text-sm text-gray-500">
 					Aquí puedes ver todos tus tickets comprados.
 				</p>
 			</div>
+			{!tickets && <p className="mt-14">Cargando...</p>}
 
 			<section className="px-2 ">
 				<FindTicket raffleId={raffleId} />
@@ -108,6 +123,8 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 					Siguiente
 				</button>
 			</div>
+		</Suspense>
+
 		</>
 	);
 }

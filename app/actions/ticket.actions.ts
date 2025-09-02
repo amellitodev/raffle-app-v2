@@ -30,7 +30,7 @@ export async function createTickets(formData: FormData) {
 		const generatedNumbers = new Set<number>();
 
 		while (newTickets.length < ticketCount) {
-			const ticketNumber = Math.floor(Math.random() * 10000); // rango 0-9999
+			const ticketNumber = Math.floor(Math.random() * 9999) + 1; // rango 1-9999
 
 			// Validamos que no esté repetido en DB ni en los que estamos generando
 			if (existingNumbers.has(ticketNumber) || generatedNumbers.has(ticketNumber)) {

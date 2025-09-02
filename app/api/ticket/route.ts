@@ -1,4 +1,5 @@
 import connectMongoDB from '@/app/lib/mongoConnection';
+import  '@/app/lib/models/raffle.model';
 import TicketModel from '@/app/lib/models/ticket.model';
 import { NextResponse } from 'next/server';
 
@@ -115,6 +116,7 @@ export async function GET(request: Request) {
 		};
         return NextResponse.json({ message: 'Tickets retrieved successfully', data: response });
     } catch (error) {
+        console.log("🚀 ~ GET ~ error:", error)
         return NextResponse.json({ message: 'Error retrieving tickets', error: '500' });
     }
 }
