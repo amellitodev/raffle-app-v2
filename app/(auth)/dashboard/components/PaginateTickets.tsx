@@ -1,6 +1,4 @@
 "use client";
-
-import { getTickets } from "@/app/actions/ticket.actions";
 import { useEffect, useState, Suspense } from "react";
 import { isLessThousand } from "../../../utils/utils";
 import FindTicket from "./FindTicket";
@@ -10,21 +8,21 @@ import { ITicketResponseData } from "@/app/types/types";
 export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	const [tickets, setTickets] = useState<ITicketResponseData>({
 		tickets: [],
+		totalTickets: 0,
 		docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 },
 	});
-	console.log("🚀 ~ PaginateTickets ~ tickets:", tickets);
 
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-	const handlePageChange = async (page: number) => {
-		// const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
-		// console.log("🚀 ~ handlePageChange ~ data:", data)
+
+	const fetchData = async (page: string = "1", sortOrder: string = "desc") => {
 		try {
 			const response = await fetch(
 				`/api/ticket?raffleId=${raffleId}&sortOrder=${sortOrder}&page=${page}&limit=${tickets.docs.limit}`
 			);
 			const data = await response.json();
-			setTickets(data);
+			console.log("🚀 ~ fetchData ~ data:", data);
+			setTickets(data.data);
 			if (!response.ok) {
 				throw new Error(data.message || "Error fetching tickets");
 			}
@@ -37,41 +35,21 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 			});
 		}
 	};
-	const handleSortOrderChange = (order: "asc" | "desc") => {
-		setSortOrder(order);
-	};
-
-	// useEffect(() => {
-	// 	const fetchTickets = async () => {
-	// 		const data = await getTickets(raffleId ?? "", 1, 20, sortOrder);
-	// 		setTickets(data);
-	// 	};
-	// 	fetchTickets();
-	// }, [raffleId, sortOrder]);
 
 	useEffect(() => {
-		try {
-			const fetchData = async () => {
-				const response = await fetch(
-					`/api/ticket?raffleId=${raffleId}&sortOrder=${sortOrder}&page=${tickets.docs.currentPage}&limit=${tickets.docs.limit}`
-				);
-				const data = await response.json();
-				console.log("🚀 ~ fetchData ~ data:", data);
-				setTickets(data.data);
-				if (!response.ok) {
-					throw new Error(data.message || "Error fetching tickets");
-				}
-			};
-			fetchData();
-		} catch (error) {
-			console.log("🚀 ~ PaginateTickets ~ error:", error);
-			// Manejo de errores
-			setTickets({
-				tickets: [],
-				docs: { totalPages: 0, limit: 10, prevPage: 0, currentPage: 1, nextPage: 0 },
-			});
-		}
+		fetchData();
 	}, [raffleId, sortOrder]);
+
+	const handlePageChange = async (page: number) => {
+		if (page < 1 || page > tickets.docs.totalPages) return;
+		fetchData(page.toString(), sortOrder);
+	};
+
+
+	const handleSortOrderChange = (sortOrder: "asc" | "desc") => {
+		setSortOrder(sortOrder);
+		fetchData(tickets.docs.currentPage.toString(), sortOrder);
+	};
 
 	// TODO: hacer loading de carga
 
@@ -95,7 +73,7 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 						<div>
 							<p className="text-2xl">
 								Tickets Existentes:{" "}
-								<span className="font-bold">{tickets.tickets.length}</span>
+								<span className="font-bold">{tickets.totalTickets}</span>
 							</p>
 						</div>
 						<button

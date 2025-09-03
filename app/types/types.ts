@@ -92,6 +92,7 @@ export interface TicketData {
 
 export interface ITicketResponseData {
 	raffleTitle?: string;
+	totalTickets?: number;
 	tickets: Ticket[];
 	docs: Docs;
 }

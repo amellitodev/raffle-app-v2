@@ -107,6 +107,7 @@ export async function GET(request: Request) {
         // Formatear la respuesta
 		const response = {
 			tickets: serializedTickets,
+            totalTickets,
 			docs: {
 				totalPages,
 				limit,
