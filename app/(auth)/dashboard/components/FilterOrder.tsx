@@ -41,7 +41,7 @@ export default function FilterOrder({ orders, status }: { orders: Order[]; statu
 								<span className={`text-xs opacity-60 badge ${isPending}`}>
 									{order.status === "pending" ? "Pendiente" : "Completada"}
 								</span>
-								<span>Tickets asignados:</span>
+								{/* <span>Tickets asignados:</span> */}
 							</div>
 							<div className="flex flex-col">
 								<Link href={`/dashboard/ordenes/detalles/${order._id}`}>

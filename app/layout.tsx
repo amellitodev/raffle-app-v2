@@ -24,7 +24,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html data-theme="light" lang="en">
+		<html data-theme="synthwave" lang="en">
         <AuthSessionProvider>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				{children}

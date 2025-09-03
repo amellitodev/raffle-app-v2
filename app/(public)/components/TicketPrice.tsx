@@ -24,10 +24,10 @@ export default function TicketPrice({
 		setSelectedCurrency("VES");
 	};
 	const currencyDolarStyle = `btn rounded-md ${
-		selectedCurrency === "USD" ? "bg-warning text-slate-950" : "bg-disabled"
+		selectedCurrency === "USD" ? "bg-warning text-slate-950 h-12 text-2xl font-bold w-1/2" : "bg-disabled"
 	}`;
 	const currencyBolivarStyle = `btn rounded-md ${
-		selectedCurrency === "VES" ? "bg-warning text-slate-950" : "bg-disabled"
+		selectedCurrency === "VES" ? "bg-warning text-slate-950 h-12 text-2xl font-bold w-1/2" : "bg-disabled"
 	}`;
 
 	return (
@@ -38,10 +38,10 @@ export default function TicketPrice({
 			<div className="flex gap-8 justify-center items-center">
 			<input type="text" name="currency" value={selectedCurrency} readOnly hidden />
 				<button className={currencyDolarStyle} type="button" onClick={selectPriceDolar}>
-					$ {ticketPriceDolar}
+				 {ticketPriceDolar} 	$
 				</button>
 				<button className={currencyBolivarStyle} type="button" onClick={selectPriceBolivar}>
-					Bs. {ticketPriceBolivar}
+				 {ticketPriceBolivar} 	Bs
 				</button>
 			</div>
         </section>

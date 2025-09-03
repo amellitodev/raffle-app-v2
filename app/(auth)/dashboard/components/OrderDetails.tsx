@@ -27,65 +27,19 @@ export default function OrderDetails({ raffleId }: Props) {
 		fetchOrder();
 	}, [raffleId]);
 
+	const handleRegresar = () => {
+		router.push(`/dashboard/sorteo`);
+	};
+
 	return (
 		<>
-			{/* <div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2 gap-4 ">
-				<h2 className="text-2xl font-bold ">Detalles de la Orden 🔍</h2>
-				<section className="w-full rounded-lg shadow-md bg-base-100 mx-2 p-4">
-					<p className="font-bold text-lg">Datos del Comprador</p>
-					<p>
-						Nombre del Comprador: <span className="font-bold">{order?.buyerName}</span>
-					</p>
-					<p>
-						Correo del Comprador: <span className="font-bold">{order?.buyerEmail}</span>
-					</p>
-					<p>
-						Cantidad de Tickets comprados:{" "}
-						<span className="font-bold">{order?.ticketCount}</span>
-					</p>
-					<p>
-						Monto Total:{" "}
-						<span className="font-bold">
-							{order?.amount} {order?.currency}
-						</span>
-					</p>
-				</section>
-				<section className="w-full rounded-lg shadow-md bg-base-100 mx-2 p-4">
-					<p className="font-bold text-lg">Datos del Raffle</p>
-					{order?.raffleId && typeof order.raffleId === "object" && (
-						<>
-							<p>
-								ID del Raffle:{" "}
-								<span className="font-bold">{order.raffleId._id}</span>
-							</p>
-							<p>
-								Nombre del Raffle:{" "}
-								<span className="font-bold">{order.raffleId.title}</span>
-							</p>
-						</>
-					)}
-				</section>
-
-				<section className="w-full rounded-lg shadow-md bg-base-100 mx-2 p-4">
-					<p className="font-bold text-lg">Tickets asignados</p>
-					{order?.ticketsAssigned && order.ticketsAssigned.length > 0 ? (
-						<ul className="flex flex-wrap gap-2">
-							{order.ticketsAssigned.map((ticket) =>
-								typeof ticket === "object" && ticket !== null ? (
-									<li key={ticket._id} className="badge badge-pr badge-dash cursor-pointer">
-										<span className="font-bold">{ticket.ticketNumber}</span>
-									</li>
-								) : null
-							)}
-						</ul>
-					) : (
-						<p>No se han asignado tickets.</p>
-					)}
-				</section>
-			</div> */}
+			
 
 			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2">
-				<h1 className=" text-2xl font-bold px-2">Order Details</h1>
+				<div className="flex gap-24 justify-starts items-center w-full max-w-5xl">
+					<button className="btn btn-sm btn-accent rounded-md" onClick={handleRegresar}>Regresar</button>
+				<h1 className=" text-4xl font-bold px-2">Detalles de la Orden</h1>
+				</div>
 				{order?.status === "pending" && (
 					<div className="w-full flex gap-2 justify-between">
 						<p className="text-yellow-500">El pago está pendiente de aprobación.</p>

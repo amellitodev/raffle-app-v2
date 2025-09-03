@@ -19,22 +19,22 @@ export default function TicketCount({ count, setCount }: Props) {
 				<input name="ticketCount" type="text" value={count} readOnly hidden />
 				<div className="flex items-center justify-around w-full">
 					<button
-						className="btn btn-xs btn-error btn-outline rounded-md hover:bg-white hover:text-slate-950"
+						className="btn btn-md btn-error btn-outline rounded-md hover:bg-white hover:text-slate-950"
 						type="button"
 						onClick={decrementCount}
 					>
 						-
 					</button>
-					<p className="text-2xl font-bold">{count}</p>
+					<p className="text-4xl text-pink-500 font-bold">{count}</p>
 					<button
-						className="btn btn-xs btn-success btn-outline rounded-md hover:bg-white hover:text-slate-950"
+						className="btn btn-md btn-success btn-outline rounded-md hover:bg-white hover:text-slate-950"
 						type="button"
 						onClick={incrementCount}
 					>
 						+
 					</button>
 				</div>
-				<span className="text-xs">Cantidad de tickets</span>
+				<span className="text-md">Cantidad de tickets</span>
 			</div>
 		</>
 	);

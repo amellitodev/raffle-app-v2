@@ -42,10 +42,11 @@ export default function FindTicket({ raffleId }: { raffleId: string }) {
 							Ticket # {isLessThousand(ticket?.ticketNumber)}
 						</p>
 						<div className="flex flex-col gap-2">
-							<span>Pertenece al sorteo: {ticket?.raffleId?.title}</span>
-							<span>Cédula Comprador: {ticket?.orderId?.buyerName}</span>
-							<span>ID del Comprador: {ticket?.orderId?.buyerId}</span>
-							<span>Teléfono del Comprador: {ticket?.orderId?.buyerPhone}</span>
+							<span className="font-bold">Sorteo: {ticket?.raffleId?.title}</span>
+							<span className="font-bold">Comprador: {ticket?.orderId?.buyerName}</span>
+							<span className="font-bold">Cédula: {ticket?.orderId?.buyerId}</span>
+							<span className="font-bold">Teléfono: {ticket?.orderId?.buyerPhone}</span>
+							
 						</div>
 					</li>
 				) : (

@@ -1,4 +1,6 @@
 import connectMongoDB from "@/app/lib/mongoConnection";
+import "@/app/lib/models/raffle.model";
+import "@/app/lib/models/ticket.model";
 import OrderModel from "@/app/lib/models/order.model";
 import { NextResponse } from "next/server";
 import { ITicket } from "@/app/types/types";
@@ -65,7 +67,7 @@ export async function GET(request: Request) {
 		const limit = parseInt(searchParams.get("limit") || "10", 10);
 		const raffleId = searchParams.get("raffleId");
 		const status = searchParams.get("status");
-		console.log("🚀 ~ GET ~ raffleId:", raffleId)
+		console.log("🚀 ~ GET ~ raffleId:", raffleId);
 
 		await connectMongoDB();
 
@@ -78,7 +80,7 @@ export async function GET(request: Request) {
 			.exec();
 
 		// Contar total de órdenes
-		const totalOrders = await OrderModel.countDocuments({ raffleId, status })
+		const totalOrders = await OrderModel.countDocuments({ raffleId, status });
 		const totalPages = Math.ceil(totalOrders / limit);
 
 		if (orders.length === 0) {
@@ -96,7 +98,8 @@ export async function GET(request: Request) {
 						raffleDate: order.raffleId.raffleDate,
 				  }
 				: null,
-			ticketsAssigned: order.ticketsAssigned?.map((ticket: ITicket) => ticket.ticketNumber) || [],
+			ticketsAssigned:
+				order.ticketsAssigned?.map((ticket: ITicket) => ticket.ticketNumber) || [],
 		}));
 
 		// Respuesta final
@@ -130,7 +133,7 @@ export async function DELETE() {
 			data: deletedOrders,
 		});
 	} catch (error) {
-		console.log("🚀 ~ DELETE ~ error:", error)
+		console.log("🚀 ~ DELETE ~ error:", error);
 		return NextResponse.json({ message: "Error deleting orders", error: "500" });
 	}
 }
