@@ -10,6 +10,8 @@ import UploadImageComponent from "./UploadImageComponent";
 import TicketButton from "./TicketButton";
 import { uploadAuthImageCloudinary } from "@/app/utils/updateImageCloudinary";
 import { createOrder } from "@/app/actions/order.action";
+import ModalComponent from "./ModalComponent";
+import ModalErrorComponent from "./ModalErrorComponent";
 
 interface Props {
 	ticketPriceDolar: number;
@@ -33,16 +35,6 @@ export default function FormNewOrder({
 	const [previewFile, setPreviewFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
-
-	// Clean up preview URL when component unmounts or file changes
-	// useEffect(() => {
-	// 	return () => {
-	// 		if (previewFile) {
-	// 			URL.revokeObjectURL(URL.createObjectURL(previewFile));
-	// 		}
-	// 	};
-	// }, [previewFile]);
-
 	const calcAmount = () => {
 		return selectedPrice * count;
 	};
@@ -56,7 +48,6 @@ export default function FormNewOrder({
 		console.log("🚀 ~ handleSubmit ~ formData:", formData);
 		// Aquí puedes manejar el envío del formulario
 		try {
-			
 			setError(null);
 			if (!file) {
 				throw new Error("Falta la imagen del formulario");
@@ -75,28 +66,52 @@ export default function FormNewOrder({
 
 			// ✅ En lugar de retornar, puedes manejar el éxito aquí
 			console.log("Formulario enviado con éxito");
-			
+
 			setFile(null);
 			setPreviewFile(null);
 			setCount(1);
+			const dialog = document.getElementById("my_modal_5");
+			if (dialog instanceof HTMLDialogElement) {
+				dialog.showModal();
+			}
 		} catch (error) {
-			console.log("error al enviar el formulario");
 			if (error instanceof Error) {
 				console.error(error.message);
 				setError(error.message);
+				const dialog = document.getElementById("my_modal_6");
+				if (dialog instanceof HTMLDialogElement) {
+					dialog.showModal();
+				}
 			}
 			setFile(null);
 			setPreviewFile(null);
 			setCount(1);
-		} 
+		}
 	};
 
-	
+	if (error) {
+		const dialog = document.getElementById("my_modal_6");
+		if (dialog instanceof HTMLDialogElement) {
+			dialog.showModal();
+		}
+	}
+
+	const handleFormSubmit = async (formData: FormData) => {
+		await handleSubmit(formData);
+	};
+
 	return (
 		<>
-			<form action={async (formData) => await handleSubmit(formData)} className="flex flex-col gap-4 w-full">
-				<input type="hidden" name="raffleId" value={raffleId} readOnly/>
-				<input type="hidden" name="maxTickets" value={maxTickets} readOnly/>
+			<ModalErrorComponent error={error} />
+			<ModalComponent />
+			<form
+				action={async (formData) => {
+					await handleFormSubmit(formData);
+				}}
+				className="flex flex-col gap-4 w-full"
+			>
+				<input type="hidden" name="raffleId" value={raffleId} readOnly />
+				<input type="hidden" name="maxTickets" value={maxTickets} readOnly />
 				<TicketPrice
 					selectedCurrency={selectedCurrency}
 					ticketPriceDolar={ticketPriceDolar}

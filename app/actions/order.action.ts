@@ -27,6 +27,13 @@ export async function createOrder(formData: FormData) {
 		const bank = (formData.get("bank") as string) || "";
 		const currency = (formData.get("currency") as string) || "USD";
 		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
+
+		if(ticketCount < 2) {
+			throw new Error("Debes comprar al menos 2 tickets.");
+		}
+		if(ticketCount > 100) {
+			throw new Error("No puedes comprar más de 100 tickets.");
+		}
 		// maxTickets para verificar que no exista un cantidad maxima de tickets existentes en la db
 		const maxTickets = parseInt(formData.get("maxTickets") as string, 10) || 0;
 		const existingTickets = await TicketModel.countDocuments({ raffleId });
@@ -69,7 +76,7 @@ export async function createOrder(formData: FormData) {
 		revalidatePath("/");
 	} catch (error) {
 		console.error("Error creating order:", error);
-		throw new Error("Error creating order");
+		throw new Error(error instanceof Error ? error.message : "Error creating order");
 	}
 }
 

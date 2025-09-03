@@ -14,6 +14,7 @@ export const revalidate = 60;
 export default async function Home() {
 	const raffle = await getRaffleData();
 	const raffleData = raffle.data[0];
+	console.log("🚀 ~ Home ~ raffleData:", raffleData);
 	return (
 		<div className="font-sans min-h-screen p-2 mt-12 sm:mt-0 pb-20 gap-16 sm:p-20 ">
 			<main className="max-w-5xl mx-auto pt-24 px-2 flex flex-col  gap-4 md:gap-8">
@@ -62,6 +63,7 @@ export default async function Home() {
 									</p>
 								</div>
 							</div>
+							<span className="w-full text-center">La compra mínima es de 2 tickets</span>
 						</article>
 
 						<article className="text-3xl  font-bold  p-8 flex align-middle gap-4 shadow-xs ">
@@ -73,7 +75,7 @@ export default async function Home() {
 					<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
 						<div className="flex items-center text-2xl justify-center gap-2">
 							🎫
-							<h3 className="text-3xl font-bold">Compra tu Ticket</h3>
+							<h3 className="text-2xl font-bold">Compra tu Ticket</h3>
 						</div>
 
 						<FormNewOrder

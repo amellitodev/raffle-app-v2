@@ -18,7 +18,7 @@ export default async function PublicProgressComponent({ maxTickets, raffleId }: 
 			<div className="flex items-center text-xl font-bold justify-between mb-2">
 				<div className="flex flex-col items-center align-middle text-center ">
 					<span>Vendidos</span>
-					<p className="text-2xl font-bold">🔥{progressPercentage} %</p>
+					<p className="text-2xl font-bold">🔥{parseFloat(progressPercentage.toFixed(2))} %</p>
 				</div>
 
 				<div className="flex flex-col items-center align-middle ">
