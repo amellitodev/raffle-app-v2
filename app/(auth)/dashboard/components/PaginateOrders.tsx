@@ -17,41 +17,35 @@ export default function PaginateOrders({ raffleId }: Props) {
 			nextPage: 0,
 		},
 	});
-	console.log("🚀 ~ PaginateOrders ~ orders:", orders)
+	console.log("🚀 ~ PaginateOrders ~ orders:", orders);
 	const [orderStatus, setOrderStatus] = useState("pending");
 	const isPending = orderStatus === "pending" ? "bg-warning" : "bg-success";
 
-	const handleStatusChange = (status: string) => {
-		setOrderStatus(status);
-	};
-
-	useEffect(() => {
-		const fetchOrders = async () => {
-			const response = await fetch(`/api/order?raffleId=${raffleId}&status=${orderStatus}`);
-			const data = await response.json();
-			setOrders(data);
-		};
-		fetchOrders();
-	}, [raffleId, orderStatus]);
-
-	const handlePageChange = async (page: number) => {
-		// const data = await getTickets(raffleId ?? "", page, 20, sortOrder);
-		// console.log("🚀 ~ handlePageChange ~ data:", data)
+	const fetchOrders = async (page: number = 1, status: string = orderStatus) => {
 		try {
 			const response = await fetch(
-				`/api/order?raffleId=${raffleId}&page=${page}&limit=${orders.docs.limit}`
+				`/api/order?raffleId=${raffleId}&status=${status}&page=${page}&`
 			);
 			const data = await response.json();
-			setOrders(data);
-			if (!response.ok) {
+			if (response.ok) {
+				setOrders({
+					...data,
+					docs: data.docs ?? {
+						totalPages: 0,
+						limit: 2,
+						prevPage: 0,
+						currentPage: 1,
+						nextPage: 0,
+					},
+				});
+			} else {
 				throw new Error(data.message || "Error fetching orders");
 			}
 		} catch (error) {
-			console.log("🚀 ~ PaginateOrders ~ error:", error);
-			// Manejo de errores
+			console.log("🚀 ~ fetchOrders ~ error:", error);
 			setOrders({
 				orders: [],
-				message: "Orders retrieved successfully",
+				message: "Error fetching orders",
 				docs: {
 					totalPages: 0,
 					limit: 2,
@@ -62,6 +56,26 @@ export default function PaginateOrders({ raffleId }: Props) {
 			});
 		}
 	};
+
+	useEffect(() => {
+		fetchOrders();
+	}, [raffleId, orderStatus]);
+
+	const handleStatusChange = (status: string) => {
+		setOrderStatus(status);
+	};
+
+	const handlePageChange = async (page: number) => {
+		// console.log("🚀 ~ handlePageChange ~ data:", data)
+		if (page < 1 || page > orders.docs.totalPages) return;
+		await fetchOrders(page);
+		console.log("🚀 ~ GET ~ page", orders);
+	};
+
+	// 	const handlePageChange = async (page: number) => {
+	// 	if (page < 1 || page > orders.docs.totalPages) return;
+	// 	await fetchOrders(page);
+	// };
 
 	return (
 		<>
@@ -86,7 +100,8 @@ export default function PaginateOrders({ raffleId }: Props) {
 					<h2
 						className={`mt-4 bg-gradient-to-b ${isPending} to-transparent rounded-t-md p-2`}
 					>
-						Órdenes {orderStatus === "pending" ? "Pendientes" : "Completadas"}{" "} {orders.orders.length}
+						Órdenes {orderStatus === "pending" ? "Pendientes" : "Completadas"}{" "}
+						{(!orders?.orders || orders.orders.length === 0) && " - No hay órdenes"}
 					</h2>
 					<ul className="flex flex-col md:flex-row gap-4 h-screen md:h-full">
 						<FilterOrder orders={orders.orders} status={orderStatus} />

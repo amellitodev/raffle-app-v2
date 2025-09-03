@@ -78,8 +78,8 @@ export async function GET(request: Request) {
 			.exec();
 
 		// Contar total de órdenes
-		const totalOrders = await OrderModel.countDocuments();
-		const totalPages = Math.ceil(orders.length / limit);
+		const totalOrders = await OrderModel.countDocuments({ raffleId, status })
+		const totalPages = Math.ceil(totalOrders / limit);
 
 		if (orders.length === 0) {
 			return NextResponse.json({ message: "No orders found" }, { status: 404 });
@@ -105,6 +105,7 @@ export async function GET(request: Request) {
 			message: "Orders retrieved successfully",
 			orders: serializedOrders,
 			docs: {
+				totalOrders,
 				totalPages,
 				limit,
 				prevPage: page > 1 ? page - 1 : null,
