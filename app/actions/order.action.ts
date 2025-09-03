@@ -138,3 +138,32 @@ export async function deleteOrder(formData: FormData) {
 	}
 	redirect(`/dashboard/ordenes/${raffleId}`);
 }
+
+
+export async function getOrderByBuyerId(raffleId: string, buyerId: string) {
+	console.log("🚀 ~ getOrderByBuyerId ~ buyerId:", buyerId);
+	// pueden existir mas de una order con el mismo buyerId
+	// buscar todos las ordenes con el mismo buyerId
+	
+	try {
+		await connectMongoDB();
+		if (!buyerId) {
+			throw new Error("Invalid buyer ID");
+		}
+		const order = await OrderModel.findOne({ buyerId, raffleId })
+			.populate("raffleId")
+			.populate({
+				path: "ticketsAssigned", // si ticketsAssigned es un array de ObjectId
+				select: "ticketNumber", // solo traer ticketNumber de cada ticket
+			})
+			.lean()
+			.exec();
+
+			const serializedOrder = JSON.parse(JSON.stringify(order));
+		console.log("🚀 ~ getOrderByBuyerId ~ order:", serializedOrder);
+		return serializedOrder;
+	} catch (error) {
+		console.error("Error fetching order by buyer ID:", error);
+		throw new Error("Error fetching order by buyer ID");
+	}
+}
