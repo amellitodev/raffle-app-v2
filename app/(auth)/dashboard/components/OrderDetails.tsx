@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SeeReceiptButton from "./SeeReceiptButton";
 import { createTickets } from "@/app/actions/ticket.actions";
 import DeleteButton from "./DeleteButton";
+import { redirect, useRouter } from "next/navigation";
 
 interface Props {
 	raffleId: string;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function OrderDetails({ raffleId }: Props) {
 	const [order, setOrder] = useState<IOrderPopulated | null>(null);
+	const router = useRouter()
 
 	// fetch order details from the API
 	useEffect(() => {
@@ -89,8 +91,10 @@ export default function OrderDetails({ raffleId }: Props) {
 						<p className="text-yellow-500">El pago está pendiente de aprobación.</p>
 						<DeleteButton orderId={order?._id} raffleId={order?.raffleId.toString()} />
 						<form
-							action={(formData: FormData) => {
-								createTickets(formData);
+							action={async (formData: FormData) => {
+								await createTickets(formData);
+								// router.refresh() 
+								redirect('/dashboard/sorteo')
 							}}
 						>
 							<button className="btn btn-sm btn-success rounded-md">
