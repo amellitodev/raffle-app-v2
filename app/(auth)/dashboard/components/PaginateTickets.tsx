@@ -14,7 +14,6 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-
 	const fetchData = async (page: string = "1", sortOrder: string = "desc") => {
 		try {
 			const response = await fetch(
@@ -45,7 +44,6 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 		fetchData(page.toString(), sortOrder);
 	};
 
-
 	const handleSortOrderChange = (sortOrder: "asc" | "desc") => {
 		setSortOrder(sortOrder);
 		fetchData(tickets.docs.currentPage.toString(), sortOrder);
@@ -56,7 +54,7 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 	return (
 		<>
 			<Suspense fallback={<div>Cargando tickets...</div>}>
-				<div className="p-4  mt-14  rounded-lg shadow-md bg-base-100 mx-2">
+				<div className="p-4  mt-14  rounded-lg shadow-md bg-slate-50 mx-2">
 					<h1 className="text-2xl font-bold">
 						Tickets del sorteo: {tickets?.raffleTitle}
 					</h1>
@@ -69,7 +67,7 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 				<section className="px-2 ">
 					<FindTicket raffleId={raffleId} />
 
-					<div className="flex justify-between items-center mb-4 p-4 rounded-lg shadow-md bg-base-100 mt-2">
+					<div className="flex justify-between items-center mb-4 p-4 rounded-lg shadow-md bg-slate-50 mt-2">
 						<div>
 							<p className="text-2xl">
 								Tickets Existentes:{" "}
@@ -85,19 +83,18 @@ export default function PaginateTickets({ raffleId }: { raffleId: string }) {
 							Ordenar {sortOrder === "asc" ? "descendente" : "ascendente"}
 						</button>
 					</div>
-					<ul className="h-[calc(100vh-370px)] p-4 rounded-lg shadow-md bg-base-100  overflow-y-auto">
+					<ul className="h-[calc(100vh-370px)] p-4 rounded-lg shadow-md bg-slate-50  overflow-y-auto">
 						{tickets?.tickets.map((ticket) => (
 							<li className="flex flex-col border p-4 mb-2 rounded" key={ticket._id}>
-								<p>
-									Ticket # {isLessThousand(ticket.ticketNumber || 0)} -{" "}
-									{ticket.orderId ? ticket.orderId.status : "Disponible"}
-								</p>
+								<p className="text-md font-bold">Ticket # {isLessThousand(ticket.ticketNumber || 0)}</p>
 								{ticket.raffleId && <p>Sorteo: {ticket.raffleId.title}</p>}
 								{ticket.orderId && (
-									<p>
-										Comprado por: {ticket.orderId.buyerName} (Estado:{" "}
-										{ticket.orderId.status})
-									</p>
+									<>
+										<p>
+											Comprado por: {ticket.orderId.buyerName} <br />
+										</p>
+										<p>Estado: {ticket.orderId.status}</p>
+									</>
 								)}
 							</li>
 						))}

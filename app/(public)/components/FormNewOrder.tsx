@@ -28,7 +28,7 @@ export default function FormNewOrder({
 	raffleId,
 	maxTickets,
 }: Props) {
-	const [count, setCount] = useState(1);
+	const [count, setCount] = useState(2);
 	const [selectedCurrency, setSelectedCurrency] = useState("USD");
 	const [selectedPrice, setSelectedPrice] = useState(ticketPriceDolar); // Precio inicial en dólares <--- debe llegar desde page
 	const [file, setFile] = useState<File | null>(null);

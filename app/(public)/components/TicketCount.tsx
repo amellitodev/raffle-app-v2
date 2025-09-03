@@ -1,15 +1,16 @@
-
 interface Props {
 	setCount: React.Dispatch<React.SetStateAction<number>>;
 	count: number;
 }
 
 export default function TicketCount({ count, setCount }: Props) {
-	const incrementCount = () => setCount(count + 1);
+	// mínimo 2, máximo 100
+	const incrementCount = () => {
+		setCount((prev) => Math.min(prev + 1, 100));
+	};
+
 	const decrementCount = () => {
-		if (count > 1) {
-			setCount(count - 1);
-		}
+		setCount((prev) => Math.max(prev - 1, 2));
 	};
 
 	return (

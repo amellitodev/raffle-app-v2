@@ -24,7 +24,7 @@ export default function DeleteButton({ orderId, raffleId }: Props) {
 						Eliminando... <span className="loading"></span>
 					</>
 				) : (
-					"Eliminar Orden de pago"
+					"Eliminar Orden"
 				)}
 			</button>
 		</form>

@@ -35,14 +35,13 @@ export default function OrderDetails({ raffleId }: Props) {
 		<>
 			
 
-			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2">
-				<div className="flex gap-24 justify-starts items-center w-full max-w-5xl">
+			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2 bg-slate-50">
+				<div className="flex flex-col gap-2 justify-starts items-start w-full max-w-5xl">
 					<button className="btn btn-sm btn-accent rounded-md" onClick={handleRegresar}>Regresar</button>
 				<h1 className=" text-4xl font-bold px-2">Detalles de la Orden</h1>
 				</div>
 				{order?.status === "pending" && (
-					<div className="w-full flex gap-2 justify-between">
-						<p className="text-yellow-500">El pago está pendiente de aprobación.</p>
+					<div className="w-full md:px-24 flex flex-col items-end gap-2 justify-between bg-slate-50 ">
 						<DeleteButton orderId={order?._id} raffleId={order?.raffleId.toString()} />
 						<form
 							action={async (formData: FormData) => {
@@ -82,12 +81,14 @@ export default function OrderDetails({ raffleId }: Props) {
 								readOnly
 							/>
 						</form>
+						<p className="text-yellow-500 text-center w-full">El pago está pendiente de aprobación.</p>
+
 					</div>
 				)}
 			</div>
-			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto">
-				<div className="flex flex-col gap-2 w-full ">
-					<div className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
+			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto ">
+				<div className="flex flex-col gap-2 w-full  0">
+					<div className="flex flex-col gap-2 p-4 rounded-box shadow-md bg-slate-50">
 						<span className="text-xs font-bold">Método de pago:</span>
 						<p>Banco: {order?.bank}</p>
 						<p>Referencia de Pago: {order?.paymentReference}</p>
@@ -99,14 +100,14 @@ export default function OrderDetails({ raffleId }: Props) {
 						<SeeReceiptButton paymentProofUrl={order?.paymentProof || ""} />
 					</div>
 
-					<div className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
+					<div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-box shadow-md">
 						<span className="text-xs font-bold">Datos del cliente:</span>
 						<p>Cliente: {order?.buyerName}</p>
 						<p>Correo del Cliente: {order?.buyerEmail}</p>
 						<p>Teléfono del Cliente: {order?.buyerPhone}</p>
 					</div>
 
-					<section className="flex flex-col gap-2 p-4 bg-base-100 rounded-box shadow-md">
+					<section className="flex flex-col gap-2 p-4 bg-slate-50 rounded-box shadow-md">
 						<span className="text-xs font-bold">información de Tickets</span>
 						<span>Tickets asignados: </span>
 

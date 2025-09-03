@@ -14,7 +14,7 @@ export default function AuthLayout({
 			</header>
 
 			{/* Contenido principal */}
-			<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">{children}</main>
+			<main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 text-slate-950">{children}</main>
 		</div>
 	);
 }

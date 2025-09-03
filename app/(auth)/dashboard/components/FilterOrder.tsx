@@ -16,15 +16,14 @@ export default function FilterOrder({ orders, status }: { orders: Order[]; statu
 
 	return (
 		<>
-			<div className="relative flex flex-col gap-2 overflow-y-auto pt-1 w-full">
+			<div className="relative flex flex-col gap-2 overflow-y-auto pt-1 w-full bg-slate-50">
 				{orders.map((order) => (
-					<div key={order._id} className="list bg-base-100 rounded-box shadow-md">
-						<li className="list-row flex justify-around items-center">
+					<div key={order._id} className="list rounded-box shadow-md bg-slate-50">
+						<li className="list-row flex justify-around items-center bg-slate-50">
 							<div>
-								<div className="text-xs uppercase font-semibold opacity-60">
+								<div className="text-md uppercase font-semibold">
 									{/* formato de fecha 02/02/2022 14:30 */}
 
-									<DateDisplay date={order.createdAt.toString()} />
 
 									<p>Nombre: {order.buyerName}</p>
 									<p>Cédula: {order.buyerId}</p>
@@ -35,6 +34,8 @@ export default function FilterOrder({ orders, status }: { orders: Order[]; statu
 										Monto: {order.amount.toLocaleString()} {order.currency}
 									</strong>
 								</div>
+									<DateDisplay date={order.createdAt.toString()} className="text-md" />
+
 							</div>
 							<div className="flex flex-col items-center gap-2">
 								{/* Badge status */}

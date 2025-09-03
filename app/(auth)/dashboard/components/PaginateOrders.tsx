@@ -79,15 +79,15 @@ export default function PaginateOrders({ raffleId }: Props) {
 
 	return (
 		<>
-			<div>
+			<div className="btn-group mb-4">
 				<button
-					className={`btn rounded-l-md ${orderStatus === "pending" ? "btn-active" : ""}`}
+					className={`btn btn-neutral rounded-l-md ${orderStatus === "pending" ? "btn-active" : ""}`}
 					onClick={() => handleStatusChange("pending")}
 				>
 					Pendientes
 				</button>
 				<button
-					className={`btn rounded-r-md ${
+					className={`btn rounded-r-md btn-neutral ${
 						orderStatus === "completed" ? "btn-active" : ""
 					}`}
 					onClick={() => handleStatusChange("completed")}
@@ -95,15 +95,15 @@ export default function PaginateOrders({ raffleId }: Props) {
 					Completadas
 				</button>
 			</div>
-			<div className="flex flex-col gap-4 h-[calc(100vh-200px)] justify-between">
-				<div className="flex flex-col bg-base-100 rounded-box shadow-md overflow-scroll overflow-x-hidden px-2 w-full">
+			<div className="flex flex-col gap-4 h-[calc(100vh-200px)] justify-between bg-slate-50">
+				<div className="flex flex-col  rounded-box shadow-md overflow-scroll overflow-x-hidden px-2 w-full bg-slate-50">
 					<h2
 						className={`mt-4 bg-gradient-to-b ${isPending} to-transparent rounded-t-md p-2`}
 					>
 						Órdenes {orderStatus === "pending" ? "Pendientes" : "Completadas"}{" "}
 						{(!orders?.orders || orders.orders.length === 0) && " - No hay órdenes"}
 					</h2>
-					<ul className="flex flex-col md:flex-row gap-4 h-screen md:h-full">
+					<ul className="flex flex-col md:flex-row gap-4 h-screen md:h-full bg-slate-50">
 						<FilterOrder orders={orders.orders} status={orderStatus} />
 					</ul>
 				</div>

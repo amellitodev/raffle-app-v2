@@ -6,9 +6,9 @@ export const revalidate = 60;
 export default function SorteoPage() {
 	return (
 		<>
-			<section className="h-svw ">
-				<div className="flex flex-col gap-2 p-2 mx-2 mt-14 mb-8 bg-base-100 rounded-box shadow-md">
-					<p className="text-sm opacity-60">
+			<section className="h-svw bg-slate-50 ">
+				<div className="flex flex-col gap-2 p-2 mx-2 mt-14 mb-8   rounded-box shadow-md">
+					<p className="text-sm">
 						Crea un nuevo sorteo para que los usuarios puedan participar.
 					</p>
 					<Link

@@ -18,8 +18,8 @@ export default function FindTicket({ raffleId }: { raffleId: string }) {
 	};
 
 	return (
-		<div className="flex flex-col md:flex-row gap-4 my-4 w-full">
-			<div className="flex flex-col gap-2 p-4 rounded-lg shadow-md bg-base-100 w-full">
+		<div className="flex flex-col md:flex-row gap-4 my-4 w-full ">
+			<div className="flex flex-col gap-2 p-4 rounded-lg shadow-md bg-slate-50 w-full">
 				<h2 className="text-xl font-bold">Buscar Ticket</h2>
 				<label htmlFor="searchTicketNumber">Número del ticket</label>
 				<input
@@ -28,14 +28,14 @@ export default function FindTicket({ raffleId }: { raffleId: string }) {
 					onChange={(e) => setSearchTicketNumber(e.target.value)}
 					type="text"
 					placeholder="Número del ticket Ej: 170"
-					className="input input-bordered w-full"
+					className="input input-bordered w-full bg-slate-50"
 				/>
 				<button className="btn btn-primary rounded-md" onClick={handleSearch}>
 					Buscar
 				</button>
 			</div>
 
-			<ul className="flex gap-4 p-4 rounded-lg shadow-md bg-base-100 w-full">
+			<ul className="flex gap-4 p-4 rounded-lg shadow-md bg-slate-50 w-full">
 				{ticket.ticketNumber ? (
 					<li className="">
 						<p className="text-4xl font-bold">

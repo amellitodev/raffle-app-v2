@@ -10,13 +10,13 @@ export default async function ListRaffle() {
 	const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed");
 	return (
 		<>
-			<div className="px-2 w-full h-full">
-				<span>Sorteos Activos</span>
-				<ul className="list bg-base-100 rounded-box shadow-md overflow-scroll overflow-x-hidden h-1/2">
+			<div className="px-2 flex flex-col gap-4 w-full h-full bg-slate-50">
+				<ul className="list text-base-300 text-2xl rounded-box shadow-md overflow-scroll overflow-x-hidden bg-slate-50">
+					<span className="p-4">Sorteo Activo</span>
 					<FilterRaffle raffles={isRaffleActive} />
 				</ul>
-				<span>Sorteos Completados</span>
-				<ul className="list bg-base-100 rounded-box shadow-md overflow-scroll overflow-x-hidden h-1/2">
+				<ul className="list text-base-300 text-2xl rounded-box shadow-md overflow-scroll overflow-x-hidden h-96 bg-slate-50">
+					<span className="p-4">Sorteo Completado</span>
 					<FilterRaffle raffles={isCompleted} />
 				</ul>
 			</div>
