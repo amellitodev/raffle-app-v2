@@ -2,19 +2,23 @@ import { getTicketByNumber } from "@/app/actions/ticket.actions";
 import { TicketData } from "@/app/types/types";
 import { useState } from "react";
 import { isLessThousand } from "../../../utils/utils";
+import { set } from "mongoose";
 
 export default function FindTicket({ raffleId }: { raffleId: string }) {
 	const [ticket, setTicket] = useState<TicketData>({} as TicketData);
 	const [searchTicketNumber, setSearchTicketNumber] = useState<string>("");
 
+	const fetchTicket = async (raffleId: string, ticketNumber: number) => {
+		const data = await fetch(
+			`/api/ticketnumber?raffleid=${raffleId}&ticketnumber=${ticketNumber}`
+		);
+		const result = await data.json();
+		setTicket(result.data.ticket);
+	};
+
 	const handleSearch = () => {
-		const fetchData = async () => {
-			const data = await getTicketByNumber(raffleId, Number(searchTicketNumber));
-			if (data) {
-				setTicket(data);
-			}
-		};
-		fetchData();
+		fetchTicket(raffleId, parseInt(searchTicketNumber));
+		setSearchTicketNumber("");
 	};
 
 	return (
@@ -43,10 +47,13 @@ export default function FindTicket({ raffleId }: { raffleId: string }) {
 						</p>
 						<div className="flex flex-col gap-2">
 							<span className="font-bold">Sorteo: {ticket?.raffleId?.title}</span>
-							<span className="font-bold">Comprador: {ticket?.orderId?.buyerName}</span>
+							<span className="font-bold">
+								Comprador: {ticket?.orderId?.buyerName}
+							</span>
 							<span className="font-bold">Cédula: {ticket?.orderId?.buyerId}</span>
-							<span className="font-bold">Teléfono: {ticket?.orderId?.buyerPhone}</span>
-							
+							<span className="font-bold">
+								Teléfono: {ticket?.orderId?.buyerPhone}
+							</span>
 						</div>
 					</li>
 				) : (

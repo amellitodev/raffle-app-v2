@@ -90,6 +90,7 @@ export default function FindOrder({ raffleId }: { raffleId: string }) {
 											Comprobante de pago:{" "}
 											{orders?.paymentProof ? "✔️" : "❌"}
 										</span>
+										<span>Tickets: {orders?.ticketsAssigned.length}</span>
 										<div className="flex justify-between items-center">
 											<span className={`badge ${isPending}`}>
 												{orders?.status === "pending"
