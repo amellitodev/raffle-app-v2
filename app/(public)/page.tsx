@@ -7,6 +7,7 @@ import { getRaffleData } from "../actions/raffle.action";
 import DateDisplay from "./components/DateDisplay";
 import FormNewOrder from "./components/FormNewOrder";
 import PublicProgressComponent from "./components/PublicProgressComponent";
+import VerifyOrder from "./components/VerifyOrder";
 
 // Revalidar cada 60 segundos
 export const revalidate = 60;
@@ -106,6 +107,8 @@ export default async function Home() {
 				>
 					<RafflesComponent />
 				</Suspense> */}
+
+				<VerifyOrder raffleId={raffleData?._id} />
 			</main>
 			<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
 		</div>

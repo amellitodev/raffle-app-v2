@@ -111,8 +111,8 @@ export interface Ticket {
 	orderId: OrderID | null;
 	ticketNumber?: number;
 	__v: number;
-	createdAt?:    string;
-	updatedAt?:    string;
+	createdAt?: string;
+	updatedAt?: string;
 }
 
 export interface OrderID {
@@ -128,42 +128,61 @@ export interface RaffleID {
 	title: string;
 }
 
-
 export interface IOrdersResponse {
 	message: string;
-	orders:  Order[];
-	docs:    Docs;
+	orders: Order[];
+	docs: Docs;
 }
 
 export interface Docs {
-	totalPages:  number;
-	limit:       number;
-	prevPage:    number;
+	totalPages: number;
+	limit: number;
+	prevPage: number;
 	currentPage: number;
-	nextPage:    number;
+	nextPage: number;
 }
 
 export interface Order {
-	_id:              string;
-	raffleId:         string;
-	buyerName:        string;
-	buyerId:          string;
-	buyerEmail:       string;
-	buyerPhone:       string;
-	amount:           number;
-	currency:         string;
-	bank:             string;
+	_id: string;
+	raffleId: string;
+	buyerName: string;
+	buyerId: string;
+	buyerEmail: string;
+	buyerPhone: string;
+	amount: number;
+	currency: string;
+	bank: string;
 	paymentReference: string;
-	paymentProof:     string;
-	ticketCount:      number;
-	ticketsAssigned:  ITicket[];
-	status:           string;
-	createdAt:        Date;
-	updatedAt:        Date;
-	__v:              number;
-	raffleInfo:       RaffleInfo;
+	paymentProof: string;
+	ticketCount: number;
+	ticketsAssigned: ITicket[];
+	status: string;
+	createdAt: Date;
+	updatedAt: Date;
+	__v: number;
+	raffleInfo: RaffleInfo;
 }
 
 export interface RaffleInfo {
 	id: string;
+}
+
+export interface IOrderResponseVerify {
+	message: string;
+	data: IOrderverify[];
+}
+
+export interface IOrderverify {
+	_id: string;
+	raffleId: {
+		_id: string;
+		title: string;
+	};
+	buyerId: string;
+	ticketCount: number;
+	ticketsAssigned: {
+		_id: string;
+		ticketNumber: number;
+	}[];
+	status: string;
 }
