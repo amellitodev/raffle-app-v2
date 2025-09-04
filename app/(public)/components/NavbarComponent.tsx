@@ -11,7 +11,7 @@ export default function NavbarComponent() {
 							src="/LOGO3ATRAPATUSUERTECONLISKEL.webp"
 							alt="Logo_Atrapa_y_gana_Con_Liskel"
 						/>
-						<a className="btn btn-ghost text-xl rounded-md">Atrapa y gana Con Liskel</a>
+						{/* <a className="btn btn-ghost text-xl rounded-md hidden md:flex">Atrapa y gana Con Liskel</a> */}
 					</div>
 					<div className="flex gap-2 p-2 items-center">
 						<a

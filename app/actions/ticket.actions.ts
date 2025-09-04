@@ -6,12 +6,16 @@ import TicketModel from "../lib/models/ticket.model";
 import { TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
+import { EmailTemplate } from "../(public)/components/EmailTemplate";
+
 export async function createTickets(formData: FormData) {
 	try {
 		await connectMongoDB();
 		// Convierte IDs a ObjectId (si en tu schema son ObjectId)
 		const orderId = formData.get("orderId") as string;
 		const raffleId = formData.get("raffleId") as string;
+		const email = formData.get("buyerEmail") as string;
+		// console.log("🚀 ~ createTickets ~ email:", email);
 
 		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
 		if (ticketCount <= 0) {
@@ -53,6 +57,7 @@ export async function createTickets(formData: FormData) {
 			},
 			{ new: true }
 		);
+
 		revalidatePath("/dashboard");
 		return newTickets;
 	} catch (error) {

@@ -1,4 +1,5 @@
 import ProgressComponent from "@/app/(public)/components/ProgressComponent";
+import PublicProgressComponent from "@/app/(public)/components/PublicProgressComponent";
 import { getRaffleInfo } from "@/app/actions/raffle.action";
 
 export default async function DashboardPage() {
@@ -7,7 +8,7 @@ export default async function DashboardPage() {
 	
 	return (
 		<div className="px-4 py-6 sm:px-0 mt-6 max-w-5xl mx-auto">
-			<div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
+			<div className=" border-gray-200 rounded-lg p-8">
 				<h2 className="text-2xl font-bold text-primary  mb-4">
 					Bienvenido al Panel de Administración
 				</h2>
@@ -18,7 +19,7 @@ export default async function DashboardPage() {
 				{/* Cards de resumen */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 					<div className="bg-white p-6 rounded-lg shadow">
-						<h3 className="text-lg font-medium text-gray-900">Ultimo Sorteo Activo</h3>
+						<h3 className="text-lg font-medium text-gray-900">Sorteo Activo</h3>
 						<p className="text-3xl font-bold text-blue-600 mt-2">{raffle?.title}</p>
 					</div>
 					<div className="bg-white p-6 rounded-lg shadow">
@@ -34,7 +35,8 @@ export default async function DashboardPage() {
 						</p>
 					</div>
 				</div>
-				<ProgressComponent />
+				{/* <ProgressComponent /> */}
+				<PublicProgressComponent maxTickets={tickets} raffleId={raffle?._id ?? ""}  />
 			</div>
 		</div>
 	);

@@ -13,7 +13,7 @@ interface Props {
 
 export default function OrderDetails({ raffleId }: Props) {
 	const [order, setOrder] = useState<IOrderPopulated | null>(null);
-	const router = useRouter()
+	const router = useRouter();
 
 	// fetch order details from the API
 	useEffect(() => {
@@ -31,14 +31,31 @@ export default function OrderDetails({ raffleId }: Props) {
 		router.push(`/dashboard/sorteo`);
 	};
 
+	const sendEmail = async (formData: FormData) => {
+		try {
+			const buyerEmail = formData.get("buyerEmail") as string;
+
+			const response = await fetch("/api/send", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ buyerEmail }), // ✅ mandamos JSON válido
+			});
+
+			const result = await response.json();
+			console.log("🚀 ~ sendEmail ~ result:", result);
+		} catch (error) {
+			console.error("Error enviando email:", error);
+		}
+	};
+
 	return (
 		<>
-			
-
 			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2 bg-slate-50">
 				<div className="flex flex-col gap-2 justify-starts items-start w-full max-w-5xl">
-					<button className="btn btn-sm btn-accent rounded-md" onClick={handleRegresar}>Regresar</button>
-				<h1 className=" text-4xl font-bold px-2">Detalles de la Orden</h1>
+					<button className="btn btn-sm btn-accent rounded-md" onClick={handleRegresar}>
+						Regresar
+					</button>
+					<h1 className=" text-4xl font-bold px-2">Detalles de la Orden</h1>
 				</div>
 				{order?.status === "pending" && (
 					<div className="w-full md:px-24 flex flex-col items-end gap-2 justify-between bg-slate-50 ">
@@ -46,8 +63,10 @@ export default function OrderDetails({ raffleId }: Props) {
 						<form
 							action={async (formData: FormData) => {
 								await createTickets(formData);
-								// router.refresh() 
-								redirect('/dashboard/sorteo')
+								// Enviar correo electrónico al comprador
+								await sendEmail(formData);
+								// router.refresh()
+								redirect("/dashboard/sorteo");
 							}}
 						>
 							<button className="btn btn-sm btn-success rounded-md">
@@ -80,9 +99,17 @@ export default function OrderDetails({ raffleId }: Props) {
 								hidden
 								readOnly
 							/>
+							<input
+								type="text"
+								name="buyerEmail"
+								defaultValue={order?.buyerEmail}
+								hidden
+								readOnly
+							/>
 						</form>
-						<p className="text-yellow-500 text-center w-full">El pago está pendiente de aprobación.</p>
-
+						<p className="text-yellow-500 text-center w-full">
+							El pago está pendiente de aprobación.
+						</p>
 					</div>
 				)}
 			</div>

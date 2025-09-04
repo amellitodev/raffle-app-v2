@@ -8,10 +8,18 @@ const handler = NextAuth({
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
 		}),
 	],
+	callbacks: {
+		async signIn({ user, account }) {
+			if (account?.provider === "google") {
+				const allowedEmails = process.env.ALLOWED_EMAILS?.split(",") || [];
+				return allowedEmails.includes(user.email || "");
+			}
+			return true; // permitir otros providers si los hubiera
+		},
+	},
 });
 
 export { handler as GET, handler as POST };
-
 
 // import NextAuth from "next-auth";
 // import GoogleProvider from "next-auth/providers/google";
@@ -36,7 +44,6 @@ export { handler as GET, handler as POST };
 // });
 
 // export { handler as GET, handler as POST };
-
 
 // import NextAuth from "next-auth";
 // import GoogleProvider from "next-auth/providers/google";
@@ -74,6 +81,6 @@ export { handler as GET, handler as POST };
 
 // ALLOWED_EMAILS=tu-email@gmail.com,otro-email@gmail.com
 
-// Con esta configuración, solo los usuarios con los emails 
-// específicos podrán autenticarse y acceder a las rutas protegidas. 
+// Con esta configuración, solo los usuarios con los emails
+// específicos podrán autenticarse y acceder a las rutas protegidas.
 // Los demás verán un error de autenticación.
