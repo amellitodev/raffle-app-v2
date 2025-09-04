@@ -177,8 +177,9 @@ export interface IOrderverify {
 	raffleId: {
 		_id: string;
 		title: string;
+		
 	};
-	buyerId: string;
+	buyerName: string;
 	ticketCount: number;
 	ticketsAssigned: {
 		_id: string;

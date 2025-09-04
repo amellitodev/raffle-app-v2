@@ -15,10 +15,13 @@ export const revalidate = 60;
 export default async function Home() {
 	const raffle = await getRaffleData();
 	const raffleData = raffle.data[0];
-	console.log("🚀 ~ Home ~ raffleData:", raffleData);
 	return (
 		<div className="font-sans min-h-screen p-2 mt-12 sm:mt-0 pb-20 gap-16 sm:p-20 ">
-			<main className="max-w-5xl mx-auto pt-24 px-2 flex flex-col  gap-4 md:gap-8">
+			<main className="max-w-5xl mx-auto pt-15 px-2 flex flex-col  gap-4 md:gap-8">
+				<div className="flex justify-center items-center -mb-10 z-10">
+
+				<img className="size-96" src="/LOGO2ATRAPATUSUERTECONLISKEL.webp" alt="" />
+				</div>
 				<div className="flex justify-center items-center bg-gradient-to-b from-pink-800 to-pink-500 p-4 rounded-4xl gap-4 animate-bounce">
 					<h1 className="text-4xl text-center  font-bold text-white ">
 						🔥Compra Tu Boleto Ya! 🔥

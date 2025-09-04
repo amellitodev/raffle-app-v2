@@ -1,45 +1,36 @@
+import Link from "next/link";
+
 export default function NavbarComponent() {
 	return (
 		<>
-			<div className="navbar fixed top-0  z-10 shadow-sm backdrop-blur-md md:px-32">
-				<div className="flex-none ">
-					<button className="btn btn-ghost rounded-md">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							className="inline-block h-5 w-5 stroke-current"
+			<div className="navbar fixed top-0  z-20 shadow-sm backdrop-blur-md md:px-32">
+				<div className="flex justify-between w-full">
+					<div className="flex gap-2 items-center  ">
+						<img
+							className="size-16"
+							src="/LOGO3ATRAPATUSUERTECONLISKEL.webp"
+							alt="Logo_Atrapa_y_gana_Con_Liskel"
+						/>
+						<a className="btn btn-ghost text-xl rounded-md">Atrapa y gana Con Liskel</a>
+					</div>
+					<div className="flex gap-2 p-2 items-center">
+						<a
+							href="http://wa.me/584120106025"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="bg-green-500 text-white px-4 py-2 rounded inline-block"
 						>
-							{" "}
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M4 6h16M4 12h16M4 18h16"
-							></path>{" "}
-						</svg>
-					</button>
-				</div>
-				<div className="flex-1 ">
-					<a className="btn btn-ghost text-xl rounded-md">Rifas Don Carlos</a>
-				</div>
-				<div className="flex-none">
-					<button className="btn btn-square btn-ghost">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							className="inline-block h-5 w-5 stroke-current"
+							WhatsApp
+						</a>
+						{/* <a className="btn bg-pink-500 text-white rounded-md" href="https://www.instagram.com/atrapatusuerteconliskel" target="_blank" >Contacto</a> */}
+						<Link
+							className="btn btn-secondary  rounded-md"
+							href="#verify"
+							scroll={true}
 						>
-							{" "}
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-							></path>{" "}
-						</svg>
-					</button>
+							Verifica tu ticket
+						</Link>
+					</div>
 				</div>
 			</div>
 		</>

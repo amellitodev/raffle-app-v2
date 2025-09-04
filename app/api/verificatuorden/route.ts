@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     // and populate ticketsAssigned to get ticketNumber
     // añadir el status de la order
     const orders = await OrderModel.find({ buyerId, raffleId })
-    .select('orderNumber buyerId ticketCount ticketsAssigned raffleId _id status')
+    .select('orderNumber buyerName ticketCount ticketsAssigned raffleId _id status')
     .populate({
         path: 'raffleId',
         select: 'title'
