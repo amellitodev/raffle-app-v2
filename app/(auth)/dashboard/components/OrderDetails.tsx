@@ -14,6 +14,14 @@ interface Props {
 export default function OrderDetails({ raffleId }: Props) {
 	const [order, setOrder] = useState<IOrderPopulated | null>(null);
 	const router = useRouter();
+	const [tickets, setTickets] = useState<ITicket[]>([]);
+	console.log("🚀 ~ OrderDetails ~ tickets:", tickets)
+
+	useEffect(() => {
+		if (order?.ticketsAssigned?.length) {
+			setTickets(order.ticketsAssigned as ITicket[]);
+		}
+	}, [order?.ticketsAssigned]);
 
 	// fetch order details from the API
 	useEffect(() => {
@@ -31,14 +39,25 @@ export default function OrderDetails({ raffleId }: Props) {
 		router.push(`/dashboard/sorteo`);
 	};
 
-	const sendEmail = async (formData: FormData) => {
+	const handleSendEmail = async () => {
 		try {
-			const buyerEmail = formData.get("buyerEmail") as string;
+			tickets.length > 0 && await sendEmail(order?.buyerEmail, tickets);
+		} catch (error) {
+			console.error("Error al enviar el correo:", error);
+		}
+	};
+
+	const sendEmail = async (buyerEmail: string = "", ticketsAssigned: ITicket[]) => {
+		try {
+			// Validar que se envíen tickets asignados
+			if (ticketsAssigned.length === 0) {
+				throw new Error("No hay tickets asignados para enviar.");
+			}
 
 			const response = await fetch("/api/send", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ buyerEmail }), // ✅ mandamos JSON válido
+				body: JSON.stringify({ buyerEmail, ticketsAssigned }), // ✅ mandamos JSON válido
 			});
 
 			const result = await response.json();
@@ -64,7 +83,7 @@ export default function OrderDetails({ raffleId }: Props) {
 							action={async (formData: FormData) => {
 								await createTickets(formData);
 								// Enviar correo electrónico al comprador
-								await sendEmail(formData);
+								
 								// router.refresh()
 								redirect("/dashboard/sorteo");
 							}}
@@ -112,6 +131,9 @@ export default function OrderDetails({ raffleId }: Props) {
 						</p>
 					</div>
 				)}
+						<button className="btn btn-sm btn-primary rounded-md" onClick={handleSendEmail}>
+							Enviar correo
+						</button>
 			</div>
 			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto ">
 				<div className="flex flex-col gap-2 w-full  0">
@@ -152,7 +174,7 @@ export default function OrderDetails({ raffleId }: Props) {
 												) || "0"}
 											</span>
 										);
-								  })}
+									})}
 						</div>
 
 						{/* Mostrar detalles de la rifa */}

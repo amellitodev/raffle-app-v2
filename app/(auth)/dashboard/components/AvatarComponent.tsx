@@ -19,7 +19,7 @@ export default function AvatarComponent() {
 			<div className="avatar flex items-center ">
 				<details className="cursor-pointer menu menu-dropdown">
 					<summary className="list-none flex items-center gap-2">
-						<span className="text-sm font-semibold">{session?.user?.name}</span>
+						<span className="text-sm font-semibold hidden md:flex">{session?.user?.name}</span>
 						<div className="mask mask-squircle w-10">
 							<img
 								src={session?.user?.image as string}

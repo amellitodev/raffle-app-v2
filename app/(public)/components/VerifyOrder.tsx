@@ -25,16 +25,19 @@ export default function VerifyOrder({ raffleId }: Props) {
 	return (
 		<>
 			<section id="verify">
-				<div className="flex flex-col md:flex-row gap-4 my-4 w-full " >
+				<div className="flex flex-col md:flex-row gap-4 my-4 w-full ">
 					<div className="flex flex-col gap-2 p-4 rounded-lg shadow-md  w-full">
 						<h2 className="text-xl text-pink-500 font-bold">Verificar Orden</h2>
+
 						<input
+							name="buyerId"
 							type="text"
-							placeholder="ID del Comprador"
+							placeholder="Cédula de identidad: Ej: 12123123"
 							value={buyerId}
 							onChange={(e) => setBuyerId(e.target.value)}
 							className="border p-2 rounded bg-slate-50 w-full"
 						/>
+
 						<button
 							onClick={handleSearch}
 							className="bg-blue-500 text-white p-2 rounded"
@@ -59,13 +62,16 @@ export default function VerifyOrder({ raffleId }: Props) {
 								<p>Nombre del Comprador: {orders[0]?.buyerName}</p>
 							</div>
 							{orders?.map((order) => {
-                                const isPending = order.status === "pending" ? "badge-warning" : "badge-success";
+								const isPending =
+									order.status === "pending" ? "badge-warning" : "badge-success";
 								return (
 									<li
 										className="flex flex-col border p-4 rounded-lg shadow-md"
 										key={order._id}
 									>
-										<span className={`badge font-bold ${isPending} badge-lg mb-2`}>
+										<span
+											className={`badge font-bold ${isPending} badge-lg mb-2`}
+										>
 											Estado:{" "}
 											{order.status === "completed"
 												? "Aprobado"

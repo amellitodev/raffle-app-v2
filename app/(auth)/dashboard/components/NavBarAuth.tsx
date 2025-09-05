@@ -8,11 +8,11 @@ export default function NavBarAuth() {
 			<div className="navbar fixed top-0 left-0 z-10 backdrop-blur-md shadow-sm text-black">
 				<div className="navbar-start">
 					<Link className="btn btn-ghost text-xl rounded-md" href="/">
-						Apuesta y gana con Liskel
+						Liskel app
 					</Link>
 				</div>
 				<div className="navbar-center flex">
-					<ul className="menu menu-horizontal px-1">
+					<ul className="flex gap-2 px-1">
 						<li>
 							<Link href="/dashboard">Dashboard</Link>
 						</li>

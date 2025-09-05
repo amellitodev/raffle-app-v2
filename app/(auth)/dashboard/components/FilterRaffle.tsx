@@ -12,14 +12,14 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 			{raffles.map((raffle) => {
 				const isCompleted = raffle.status === "completed" ? "bg-gray-100" : "";
 				return (
-					<li key={raffle._id} className={`list-row bg-slate-50 ${isCompleted}`}>
+					<li key={raffle._id} className={`list-row bg-slate-50 ${isCompleted} `}>
 						<div>
 							<img
 								className="size-32 object-cover rounded-box"
 								src={raffle.imageUrl}
 							/>
 						</div>
-						<div className="flex flex-col gap-1 text-md">
+						<div className="flex flex-col gap-1 text-md text-slate-950">
 							<div className=" truncate">{raffle.title}</div>
 
 							<p className="list-col-wrap text-base  line-clamp-2">{raffle.description}</p>
@@ -30,13 +30,13 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 								<EyeIcons className="size-4" />
 								<Link
 									href={`/dashboard/ordenes/${raffle._id}`}
-									className="link link-primary rounded-md"
+									className="link text-blue-500 rounded-md"
 								>
 									Órdenes
 								</Link>
 								<Link
 									href={`/dashboard/tickets/${raffle._id}`}
-									className="link link-primary rounded-md "
+									className="link text-blue-500 rounded-md"
 								>
 									Tickets
 								</Link>
