@@ -36,7 +36,7 @@ export default async function DashboardPage() {
 					</div>
 				</div>
 				{/* <ProgressComponent /> */}
-				<PublicProgressComponent maxTickets={tickets} raffleId={raffle?._id ?? ""}  />
+				<PublicProgressComponent maxTickets={9999} raffleId={raffle?._id ?? ""}  />
 			</div>
 		</div>
 	);
