@@ -6,8 +6,6 @@ import TicketModel from "../lib/models/ticket.model";
 import { TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
-import { EmailTemplate } from "../(public)/components/EmailTemplate";
-
 export async function createTickets(formData: FormData) {
 	try {
 		await connectMongoDB();

@@ -36,7 +36,8 @@ export default function OrderDetails({ raffleId }: Props) {
 	}, [raffleId]);
 
 	const handleRegresar = () => {
-		router.push(`/dashboard/sorteo`);
+		// router.push(`/dashboard/sorteo`)
+		router.back()
 	};
 
 	const handleSendEmail = async () => {
@@ -84,8 +85,8 @@ export default function OrderDetails({ raffleId }: Props) {
 								await createTickets(formData);
 								// Enviar correo electrónico al comprador
 								
-								// router.refresh()
-								redirect("/dashboard/sorteo");
+								router.refresh()
+								// redirect("/dashboard/sorteo");
 							}}
 						>
 							<button className="btn btn-sm btn-success rounded-md">

@@ -7,7 +7,7 @@ export default async function ListRaffle() {
 	const raffles = data?.data || [];
 
 	const isRaffleActive = raffles.filter((raffle: IRaffle) => raffle.status === "active");
-	const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed");
+	// const isCompleted = raffles.filter((raffle: IRaffle) => raffle.status === "completed");
 	return (
 		<>
 			<div className="px-2 flex flex-col gap-4 w-full h-full bg-slate-50">

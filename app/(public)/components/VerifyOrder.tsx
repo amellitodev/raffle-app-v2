@@ -50,7 +50,7 @@ export default function VerifyOrder({ raffleId }: Props) {
 				<div>
 					{orders && orders.length > 0 ? (
 						<ul className="flex flex-col gap-4 p-4 rounded-lg shadow-md  w-full">
-							<div className="flex flex-col mx-auto justify-center items-center gap-2 p-4 w-1/2">
+							<div className="flex flex-col mx-auto justify-center items-center gap-2 p-4 w-full md:w-1/2">
 								<p className="text-xl text-center font-bold text-pink-500 text-pretty">
 									✨Si tu numero es aprobado felicidades ya estas participando en
 									el sorteo, si esta pendiente debes esperar por aprobación
