@@ -1,5 +1,6 @@
 import OrderModel from "@/app/lib/models/order.model";
 import { NextResponse } from "next/server";
+import connectMongoDB from "@/app/lib/mongoConnection";
 
 
 export async function GET(request: Request) {
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing buyerId or raffleId' }, { status: 400 });
     }
 
-    
+    await connectMongoDB();
     
     // aqui solo necesito los campos de orden numero de cedula cantidad de tickets y tickets asignados y el sorteo al cual pertenecen
     // user populate raffleId to get title
