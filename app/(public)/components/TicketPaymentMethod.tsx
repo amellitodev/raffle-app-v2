@@ -61,7 +61,7 @@ export default function TicketPaymentMethod({ paymentMethod }: Props) {
 							}}
 						>
 							<strong className="">{tipoPago(method.type)}</strong>
-							<p>Banco {method.entityName}</p>
+							<p>{method.entityName}</p>
 							{method.accountNumber && (
 								<p>Número de cuenta: {method.accountNumber}</p>
 							)}

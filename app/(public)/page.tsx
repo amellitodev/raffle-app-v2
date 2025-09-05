@@ -6,6 +6,7 @@
 import { getRaffleData } from "../actions/raffle.action";
 import DateDisplay from "./components/DateDisplay";
 import FormNewOrder from "./components/FormNewOrder";
+import ModalInfo from "./components/ModalInfo";
 import PublicProgressComponent from "./components/PublicProgressComponent";
 import VerifyOrder from "./components/VerifyOrder";
 
@@ -19,6 +20,7 @@ export default async function Home() {
 		<div className="font-sans min-h-screen p-2 mt-12 sm:mt-0 pb-20 gap-16 sm:p-20 ">
 			<main className="max-w-5xl mx-auto pt-15 px-2 flex flex-col  gap-4 md:gap-8">
 				<div className="flex justify-center items-center -mb-8 z-10">
+					<ModalInfo />
 
 				<img className="size-96" src="/LOGO2ATRAPATUSUERTECONLISKEL.webp" alt="" />
 				</div>
@@ -30,9 +32,9 @@ export default async function Home() {
 
 				<div className="flex flex-col md:flex-row gap-8 ">
 					<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
-						<div className=" w-full h-[540px] aspect-video rounded-lg overflow-hidden bg-muted">
+						<div className=" w-full h-[500px] md:h-[740px] aspect-video rounded-lg overflow-hidden bg-muted">
 							<img
-								className="w-full h-full object-cover aspect-video"
+								className="w-full h-full object-cover aspect-auto"
 								src={raffleData?.imageUrl}
 								alt={raffleData?.title || "Imagen del premio"}
 							/>
