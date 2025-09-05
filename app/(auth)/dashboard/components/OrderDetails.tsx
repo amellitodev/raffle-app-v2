@@ -84,9 +84,9 @@ export default function OrderDetails({ raffleId }: Props) {
 							action={async (formData: FormData) => {
 								await createTickets(formData);
 								// Enviar correo electrónico al comprador
-								
-								router.refresh()
-								// redirect("/dashboard/sorteo");
+
+								// router.refresh() no funciona en este contexto
+								redirect("/dashboard/sorteo");
 							}}
 						>
 							<button className="btn btn-sm btn-success rounded-md">
