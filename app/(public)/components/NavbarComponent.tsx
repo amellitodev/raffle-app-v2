@@ -15,7 +15,7 @@ export default function NavbarComponent() {
 					</div>
 					<div className="flex gap-2 p-2 items-center">
 						<a
-							href="http://wa.me/584120106025"
+							href="http://wa.me/584220106025"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="bg-green-500 text-white px-4 py-2 rounded inline-block"
