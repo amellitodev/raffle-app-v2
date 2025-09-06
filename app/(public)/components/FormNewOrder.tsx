@@ -45,7 +45,6 @@ export default function FormNewOrder({
 	};
 
 	const handleSubmit = async (formData: FormData) => {
-		console.log("🚀 ~ handleSubmit ~ formData:", formData);
 		// Aquí puedes manejar el envío del formulario
 		try {
 			setError(null);
@@ -62,7 +61,6 @@ export default function FormNewOrder({
 
 			// enviar el formulario
 			const response = await createOrder(formData);
-			console.log("🚀 ~ handleSubmit ~ response:", response);
 
 			// ✅ En lugar de retornar, puedes manejar el éxito aquí
 			console.log("Formulario enviado con éxito");

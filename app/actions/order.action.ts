@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createOrder(formData: FormData) {
-	console.log("🚀 ~ createOrder ~ formData:", formData);
 	try {
 		await connectMongoDB();
 		// data file del paymentProof
@@ -106,7 +105,6 @@ export async function getOrderById(orderId: string) {
 			})
 			.lean()
 			.exec();
-		console.log("🚀 ~ getOrderById ~ order:", order);
 		return order;
 	} catch (error) {
 		console.error("Error fetching order by ID:", error);
@@ -141,7 +139,6 @@ export async function deleteOrder(formData: FormData) {
 
 
 export async function getOrderByBuyerId(raffleId: string, buyerId: string) {
-	console.log("🚀 ~ getOrderByBuyerId ~ buyerId:", buyerId);
 	// pueden existir mas de una order con el mismo buyerId
 	// buscar todos las ordenes con el mismo buyerId
 	
@@ -160,7 +157,6 @@ export async function getOrderByBuyerId(raffleId: string, buyerId: string) {
 			.exec();
 
 			const serializedOrder = JSON.parse(JSON.stringify(order));
-		console.log("🚀 ~ getOrderByBuyerId ~ order:", serializedOrder);
 		return serializedOrder;
 	} catch (error) {
 		console.error("Error fetching order by buyer ID:", error);

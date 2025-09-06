@@ -2,7 +2,6 @@ import { useFormStatus } from "react-dom";
 
 export default function TicketButton() {
 	const { pending } = useFormStatus();
-	console.log("🚀 ~ FormNewOrder ~ pending:", pending);
 	return (
 		<>
 			<button
