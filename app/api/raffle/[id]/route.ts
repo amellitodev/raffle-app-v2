@@ -16,19 +16,19 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        await connectMongoDB();
-        const { id } = await params;
-        const raffle = await RaffleModel.findByIdAndDelete(id);
-        if (!raffle) {
-            return NextResponse.json({ message: "Raffle not found", error: "404" });
-        }
-        return NextResponse.json({ message: "Raffle deleted successfully", data: raffle });
-    } catch {
-        return NextResponse.json({ message: "Error deleting raffle", error: "500" });
-    }
-}
+// export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+//     try {
+//         await connectMongoDB();
+//         const { id } = await params;
+//         const raffle = await RaffleModel.findByIdAndDelete(id);
+//         if (!raffle) {
+//             return NextResponse.json({ message: "Raffle not found", error: "404" });
+//         }
+//         return NextResponse.json({ message: "Raffle deleted successfully", data: raffle });
+//     } catch {
+//         return NextResponse.json({ message: "Error deleting raffle", error: "500" });
+//     }
+// }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {

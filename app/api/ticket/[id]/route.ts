@@ -38,19 +38,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    try {
-        await connectMongoDB();
-        const { id } = await params;
-        if (!id) {
-            return NextResponse.json({ message: 'Missing ticket ID', error: '400' });
-        }
-        const deletedTicket = await TicketModel.findByIdAndDelete(id);
-        if (!deletedTicket) {
-            return NextResponse.json({ message: 'Ticket not found', error: '404' });
-        }
-        return NextResponse.json({ message: 'Ticket deleted successfully', data: deletedTicket });
-    } catch (error) {
-        return NextResponse.json({ message: 'Error deleting ticket', error: '500' });
-    }
-}
+// export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+//     try {
+//         await connectMongoDB();
+//         const { id } = await params;
+//         if (!id) {
+//             return NextResponse.json({ message: 'Missing ticket ID', error: '400' });
+//         }
+//         const deletedTicket = await TicketModel.findByIdAndDelete(id);
+//         if (!deletedTicket) {
+//             return NextResponse.json({ message: 'Ticket not found', error: '404' });
+//         }
+//         return NextResponse.json({ message: 'Ticket deleted successfully', data: deletedTicket });
+//     } catch (error) {
+//         return NextResponse.json({ message: 'Error deleting ticket', error: '500' });
+//     }
+// }

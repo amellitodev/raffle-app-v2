@@ -47,15 +47,15 @@ export async function POST(request: Request) {
 //     }
 // }
 
-export async function DELETE() {
-    try {
-        await connectMongoDB();
-        await TicketModel.deleteMany({});
-        return NextResponse.json({ message: 'All tickets deleted successfully' });
-    } catch (error) {
-        return NextResponse.json({ message: 'Error deleting tickets', error: '500' });
-    }
-}
+// export async function DELETE() {
+//     try {
+//         await connectMongoDB();
+//         await TicketModel.deleteMany({});
+//         return NextResponse.json({ message: 'All tickets deleted successfully' });
+//     } catch (error) {
+//         return NextResponse.json({ message: 'Error deleting tickets', error: '500' });
+//     }
+// }
 
 // get tickets by raffle id
 export async function GET(request: Request) {

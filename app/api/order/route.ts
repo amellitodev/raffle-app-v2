@@ -123,17 +123,17 @@ export async function GET(request: Request) {
 		return NextResponse.json({ message: "Error retrieving orders" }, { status: 500 });
 	}
 }
-export async function DELETE() {
-	// elimina todas las ordenes
-	try {
-		await connectMongoDB();
-		const deletedOrders = await OrderModel.deleteMany();
-		return NextResponse.json({
-			message: "All orders deleted successfully",
-			data: deletedOrders,
-		});
-	} catch (error) {
-		console.log("🚀 ~ DELETE ~ error:", error);
-		return NextResponse.json({ message: "Error deleting orders", error: "500" });
-	}
-}
+// export async function DELETE() {
+// 	// elimina todas las ordenes
+// 	try {
+// 		await connectMongoDB();
+// 		const deletedOrders = await OrderModel.deleteMany();
+// 		return NextResponse.json({
+// 			message: "All orders deleted successfully",
+// 			data: deletedOrders,
+// 		});
+// 	} catch (error) {
+// 		console.log("🚀 ~ DELETE ~ error:", error);
+// 		return NextResponse.json({ message: "Error deleting orders", error: "500" });
+// 	}
+// }
