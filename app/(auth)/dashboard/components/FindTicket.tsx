@@ -1,8 +1,7 @@
-import { getTicketByNumber } from "@/app/actions/ticket.actions";
+// import { getTicketByNumber } from "@/app/actions/ticket.actions";
 import { TicketData } from "@/app/types/types";
 import { useState } from "react";
 import { isLessThousand } from "../../../utils/utils";
-import { set } from "mongoose";
 
 export default function FindTicket({ raffleId }: { raffleId: string }) {
 	const [ticket, setTicket] = useState<TicketData>({} as TicketData);

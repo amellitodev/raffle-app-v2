@@ -1,5 +1,5 @@
 "use server";
-
+import mongoose from "mongoose";
 import connectMongoDB from "@/app/lib/mongoConnection";
 import OrderModel from "../lib/models/order.model";
 import TicketModel from "../lib/models/ticket.model";
@@ -7,21 +7,39 @@ import { TicketData } from "../types/types";
 import { revalidatePath } from "next/cache";
 
 export async function createTickets(formData: FormData) {
+	await connectMongoDB();
+	let session: mongoose.ClientSession | null = null;
+
+	session = await mongoose.startSession();
+	session.startTransaction();
 	try {
-		await connectMongoDB();
 		// Convierte IDs a ObjectId (si en tu schema son ObjectId)
 		const orderId = formData.get("orderId") as string;
 		const raffleId = formData.get("raffleId") as string;
-		const email = formData.get("buyerEmail") as string;
+		// const email = formData.get("buyerEmail") as string;
+
+		// console.log("🚀 ~ createTickets ~ orderId:", orderId);
+		// console.log("🚀 ~ createTickets ~ raffleId:", raffleId);
 		// console.log("🚀 ~ createTickets ~ email:", email);
 
-		const ticketCount = parseInt(formData.get("ticketCount") as string, 10) || 0;
+		// const `ticketCount` = parseInt(formData.get("ticketCount") as string, 10) || 0;
+		// if (ticketCount <= 0) {
+		// 	throw new Error("ticketCount debe ser mayor que 0");
+		// }
+
+		const order = await OrderModel.findById(orderId).session(session);
+		if (!order) {
+			throw new Error("Orden no encontrada");
+		}
+		const ticketCount = order.ticketCount;
 		if (ticketCount <= 0) {
 			throw new Error("ticketCount debe ser mayor que 0");
 		}
 
 		// Traemos todos los números de ticket ya ocupados en esta rifa
-		const existingTickets = await TicketModel.find({ raffleId }).select("ticketNumber");
+		const existingTickets = await TicketModel.find({ raffleId })
+			.select("ticketNumber")
+			.session(session);
 		const existingNumbers = new Set(existingTickets.map((t) => t.ticketNumber));
 
 		const newTickets: {
@@ -30,9 +48,16 @@ export async function createTickets(formData: FormData) {
 			ticketNumber: number;
 		}[] = [];
 		const generatedNumbers = new Set<number>();
+		const maxNumbers = 9999;
+		const availableNumbers = maxNumbers - existingNumbers.size;
 
+		if (availableNumbers < ticketCount) {
+			throw new Error("No hay suficientes números de ticket disponibles");
+		}
+
+		// 🔒 3. Generar tickets únicos
 		while (newTickets.length < ticketCount) {
-			const ticketNumber = Math.floor(Math.random() * 9999) + 1; // rango 1-9999
+			const ticketNumber = Math.floor(Math.random() * maxNumbers) + 1; // rango 1-9999
 
 			// Validamos que no esté repetido en DB ni en los que estamos generando
 			if (existingNumbers.has(ticketNumber) || generatedNumbers.has(ticketNumber)) {
@@ -44,7 +69,7 @@ export async function createTickets(formData: FormData) {
 		}
 
 		// Inserción masiva
-		const ticketsCreados = await TicketModel.insertMany(newTickets);
+		const ticketsCreados = await TicketModel.insertMany(newTickets, { session });
 		// actualizar el order con los nuevos tickets
 
 		const updatedOrder = await OrderModel.findByIdAndUpdate(
@@ -53,14 +78,35 @@ export async function createTickets(formData: FormData) {
 				$push: { ticketsAssigned: { $each: ticketsCreados.map((ticket) => ticket._id) } },
 				$set: { status: "completed" }, // <--- actualiza el status
 			},
-			{ new: true }
+			{ new: true, session }
 		);
+
+		// 🔒 confirmar transacción
+		await session.commitTransaction();
+		session.endSession();
 
 		revalidatePath("/dashboard");
 		return newTickets;
 	} catch (error) {
+		if (error instanceof Error) {
+			console.error("Mensaje:", error.message);
+		}
+		if (session) {
+			await session.abortTransaction().catch(() => {});
+			session.endSession();
+		}
+
+		// Si además quieres acceder a `code`, primero verifica si existe
+		// if (typeof (error as any).code === "number") {
+		// 	const mongoError = error as { code: number };
+		// 	if (mongoError.code === 11000) {
+		// 		throw new Error("Se intentó asignar un ticket repetido. Intenta de nuevo.");
+		// 	}
+		// }
+
 		console.error("Error creating tickets:", error);
 		throw new Error("Error creating tickets");
+		// throw error
 	}
 }
 
@@ -97,7 +143,7 @@ export async function getTickets(
 				? {
 						_id: (ticket.raffleId._id as string).toString(),
 						title: ticket.raffleId.title,
-				  }
+					}
 				: null,
 			orderId: ticket.orderId
 				? {
@@ -108,7 +154,7 @@ export async function getTickets(
 						ticketsAssigned: ticket.orderId.ticketsAssigned.map((id: number) =>
 							id.toString()
 						),
-				  }
+					}
 				: null,
 		}));
 

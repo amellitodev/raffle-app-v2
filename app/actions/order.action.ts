@@ -128,7 +128,7 @@ export async function deleteOrder(formData: FormData) {
 			throw new Error("Cannot delete completed order");
 		}
 
-		const result = await OrderModel.findByIdAndDelete(orderId);
+		await OrderModel.findByIdAndDelete(orderId);
 		// revalidar la página del dashboard
 
 		revalidatePath("/dashboard");

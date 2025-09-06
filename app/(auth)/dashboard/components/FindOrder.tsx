@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { EyeIcons } from "./icons/Icons";
 import Link from "next/link";
 import { Order } from "@/app/types/types";
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
 export default function FindOrder({ raffleId }: { raffleId: string }) {
 	const [searchOrderNumber, setSearchOrderNumber] = useState("");
 	const [orders, setOrders] = useState<Order[]>([]);

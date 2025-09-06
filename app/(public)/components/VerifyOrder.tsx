@@ -40,7 +40,7 @@ export default function VerifyOrder({ raffleId }: Props) {
 						className="border p-2 rounded bg-slate-50 w-full"
 					/>
 
-					<button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-md">
+					<button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded-md cursor-pointer">
 						Buscar
 					</button>
 				</div>

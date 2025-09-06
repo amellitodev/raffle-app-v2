@@ -1,6 +1,6 @@
 import DateDisplay from "@/app/(public)/components/DateDisplay";
 import { IRaffle } from "@/app/types/types";
-import { EyeIcons, UpdateIcon } from "./icons/Icons";
+import { EyeIcons } from "./icons/Icons";
 import Link from "next/link";
 
 export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
@@ -17,6 +17,7 @@ export default function FilterRaffle({ raffles }: { raffles: IRaffle[] }) {
 							<img
 								className="size-32 object-cover rounded-box"
 								src={raffle.imageUrl}
+								alt={raffle.title}
 							/>
 						</div>
 						<div className="flex flex-col gap-1 text-md text-slate-950">

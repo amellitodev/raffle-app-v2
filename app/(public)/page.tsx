@@ -18,7 +18,7 @@ export default async function Home() {
 	const raffleData = raffle.data[0];
 	return (
 		<div className="font-sans min-h-screen p-2 mt-12 sm:mt-0 pb-20 gap-16 sm:p-20 ">
-			<main className="max-w-5xl mx-auto pt-15 px-2 flex flex-col  gap-4 md:gap-8">
+			<main className="max-w-5xl mx-auto pt-15 md:px-2 flex flex-col  gap-4 md:gap-8">
 				<div className="flex justify-center items-center -mb-8 z-10">
 					<ModalInfo />
 
@@ -31,7 +31,7 @@ export default async function Home() {
 				</div>
 
 				<div className="flex flex-col md:flex-row gap-8 ">
-					<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
+					<div className="w-full md:w-2/3 flex flex-col gap-4 border-1 border-gray-300/40 rounded-2xl p-0 md:p-4 shadow-xs shadow-gray-300">
 						<div className=" w-full h-[500px] md:h-[740px] aspect-video rounded-lg overflow-hidden bg-muted">
 							<img
 								className="w-full h-full object-cover aspect-auto"

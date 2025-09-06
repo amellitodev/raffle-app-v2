@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MenuIcons } from "./icons/Icons";
+// import { MenuIcons } from "./icons/Icons";
 import AvatarComponent from "./AvatarComponent";
 
 export default function NavBarAuth() {

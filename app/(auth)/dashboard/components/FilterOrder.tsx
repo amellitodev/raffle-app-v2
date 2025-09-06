@@ -1,5 +1,5 @@
-import { IOrder, Order } from "@/app/types/types";
-import { EyeIcons, UpdateIcon } from "./icons/Icons";
+import { Order } from "@/app/types/types";
+import { EyeIcons} from "./icons/Icons";
 import Link from "next/link";
 import DateDisplay from "@/app/(public)/components/DateDisplay";
 

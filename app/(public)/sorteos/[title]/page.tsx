@@ -1,9 +1,9 @@
-import TicketIcon, {
-	CalendarIcon,
-	GiftIcon,
-	MoneyIcon,
-	UsersIcon,
-} from "../../components/icons/icons";
+// import TicketIcon, {
+// 	CalendarIcon,
+// 	GiftIcon,
+// 	MoneyIcon,
+// 	UsersIcon,
+// } from "../../components/icons/icons";
 import Layout from "../../layout";
 import DateDisplay from "../../components/DateDisplay";
 import PublicProgressComponent from "../../components/PublicProgressComponent";

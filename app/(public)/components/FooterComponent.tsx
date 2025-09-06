@@ -31,10 +31,10 @@ export default function FooterComponent() {
 						/>
 					</a>
 				</div>
-				<div className="flex w-full  gap-4 justify-center items-center px-2">
-					<img className="h-auto w-32" src="logo_conalot11-300x132.png" alt="logo_conalot" />
-					<img className="h-auto w-32" src="/loteriatachira.png" alt="logo_loteriatachira" />
-					<img className="h-auto w-32" src="/Super-GAna.png" alt="logo_Super-GAna" />
+				<div className="flex w-full gap-4 justify-center items-center px-2">
+					<img className="h-auto w-32 bg-gray-500" src="logo_conalot-300x132.webp" alt="logo_conalot" />
+					<img className="h-auto w-32" src="/loteriatachira.webp" alt="logo_loteriatachira" />
+					<img className="h-auto w-32" src="/Super-GAna.webp" alt="logo_Super-GAna" />
 				</div>
 
 				<div className="w-full flex justify-center items-center">

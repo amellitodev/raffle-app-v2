@@ -1,4 +1,4 @@
-import ProgressComponent from "@/app/(public)/components/ProgressComponent";
+// import ProgressComponent from "@/app/(public)/components/ProgressComponent";
 import PublicProgressComponent from "@/app/(public)/components/PublicProgressComponent";
 import { getRaffleInfo } from "@/app/actions/raffle.action";
 
