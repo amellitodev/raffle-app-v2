@@ -102,7 +102,8 @@ export default function FormNewOrder({
 
 	return (
 		<>
-			<ModalErrorComponent error={error} />
+			{/* <ModalErrorComponent error={error} /> */}
+			<ModalErrorComponent error={"Ha ocurrido un error!, por favor verifica e intenta nuevamente. si el problema persiste, contacta al soporte."} />
 			<ModalComponent />
 			<form
 				action={async (formData) => {
