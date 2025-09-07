@@ -10,9 +10,9 @@ export async function createTickets(formData: FormData) {
 	await connectMongoDB();
 	let session: mongoose.ClientSession | null = null;
 
-	session = await mongoose.startSession();
-	session.startTransaction();
 	try {
+		session = await mongoose.startSession();
+		session.startTransaction();
 		// Convierte IDs a ObjectId (si en tu schema son ObjectId)
 		const orderId = formData.get("orderId") as string;
 		const raffleId = formData.get("raffleId") as string;
@@ -26,8 +26,20 @@ export async function createTickets(formData: FormData) {
 		// if (ticketCount <= 0) {
 		// 	throw new Error("ticketCount debe ser mayor que 0");
 		// }
-
+		// validar que la orden no haya sido procesada antes
 		const order = await OrderModel.findById(orderId).session(session);
+		console.log("🚀 ~ createTickets ~ order buyer:", order.buyerId);
+		console.log("🚀 ~ createTickets ~ order status ✨:", order.status);
+		console.log("🚀 ~ createTickets ~ order tickets asignados:", order.ticketsAssigned);
+		console.log("🚀 ~ createTickets ~ order array length:", order.ticketsAssigned.length);
+		if (order?.status === "completed") {
+			throw new Error("La orden ya ha sido procesada");
+		}
+		// validar que la orden no tenga tickets asignados
+		if (order?.ticketsAssigned && order.ticketsAssigned.length > 0) {
+			throw new Error("La orden ya tiene tickets asignados");
+		}
+		
 		if (!order) {
 			throw new Error("Orden no encontrada");
 		}
@@ -35,13 +47,13 @@ export async function createTickets(formData: FormData) {
 		if (ticketCount <= 0) {
 			throw new Error("ticketCount debe ser mayor que 0");
 		}
-
+		
 		// Traemos todos los números de ticket ya ocupados en esta rifa
 		const existingTickets = await TicketModel.find({ raffleId })
-			.select("ticketNumber")
-			.session(session);
+		.select("ticketNumber")
+		.session(session);
 		const existingNumbers = new Set(existingTickets.map((t) => t.ticketNumber));
-
+		
 		const newTickets: {
 			orderId: string;
 			raffleId: string;
@@ -50,11 +62,12 @@ export async function createTickets(formData: FormData) {
 		const generatedNumbers = new Set<number>();
 		const maxNumbers = 9999;
 		const availableNumbers = maxNumbers - existingNumbers.size;
-
+		
 		if (availableNumbers < ticketCount) {
 			throw new Error("No hay suficientes números de ticket disponibles");
 		}
-
+		
+		
 		// 🔒 3. Generar tickets únicos
 		while (newTickets.length < ticketCount) {
 			const ticketNumber = Math.floor(Math.random() * maxNumbers) + 1; // rango 1-9999
@@ -196,7 +209,7 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 			})
 			.lean<TicketData>()
 			.exec();
-		console.log("🚀 ~ getTicketByNumber ~ ticket:", ticket);
+		// console.log("🚀 ~ getTicketByNumber ~ ticket:", ticket);
 
 		if (!ticket) throw new Error("Ticket no encontrado");
 		const serializedTicket = {
@@ -219,7 +232,7 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 				ticketsAssigned: [],
 			},
 		};
-		console.log("🚀 ~ getTicketByNumber ~ serializedTicket:", serializedTicket);
+		// console.log("🚀 ~ getTicketByNumber ~ serializedTicket:", serializedTicket);
 		return serializedTicket;
 	} catch (error) {
 		console.error("Error fetching ticket by number:", error);
@@ -228,7 +241,7 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 }
 
 export async function getDataInfoPrueba(formData: FormData) {
-	console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
+	// console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
 }
 
 export async function getTicketInfoByRaffleId(raffleId: string) {
