@@ -76,10 +76,10 @@ export default function FormNewOrder({
 			if (error instanceof Error) {
 				console.error(error.message);
 				setError(error.message);
-				const dialog = document.getElementById("my_modal_6");
-				if (dialog instanceof HTMLDialogElement) {
-					dialog.showModal();
-				}
+			}
+			const dialog = document.getElementById("my_modal_6");
+			if (dialog instanceof HTMLDialogElement) {
+				dialog.showModal();
 			}
 			setFile(null);
 			setPreviewFile(null);
@@ -87,12 +87,13 @@ export default function FormNewOrder({
 		}
 	};
 
-	if (error) {
-		const dialog = document.getElementById("my_modal_6");
-		if (dialog instanceof HTMLDialogElement) {
-			dialog.showModal();
-		}
-	}
+	// este open modal causa un render infinito
+	// if (error) {
+	// 	const dialog = document.getElementById("my_modal_6");
+	// 	if (dialog instanceof HTMLDialogElement) {
+	// 		dialog.showModal();
+	// 	}
+	// }
 
 	const handleFormSubmit = async (formData: FormData) => {
 		await handleSubmit(formData);
