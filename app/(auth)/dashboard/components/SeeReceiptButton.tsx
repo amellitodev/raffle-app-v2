@@ -49,10 +49,10 @@ export default function SeeReceiptButton({ paymentProofUrl }: { paymentProofUrl:
 
 	return (
 		<>
-			<button className="btn btn-info rounded-md" onClick={() => handleSeeReceipt(paymentProofUrl)}>
+			<button className="btn btn-info rounded-md" onClick={() => handleSeeReceipt(paymentProofUrl)} type="button">
 				Ver Comprobante de pago
 			</button>
-			<button className="btn rounded-md" onClick={handleClosePreview}>
+			<button className="btn rounded-md" onClick={handleClosePreview} type="button">
 				Cerrar Comprobante
 			</button>
 			{imageUrl && showPreview && (
@@ -68,6 +68,7 @@ export default function SeeReceiptButton({ paymentProofUrl }: { paymentProofUrl:
 					<button
 						className="absolute top-4 right-4 text-white btn btn-xs btn-primary rounded-md"
 						onClick={handleCloseReceipt}
+						type="button"
 					>
 						X
 					</button>

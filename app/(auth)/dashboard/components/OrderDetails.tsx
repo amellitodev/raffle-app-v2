@@ -6,6 +6,8 @@ import SeeReceiptButton from "./SeeReceiptButton";
 import { createTickets } from "@/app/actions/ticket.actions";
 import DeleteButton from "./DeleteButton";
 import { redirect, useRouter } from "next/navigation";
+import CopyTextButton from "@/app/(public)/components/CopyTextButton";
+import ToastSuccess from "./ToasSucess";
 
 interface Props {
 	raffleId: string;
@@ -15,7 +17,10 @@ export default function OrderDetails({ raffleId }: Props) {
 	const [order, setOrder] = useState<IOrderPopulated | null>(null);
 	const router = useRouter();
 	const [tickets, setTickets] = useState<ITicket[]>([]);
-	console.log("🚀 ~ OrderDetails ~ tickets:", tickets)
+	const [sendingEmail, setSendingEmail] = useState(false);
+	const [errorSendingEmail, setErrorSendingEmail] = useState<string | null>(null);
+	const [successEmail, setSuccessEmail] = useState<string | null>(null);
+	console.log("🚀 ~ OrderDetails ~ tickets:", tickets);
 
 	useEffect(() => {
 		if (order?.ticketsAssigned?.length) {
@@ -37,18 +42,21 @@ export default function OrderDetails({ raffleId }: Props) {
 
 	const handleRegresar = () => {
 		// router.push(`/dashboard/sorteo`)
-		router.back()
+		router.back();
 	};
 
 	const handleSendEmail = async () => {
 		try {
-			tickets.length > 0 && await sendEmail(order?.buyerEmail, tickets);
+			tickets.length > 0 && (await sendEmail(order?.buyerEmail, tickets));
 		} catch (error) {
 			console.error("Error al enviar el correo:", error);
 		}
 	};
 
 	const sendEmail = async (buyerEmail: string = "", ticketsAssigned: ITicket[]) => {
+		setSendingEmail(true);
+		setErrorSendingEmail(null);
+		setSuccessEmail(null);
 		try {
 			// Validar que se envíen tickets asignados
 			if (ticketsAssigned.length === 0) {
@@ -63,8 +71,17 @@ export default function OrderDetails({ raffleId }: Props) {
 
 			const result = await response.json();
 			console.log("🚀 ~ sendEmail ~ result:", result);
+			if (!response.ok) {
+				throw new Error(result.message || "Error enviando el correo.");
+			}
+			// Si el correo se envió correctamente, puedes mostrar un mensaje de éxito o realizar alguna acción adicional aquí.
+			setSuccessEmail("El correo se envió correctamente ✅");
 		} catch (error) {
+			setErrorSendingEmail("Error enviando el correo. Intenta nuevamente.");
+			console.log("🚀 ~ sendEmail ~ error:", errorSendingEmail);
 			console.error("Error enviando email:", error);
+		} finally {
+			setSendingEmail(false);
 		}
 	};
 
@@ -72,7 +89,11 @@ export default function OrderDetails({ raffleId }: Props) {
 		<>
 			<div className="mt-14 flex flex-col  mb-2 justify-between items-center mx-2 bg-slate-50">
 				<div className="flex flex-col gap-2 justify-starts items-start w-full max-w-5xl">
-					<button className="btn btn-sm btn-accent rounded-md" onClick={handleRegresar}>
+					<button
+						className="btn btn-sm btn-accent rounded-md"
+						onClick={handleRegresar}
+						type="button"
+					>
 						Regresar
 					</button>
 					<h1 className=" text-4xl font-bold px-2">Detalles de la Orden</h1>
@@ -89,7 +110,7 @@ export default function OrderDetails({ raffleId }: Props) {
 								redirect("/dashboard/sorteo");
 							}}
 						>
-							<button className="btn btn-sm btn-success rounded-md">
+							<button className="btn btn-sm btn-success rounded-md" type="submit">
 								Aprobar pago
 							</button>
 							<input
@@ -132,9 +153,18 @@ export default function OrderDetails({ raffleId }: Props) {
 						</p>
 					</div>
 				)}
-						<button className="btn btn-sm btn-primary rounded-md" onClick={handleSendEmail}>
-							Enviar correo
-						</button>
+				<button
+					className="btn btn-sm btn-primary rounded-md"
+					onClick={handleSendEmail}
+					type="button"
+					disabled={sendingEmail || tickets.length === 0}
+				>
+					{sendingEmail ? "enviando..." : "Enviar correo"}
+					{successEmail && <ToastSuccess message={successEmail} />}
+					{errorSendingEmail && (
+						<p className="text-red-500 text-sm">{errorSendingEmail}</p>
+					)}
+				</button>
 			</div>
 			<div className="px-2 flex flex-col md:flex-row w-full gap-4 max-w-5xl mx-auto ">
 				<div className="flex flex-col gap-2 w-full  0">
@@ -153,6 +183,10 @@ export default function OrderDetails({ raffleId }: Props) {
 					<div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-box shadow-md">
 						<span className="text-xs font-bold">Datos del cliente:</span>
 						<p>Cliente: {order?.buyerName}</p>
+						<div className="flex gap-2">
+							<p>Cédula: {order?.buyerId}</p>
+							<CopyTextButton textToCopy={order?.buyerId || ""} />
+						</div>
 						<p>Correo del Cliente: {order?.buyerEmail}</p>
 						<p>Teléfono del Cliente: {order?.buyerPhone}</p>
 					</div>

@@ -1,5 +1,6 @@
 import { TPaymentMethod } from "@/app/types/types";
 import { useState } from "react";
+import CopyTextButton from "./CopyTextButton";
 
 interface Props {
 	paymentMethod: TPaymentMethod[];
@@ -63,11 +64,29 @@ export default function TicketPaymentMethod({ paymentMethod }: Props) {
 							<strong className="">{tipoPago(method.type)}</strong>
 							<p>{method.entityName}</p>
 							{method.accountNumber && (
-								<p>Número de cuenta: {method.accountNumber}</p>
+								<div className="flex items-center gap-2">
+									<p>Número de cuenta: {method.accountNumber} </p>
+									<CopyTextButton textToCopy={method.accountNumber} />
+								</div>
 							)}
-							{method.phoneNumber && <p>Teléfono: {method.phoneNumber}</p>}
-							{method.email && <p>Email: {method.email}</p>}
-							{method.sellerId && <p>Cédula: {method.sellerId}</p>}
+							{method.phoneNumber && (
+								<div className="flex items-center gap-2">
+									<p>Teléfono: {method.phoneNumber} </p>
+									<CopyTextButton textToCopy={method.phoneNumber} />
+								</div>
+							)}
+							{method.email && (
+								<div className="flex items-center gap-2">
+									<p>Email: {method.email} </p>
+									<CopyTextButton textToCopy={method.email} />
+								</div>
+							)}
+							{method.sellerId && (
+								<div className="flex items-center gap-2">
+									<p>Cédula: {method.sellerId} </p>
+									<CopyTextButton textToCopy={method.sellerId} />
+								</div>
+							)}
 						</div>
 					))}
 					<input
