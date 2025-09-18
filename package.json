@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-email/render": "1.2.1",
+    "browser-image-compression": "2.0.2",
     "cloudinary": "2.7.0",
     "mongoose": "8.17.1",
     "next": "15.5.2",
