@@ -5,7 +5,7 @@ export default function TicketButton() {
 	return (
 		<>
 			<button
-				className="btn btn-success text-slate-950 font-bold rounded-md"
+				className="btn btn-block text-slate-950 font-bold rounded-md"
 				type="submit"
 				disabled={pending}
 			>
@@ -14,7 +14,7 @@ export default function TicketButton() {
 						Cargando... <span className="loading"></span>
 					</>
 				) : (
-					"Comprar ticket"
+					"Sorteo finalizado 🎉"
 				)}
 			</button>
 		</>
