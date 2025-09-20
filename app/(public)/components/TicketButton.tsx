@@ -14,8 +14,8 @@ export default function TicketButton() {
 						Cargando... <span className="loading"></span>
 					</>
 				) : (
-					"Comprar boleto 🎟️"
-					// "Sorteo finalizado 🎉"
+					// "Comprar boleto 🎟️"
+					"Sorteo finalizado 🎉"
 				)}
 			</button>
 		</>
