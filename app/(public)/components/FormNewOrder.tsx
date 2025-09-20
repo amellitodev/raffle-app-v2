@@ -112,9 +112,9 @@ export default function FormNewOrder({
       <ModalErrorComponent error={"Ha ocurrido un error!, por favor verifica e intenta nuevamente. si el problema persiste, contacta al soporte."} />
       <ModalComponent />
       <form
-        // action={async (formData) => {
-        //   await handleFormSubmit(formData);
-        // }}
+        action={async (formData) => {
+          await handleFormSubmit(formData);
+        }}
         className="flex flex-col gap-4 w-full"
       >
         <input type="hidden" name="raffleId" value={raffleId} readOnly />
