@@ -71,13 +71,13 @@ export default async function Home() {
 							</div>
 							<span className="w-full text-center">La compra mínima es de 2 tickets</span>
 						</article>
-					</div>
 
 						<article className="text-2xl   p-8 flex flex-col border-1 border-gray-300/40 rounded-2xl md:p-4 shadow-xs shadow-gray-300 ">
 							<p className="text-pink-500 font-bold">Fecha de sorteo</p>
 							<p className="">¡Atención! La fecha del sorteo se anunciará al alcanzar el 50% de los tickets 🎫 vendidos.</p>
 							{/* <DateDisplay date={raffleData?.raffleDate} /> */}
 						</article>
+					</div>
 
 					<div className="flex flex-col w-full gap-4 border-1 border-gray-300/40 rounded-2xl p-4 shadow-xs shadow-gray-300">
 						<div className="flex items-center text-2xl justify-center gap-2">
