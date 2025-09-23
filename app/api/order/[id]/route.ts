@@ -36,6 +36,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 		await OrderModel.findByIdAndUpdate(id, { status, assignedTicket, ticketNumbers });
 		return NextResponse.json({ message: "Order updated successfully" });
 	} catch (error) {
+		console.log("🚀 ~ PUT ~ error:", error)
 		return NextResponse.json({ message: "Error updating order", error: "500" });
 	}
 }
@@ -50,6 +51,7 @@ export async function DELETE(
 		await OrderModel.findByIdAndDelete(id);
 		return NextResponse.json({ message: "Order deleted successfully" });
 	} catch (error) {
+		console.log("🚀 ~ DELETE ~ error:", error)
 		return NextResponse.json({ message: "Error deleting order", error: "500" });
 	}
 }

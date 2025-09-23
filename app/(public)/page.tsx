@@ -4,7 +4,7 @@
 // import CardRaffleSkeleton from "./components/skeleton/CardRaffleSkeleton";
 
 import { getRaffleData } from "../actions/raffle.action";
-import DateDisplay from "./components/DateDisplay";
+// import DateDisplay from "./components/DateDisplay";
 import FormNewOrder from "./components/FormNewOrder";
 import ModalInfo from "./components/ModalInfo";
 import PublicProgressComponent from "./components/PublicProgressComponent";
@@ -75,7 +75,7 @@ export default async function Home() {
 
 						<article className="text-2xl   p-8 flex flex-col border-1 border-gray-300/40 rounded-2xl md:p-4 shadow-xs shadow-gray-300 ">
 							<p className="text-pink-500 font-bold">Fecha de sorteo</p>
-							<p className="">"¡Atención! La fecha del sorteo se anunciará al alcanzar el 50% de los tickets 🎫 vendidos."</p>
+							<p className="">¡Atención! La fecha del sorteo se anunciará al alcanzar el 50% de los tickets 🎫 vendidos.</p>
 							{/* <DateDisplay date={raffleData?.raffleDate} /> */}
 						</article>
 

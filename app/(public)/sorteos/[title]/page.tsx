@@ -24,13 +24,13 @@ export default async function RaffleDetailPage({ params }: RaffleDetailPageProps
 	const isRaffleActive = raffleDataByTitle?.status === "active" && "Active";
 
 	// definimos el estado del sorteo
-	const raffleStatus = isRaffleActive ? (
-		<span className="badge badge-success rounded-md first-letter:uppercase">
-			{isRaffleActive || "Card Status"}
-		</span>
-	) : (
-		<span className="badge badge-error rounded-md first-letter:uppercase">Finalizado</span>
-	);
+	// const raffleStatus = isRaffleActive ? (
+	// 	<span className="badge badge-success rounded-md first-letter:uppercase">
+	// 		{isRaffleActive || "Card Status"}
+	// 	</span>
+	// ) : (
+	// 	<span className="badge badge-error rounded-md first-letter:uppercase">Finalizado</span>
+	// );
 
 	if (!raffleDataByTitle) {
 		return (

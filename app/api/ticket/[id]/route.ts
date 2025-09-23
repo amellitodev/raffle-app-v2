@@ -15,6 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         }
         return NextResponse.json({ message: 'Ticket by id retrieved successfully', data: ticket });
     } catch (error) {
+        console.log("🚀 ~ GET ~ error:", error)
         return NextResponse.json({ message: 'Error retrieving ticket', error: '500' });
     }
 }
@@ -34,6 +35,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         }
         return NextResponse.json({ message: 'Ticket updated successfully', data: updatedTicket });
     } catch (error) {
+        console.log("🚀 ~ PUT ~ error:", error)
         return NextResponse.json({ message: 'Error updating ticket', error: '500' });
     }
 }

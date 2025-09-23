@@ -240,9 +240,9 @@ export async function getTicketByNumber(raffleId: string, ticketNumber: number) 
 	}
 }
 
-export async function getDataInfoPrueba(formData: FormData) {
-	// console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
-}
+// export async function getDataInfoPrueba(formData: FormData) {
+// 	// console.log("🚀 ~ getDataInfoPrueba ~ formData:", formData);
+// }
 
 export async function getTicketInfoByRaffleId(raffleId: string) {
 	try {
