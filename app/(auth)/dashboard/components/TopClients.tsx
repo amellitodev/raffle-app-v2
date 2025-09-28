@@ -20,7 +20,7 @@ export default function TopClients({ raffleId }: Props) {
 		setLoading(true);
 		try {
 			// Construye la URL completa para server-side fetch
-			const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+			const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 			const response = await fetch(`${baseUrl}/api/topBuyer?raffleId=${raffleId}`, {
 				cache: "no-store", // Asegura datos frescos
 			});
