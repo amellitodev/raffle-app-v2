@@ -17,7 +17,7 @@ const OrderSchema = new mongoose.Schema(
 		// Datos de los tickets
 		ticketCount: { type: Number, required: true }, // Número de tickets comprados
 		ticketsAssigned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
-		status: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
+		status: { type: String, enum: ["pending", "paid", "failed", "completed"], default: "pending" },
 	},
 	{ timestamps: true }
 );

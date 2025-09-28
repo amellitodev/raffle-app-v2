@@ -1,42 +1,32 @@
-// import ProgressComponent from "@/app/(public)/components/ProgressComponent";
 import PublicProgressComponent from "@/app/(public)/components/PublicProgressComponent";
 import { getRaffleInfo } from "@/app/actions/raffle.action";
+import TopClients from "./components/TopClients";
+
+import StatRaffle from "./components/StatRaffle";
+import WelcomeComponent from "./components/WelcomeComponent";
 
 export default async function DashboardPage() {
 	const { raffle, orders, tickets } = await getRaffleInfo();
 
-	
+	const title = raffle?.title.replace(/-/g, " ");
+
 	return (
 		<div className="px-4 py-6 sm:px-0 mt-6 max-w-5xl mx-auto">
-			<div className=" border-gray-200 rounded-lg p-8">
-				<h2 className="text-2xl font-bold text-primary  mb-4">
-					Bienvenido al Panel de Administración
-				</h2>
-				<p className=" mb-6">
-					Desde aquí puedes gestionar todos los sorteos, órdenes y tickets.
-				</p>
+			<div className="flex flex-col gap-4 border-gray-200 rounded-lg p-8">
+				<WelcomeComponent />
 
-				{/* Cards de resumen */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					<div className="bg-white p-6 rounded-lg shadow">
-						<h3 className="text-lg font-medium text-gray-900">Sorteo Activo</h3>
-						<p className="text-3xl font-bold text-blue-600 mt-2">{raffle?.title}</p>
-					</div>
-					<div className="bg-white p-6 rounded-lg shadow">
-						<h3 className="text-lg font-medium text-gray-900">Órdenes Recibidas</h3>
-						<p className="text-3xl font-bold text-green-600 mt-2">
-							{orders.toLocaleString()}
-						</p>
-					</div>
-					<div className="bg-white p-6 rounded-lg shadow">
-						<h3 className="text-lg font-medium text-gray-900">Tickets Vendidos</h3>
-						<p className="text-3xl font-bold text-purple-600 mt-2">
-							{tickets.toLocaleString()}
-						</p>
-					</div>
+				<div className=" p-6 rounded-lg shadow">
+					<h3 className="text-lg font-medium text-gray-900">Sorteo Activo</h3>
+					<p className="text-3xl font-bold text-pink-500 mt-2">{title}</p>
 				</div>
-				{/* <ProgressComponent /> */}
-				<PublicProgressComponent maxTickets={9999} raffleId={raffle?._id ?? ""}  />
+				<StatRaffle
+					receivedOrders={orders.toLocaleString()}
+					ticketsSold={tickets.toLocaleString()}
+				/>
+
+				<PublicProgressComponent maxTickets={9999} raffleId={raffle?._id ?? ""} />
+
+				<TopClients raffleId={raffle?._id.toString() || ""} />
 			</div>
 		</div>
 	);

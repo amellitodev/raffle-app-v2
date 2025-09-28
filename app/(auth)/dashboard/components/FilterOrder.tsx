@@ -45,7 +45,7 @@ export default function FilterOrder({ orders, status }: { orders: Order[]; statu
 								{/* <span>Tickets asignados:</span> */}
 							</div>
 							<div className="flex flex-col">
-								<Link href={`/dashboard/ordenes/detalles/${order._id}`}>
+								<Link href={`/dashboard/ordenes/detalles/${order._id}`} prefetch={false}>
 									<EyeIcons className="size-6" />
 								</Link>
 							</div>

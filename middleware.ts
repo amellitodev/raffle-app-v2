@@ -10,6 +10,7 @@ export const config = {
         "/api/send/:path*",
 		"/api/ticket/:path*",
 		"/api/ticketnumber/:path*",
+		"/api/topBuyer/:path*",
 
 	],
 };
