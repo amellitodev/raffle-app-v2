@@ -7,15 +7,16 @@ export default function TicketButton() {
 			<button
 				className="btn btn-block bg-accent text-slate-950 font-bold rounded-md"
 				type="submit"
-				disabled={pending}
+				// disabled={pending}
+				disabled={true}
 			>
 				{pending ? (
 					<>
 						Cargando... <span className="loading"></span>
 					</>
 				) : (
-					"Comprar ticket 🎟️"
-					// "Sorteo finalizado 🎉"
+					// "Comprar ticket 🎟️"
+					"Sorteo finalizado 🎉"
 				)}
 			</button>
 		</>
