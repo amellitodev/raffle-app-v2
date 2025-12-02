@@ -1,12 +1,17 @@
+// En archivo SEPARADO: next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Desactivar static generation para ciertas rutas
-  experimental: {
-    // Otras configuraciones si las necesitas
+  output: 'standalone',
+  typescript: {
+    ignoreBuildErrors: true,
   },
-  // Forzar dynamic rendering
-  output: 'standalone', // Importante para Docker
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

@@ -1,34 +1,15 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  output: 'standalone',
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-};
-
-export default nextConfig;
-
 import PublicProgressComponent from "@/app/(public)/components/PublicProgressComponent";
 import { getRaffleInfo } from "@/app/actions/raffle.action";
 import TopClients from "./components/TopClients";
 import StatRaffle from "./components/StatRaffle";
 import WelcomeComponent from "./components/WelcomeComponent";
 
-// AÑADE ESTAS 2 LÍNEAS PARA DESACTIVAR SSG
+// Solo estas 2 líneas
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function DashboardPage() {
-  // Ahora esto se ejecutará en el servidor (runtime), no durante build
   const { raffle, orders, tickets } = await getRaffleInfo();
-
   const title = raffle?.title.replace(/-/g, " ");
 
   return (
