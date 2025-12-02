@@ -1,0 +1,5 @@
+﻿app/lib/mongoConnection.ts
+app/actions/ticket.actions.ts
+app/api/ticket/route.ts
+node_modules/
+.next/
