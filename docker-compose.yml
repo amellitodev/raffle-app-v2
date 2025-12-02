@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  raffle-app:
+    build: .
+    container_name: raffle-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production

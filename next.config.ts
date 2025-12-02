@@ -1,13 +1,12 @@
+import type { NextConfig } from "next";
+
 const nextConfig: NextConfig = {
-  output: 'export',  // Cambiar de 'standalone' a 'export'
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
+  output: 'standalone', // ← ESTA LÍNEA ES CRÍTICA
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
 };
+
+export default nextConfig;
