@@ -1,13 +1,13 @@
-import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: 'export',  // Cambiar de 'standalone' a 'export'
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
   eslint: {
-    ignoreDuringBuilds: true,  // 🔥 ESTO ES CLAVE
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,   // 🔥 ESTO TAMBIÉN
+    ignoreBuildErrors: true,
   },
 };
-
-export default nextConfig;

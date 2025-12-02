@@ -2,6 +2,9 @@
 // import HeroComponent from "./components/HeroComponent";
 // import RafflesComponent from "./components/RafflesComponent";
 // import CardRaffleSkeleton from "./components/skeleton/CardRaffleSkeleton";
+// Agregar al inicio del archivo
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 import { getRaffleData } from "../actions/raffle.action";
 // import DateDisplay from "./components/DateDisplay";
