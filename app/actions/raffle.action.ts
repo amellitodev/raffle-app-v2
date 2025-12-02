@@ -49,8 +49,38 @@ export async function createRaffle(formData: FormData) {
 
 export async function getRaffleInfo() {
 	try {
+		// 🔥 MODIFICACIÓN CLAVE: Verificar si estamos en build time
+		if (process.env.NEXT_PHASE === 'phase-production-build') {
+			console.log('Build time - returning empty data for getRaffleInfo');
+			return {
+				raffle: null,
+				orders: 0,
+				tickets: 0
+			};
+		}
+		
+		// 🔥 También verificar si MONGODB_URI está disponible
+		if (!process.env.MONGODB_URI) {
+			console.log('MONGODB_URI not available - returning empty data');
+			return {
+				raffle: null,
+				orders: 0,
+				tickets: 0
+			};
+		}
+
 		await connectMongoDB();
 		const raffle = await RaffleModel.findOne().sort({ createdAt: -1 }).lean<IRaffle>().exec();
+		
+		// Si no hay raffle, retornar datos vacíos
+		if (!raffle) {
+			return {
+				raffle: null,
+				orders: 0,
+				tickets: 0
+			};
+		}
+		
 		// recuperar las ordenes del ultimo raffle con count
 		const orders = await OrderModel.find({ raffleId: raffle?._id, status: "pending" })
 			.countDocuments()
@@ -64,12 +94,23 @@ export async function getRaffleInfo() {
 		return { raffle, orders, tickets };
 	} catch (error) {
 		console.error("Error fetching raffle info:", error);
-		throw new Error("Error fetching raffle info");
+		// 🔥 MODIFICACIÓN: En lugar de throw, retornar datos vacíos
+		return {
+			raffle: null,
+			orders: 0,
+			tickets: 0
+		};
 	}
 }
 
 export async function getRaffleData() {
 	try {
+		// 🔥 MODIFICACIÓN: Verificar build time
+		if (process.env.NEXT_PHASE === 'phase-production-build' || !process.env.MONGODB_URI) {
+			console.log('Build time - returning empty raffle data');
+			return { message: "Build time - empty data", data: [] };
+		}
+
 		// En componentes de servidor, llamamos directamente a la base de datos
 		// en lugar de hacer un fetch HTTP a nuestra propia API
 		await connectMongoDB();
@@ -81,7 +122,8 @@ export async function getRaffleData() {
 		return { message: "Raffles fetched successfully", data: serializedRaffles };
 	} catch (error) {
 		console.error("Error fetching raffle data:", error);
-		throw error;
+		// 🔥 MODIFICACIÓN: Retornar datos vacíos en lugar de throw
+		return { message: "Error fetching data", data: [] };
 	}
 }
 
@@ -89,6 +131,12 @@ export async function getRaffleDataByTitle(
 	title: string
 ): Promise<{ message: string; data: IRaffle | null }> {
 	try {
+		// 🔥 MODIFICACIÓN: Verificar build time
+		if (process.env.NEXT_PHASE === 'phase-production-build' || !process.env.MONGODB_URI) {
+			console.log('Build time - returning empty data for raffle by title');
+			return { message: "Build time - empty data", data: null };
+		}
+
 		await connectMongoDB();
 		const raffle = await RaffleModel.findOne({ title });
 		if (!raffle) {
@@ -99,12 +147,19 @@ export async function getRaffleDataByTitle(
 		return { message: "Raffle fetched successfully", data: serializedRaffle };
 	} catch (error) {
 		console.error("Error fetching raffle data by ID:", error);
-		throw error;
+		// 🔥 MODIFICACIÓN: Retornar datos vacíos
+		return { message: "Error fetching data", data: null };
 	}
 }
 
 export async function getRaffleById(raffleId: string) {
 	try {
+		// 🔥 MODIFICACIÓN: Verificar build time
+		if (process.env.NEXT_PHASE === 'phase-production-build' || !process.env.MONGODB_URI) {
+			console.log('Build time - returning empty data for raffle by ID');
+			return { message: "Build time - empty data", data: null };
+		}
+
 		await connectMongoDB();
 		const raffle = await RaffleModel.findById(raffleId).lean<IRaffle>().exec();
 		if (!raffle) {
@@ -113,7 +168,8 @@ export async function getRaffleById(raffleId: string) {
 		return { message: "Raffle fetched successfully", data: JSON.parse(JSON.stringify(raffle)) };
 	} catch (error) {
 		console.error("Error fetching raffle by ID:", error);
-		throw error;
+		// 🔥 MODIFICACIÓN: Retornar datos vacíos
+		return { message: "Error fetching data", data: null };
 	}
 }
 

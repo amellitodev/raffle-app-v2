@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 declare global {
 	var mongoose: {
 		conn: typeof import("mongoose") | null;
@@ -12,7 +13,6 @@ declare global {
 // promise: almacena la promesa pendiente de la conexión, para evitar múltiples conexiones simultáneas.
 // Ventaja: Así, si el código se recarga (como hace Next.js en desarrollo o serverless), no se crean nuevas conexiones cada vez.
 
-
 let cached = global.mongoose;
 
 if (!cached) {
@@ -25,13 +25,30 @@ if (!cached) {
 async function dbConnect() {
 	const MONGODB_URI = process.env.MONGODB_URI!;
 
+	// 🔥 MODIFICACIÓN CLAVE: Manejar build time y falta de URI
 	if (!MONGODB_URI) {
+		// Si estamos en build time de Next.js
+		if (process.env.NEXT_PHASE === 'phase-production-build') {
+			console.log('Build time - MONGODB_URI not defined, returning null connection');
+			// Retornar un mock de conexión para evitar errores durante build
+			return {
+				connection: { readyState: 0 },
+				model: () => ({ find: () => [], findOne: () => null }),
+				connect: () => Promise.resolve(this),
+				disconnect: () => Promise.resolve()
+			} as any;
+		}
+		
+		// Solo lanzar error si no estamos en build time
 		throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 	}
 
+	// Si ya hay una conexión, devolverla
 	if (cached.conn) {
 		return cached.conn;
 	}
+	
+	// Si no hay promesa pendiente, crear una nueva
 	if (!cached.promise) {
 		const opts = {
 			bufferCommands: false,
@@ -40,11 +57,26 @@ async function dbConnect() {
 			return mongoose;
 		});
 	}
+	
 	try {
 		cached.conn = await cached.promise;
 		console.log("MongoDB connected successfully 🟢");
 	} catch (e) {
 		cached.promise = null;
+		// 🔥 MODIFICACIÓN: Mejor manejo de errores
+		console.error("MongoDB connection error:", e);
+		
+		// Si estamos en build time, no lanzar error
+		if (process.env.NEXT_PHASE === 'phase-production-build') {
+			console.log('Build time - returning mock connection due to MongoDB error');
+			return {
+				connection: { readyState: 0 },
+				model: () => ({ find: () => [], findOne: () => null }),
+				connect: () => Promise.resolve(this),
+				disconnect: () => Promise.resolve()
+			} as any;
+		}
+		
 		throw e;
 	}
 
@@ -60,28 +92,4 @@ async function dbConnect() {
 // Si ocurre un error, limpia la promesa y relanza el error.
 // Devuelve la conexión activa.
 
-
 export default dbConnect;
-
-
-
-
-//  TIPADO EXPLICADO
-// global.mongoose:
-// Es un objeto con dos propiedades:
-
-// conn: typeof import("mongoose") | null
-// → Es la instancia de mongoose (la conexión) o null.
-// promise: Promise<typeof import("mongoose")> | null
-// → Es la promesa de conexión (mientras se está conectando), o null.
-// typeof import("mongoose"):
-// Se refiere al tipo de lo que exporta mongoose (el objeto principal de la librería).
-// Así, la conexión tiene el tipado correcto y puedes acceder a sus métodos (model, connection, etc.).
-
-// ¿Por qué se usa así en Next.js?
-// Porque Next.js (y Vercel) puede recargar el proceso muchas veces en desarrollo o serverless, y sin este patrón crearías muchas conexiones a MongoDB, causando errores y bloqueos.
-
-// Resumen
-// Evita conexiones duplicadas.
-// Funciona en serverless.
-// Tipado seguro y explícito para TypeScript.
